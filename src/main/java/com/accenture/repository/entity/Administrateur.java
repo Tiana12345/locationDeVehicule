@@ -7,6 +7,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Est la classe utilisée pour créer les attributs nécéssaire aux administrateurs
+ * Voir classe mère {@link Utilisateur}
+ * @author tatiana.m.tessier
+ * @since 1.0
+ */
+
 @EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor
 @NoArgsConstructor

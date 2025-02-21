@@ -29,9 +29,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     * <p>méthode servant a ajouter un client à la base de données</p>
+     * <p>méthode servant a ajouter un client</p>
      * @param clientRequestDto
-     * @return
+     * @return toClientResponseDto(clientEnreg)
      * @throws UtilisateurException
      */
 
@@ -50,7 +50,7 @@ public class ClientServiceImpl implements ClientService {
     /**
      *
      * @param mail
-     * @return
+     * @return toClientResponseDto(client)
      * @throws EntityNotFoundException
      */
 
@@ -63,12 +63,26 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toClientResponseDto(client);
     }
 
+    /**
+     *  <p>Méthode pour afficher tout les clients</p>
+     * @return clientDao.findAll()
+     */
+
     @Override
     public List<ClientResponseDto> trouverTous() {
         return clientDao.findAll().stream()
                 .map(clientMapper::toClientResponseDto)
                 .toList();
     }
+
+    /**
+     *<p>Méthode pour modifier tous les paramètres d'un client</p>
+     * @param mail
+     * @param clientRequestDto
+     * @return toClientResponseDto(clientEnreg)
+     * @throws UtilisateurException
+     * @throws EntityNotFoundException
+     */
 
     @Override
     public ClientResponseDto modifier(String mail, ClientRequestDto clientRequestDto) throws UtilisateurException, EntityNotFoundException {
@@ -82,6 +96,15 @@ public class ClientServiceImpl implements ClientService {
         //return tacheDao.save(tacheRequestDto);
         return clientMapper.toClientResponseDto(clientEnreg);
     }
+
+    /**
+     *<p>Méthode pour modifier un ou plusieurs paramètres d'un compte client</p>
+     * @param mail
+     * @param clientRequestDto
+     * @return toClientResponseDto(clientEnreg)
+     * @throws UtilisateurException
+     * @throws EntityNotFoundException
+     */
 
     @Override
     public ClientResponseDto modifierPartiellement(String mail, ClientRequestDto clientRequestDto) throws UtilisateurException, EntityNotFoundException {
@@ -98,15 +121,35 @@ public class ClientServiceImpl implements ClientService {
         return clientMapper.toClientResponseDto(clientEnreg);
     }
 
+    /**
+     * <p>Méthode servant à supprimer un client</p>
+     * @param mail
+     * @throws EntityNotFoundException
+     */
+    //ajouter une vérification si le client possède des locations en cours
     @Override
     public void supprimer(String mail) throws EntityNotFoundException {
         if (clientDao.existsById(mail))
+
             clientDao.deleteById(mail);
         else
             throw new EntityNotFoundException("Aucun utilisateur n'est enregistré sous cette adresse mail.");
     }
 
-
+    /**
+     * <p>Méthode permettant de retorouver un client selon l'un des paramètres choisi</p>
+     * @param mail
+     * @param prenom
+     * @param nom
+     * @param dateNaissance
+     * @param rue
+     * @param codePostal
+     * @param ville
+     * @param desactive
+     * @param listePermis
+     * @param dateInscription
+     * @return toClientResponseDto
+     */
     @Override
     public List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription) {
         List<Client> liste = null;
@@ -140,7 +183,9 @@ public class ClientServiceImpl implements ClientService {
                 .map(clientMapper::toClientResponseDto)
                 .toList();
     }
-
+//______________________________________________________________________________________________________________________
+//    METHODES PRIVEES
+//_______________________________________________________________________________________________________________________
     static void verifClient(ClientRequestDto clientRequestDto) {
         if (clientRequestDto == null)
             throw new UtilisateurException("Le clientRequestDto est null");

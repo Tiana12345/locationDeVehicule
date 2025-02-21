@@ -1,5 +1,13 @@
 package com.accenture.repository.entity;
 
+/**
+ * Est la classe utilisée pour créer les attributs nécéssaire aux administrateurs
+ * classe fille {@link com.accenture.repository.entity.Client}
+ * classe fille {@link com.accenture.repository.entity.Administrateur}
+ * @author tatiana.m.tessier
+ * @since 1.0
+ */
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

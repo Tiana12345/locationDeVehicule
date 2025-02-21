@@ -9,6 +9,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * Classe utilisée pour gérer l'adresse nécéssaire à l'inscription des {@link Client}
+ *  @author tatiana.m.tessier
+ *  @since 1.0
+ */
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

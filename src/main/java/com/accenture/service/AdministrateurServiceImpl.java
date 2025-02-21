@@ -23,6 +23,13 @@ public class AdministrateurServiceImpl implements AdministrateurService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    /**
+     *<p>Méthode pour ajouter un administrateur</p>
+     * @param administrateurRequestDto
+     * @return toAdministrateurResponseDto(adminEnreg)
+     * @throws UtilisateurException
+     */
+
     @Override
     public AdministrateurResponseDto ajouter(AdministrateurRequestDto administrateurRequestDto)throws UtilisateurException{
         verifAdmin(administrateurRequestDto);
@@ -37,14 +44,27 @@ public class AdministrateurServiceImpl implements AdministrateurService {
         return administrateurMapper.toAdministrateurResponseDto(adminEnreg);
     }
 
+    /**
+     * <p> Méthode pour supprimer un administrateur </p>
+     * @param mail
+     * @throws EntityNotFoundException
+     */
+    //ajouter une méthode pour bloquer la suppression si il s'agit du dernier administrateur
     @Override
-    public void supprimer(String mail) throws EntityActionVetoException{
+    public void supprimer(String mail) throws EntityNotFoundException{
         if (administrateurDao.existsById(mail))
             administrateurDao.deleteById(mail);
         else
             throw new EntityNotFoundException("Aucun compte trouvé avec cette adresse mail");
     }
 
+    //ajouter une méthode pour modifier partiellement
+
+    //ajouter une méthode pour modifier
+
+// ______________________________________________________________________________________________________________________
+//    METHODES PRIVEES
+//_______________________________________________________________________________________________________________________
 
     private static void verifAdmin(AdministrateurRequestDto administrateurRequestDto) {
         if (administrateurRequestDto == null)

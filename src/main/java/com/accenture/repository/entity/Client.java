@@ -10,6 +10,14 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * Est la classe utilisée pour créer les attributs nécéssaire aux clients
+ * Voir classe mère {@link Utilisateur}
+ * @author tatiana.m.tessier
+ * @since 1.0
+ *
+ */
+
 @EqualsAndHashCode(callSuper=false)
 @AllArgsConstructor
 @NoArgsConstructor
