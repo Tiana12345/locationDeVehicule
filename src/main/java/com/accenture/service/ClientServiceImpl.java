@@ -22,11 +22,15 @@ public class ClientServiceImpl implements ClientService {
     private final PasswordEncoder passwordEncoder;
 
 
+    private static final String REGEX_PW= "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[&#@-_§])[A-Za-z\\d&%$_]{8,16}$";
+
     public ClientServiceImpl(ClientDao clientDao, ClientMapper clientMapper, PasswordEncoder passwordEncoder) {
         this.clientDao = clientDao;
         this.clientMapper = clientMapper;
         this.passwordEncoder = passwordEncoder;
     }
+
+
 
     /**
      * <p>méthode servant a ajouter un client</p>
@@ -153,10 +157,11 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription) {
         List<Client> liste = null;
+        Optional<Client> optional;
 
 
         if (mail != null)
-            liste = clientDao.findByMailContaining(mail);
+            optional = clientDao.findByMailContaining(mail);
         else if (prenom != null)
             liste = clientDao.findByPrenomContaining(prenom);
         else if (nom != null)
@@ -201,8 +206,8 @@ public class ClientServiceImpl implements ClientService {
             throw new UtilisateurException("Vous devez renseigner le nom de votre ville");
         if (clientRequestDto.mail() == null || clientRequestDto.mail().isBlank())
             throw new UtilisateurException("L'adresse mail est obligatoire");
-        if (clientRequestDto.password() == null || clientRequestDto.password().isBlank())
-            throw new UtilisateurException("Le mot de passe est obligatoire");
+        if (!clientRequestDto.password().matches(REGEX_PW)|| clientRequestDto.password().isBlank())
+            throw new UtilisateurException("Le mot de passe est obligatoire et doit correspondre au type demandé");
         if (clientRequestDto.dateNaissance() == null)
             throw new UtilisateurException("La date de naissance est obligatoire");
         if (clientRequestDto.dateNaissance().isAfter(LocalDate.now().minusYears(18)))

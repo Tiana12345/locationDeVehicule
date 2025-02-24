@@ -1,8 +1,10 @@
 package com.accenture.controller;
 
+import com.accenture.model.Permis;
 import com.accenture.service.AdministrateurService;
 import com.accenture.service.dto.AdministrateurRequestDto;
 import com.accenture.service.dto.AdministrateurResponseDto;
+import com.accenture.service.dto.ClientResponseDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/administrateurs")
@@ -41,5 +45,15 @@ public class AdministrateurController {
     ResponseEntity<Void> supprimer(@PathVariable("id") String mail){
         administrateurService.supprimer(mail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @GetMapping("(/search)")
+    List<AdministrateurResponseDto> recherche(
+            @RequestParam(required = false) String mail,
+            @RequestParam(required = false) String prenom,
+            @RequestParam(required = false) String nom,
+            @RequestParam(required = false) String fonction
+    ){
+        return administrateurService.rechercher(mail, prenom, nom,fonction);
     }
 }

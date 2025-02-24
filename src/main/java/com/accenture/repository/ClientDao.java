@@ -7,10 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 public interface ClientDao extends JpaRepository<Client, String> {
 
-    List<Client> findByMailContaining(String mail);
+    Optional<Client> findByMailContaining(String mail);
 
     List<Client> findByPrenomContaining(String prenom);
 

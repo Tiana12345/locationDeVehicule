@@ -30,7 +30,9 @@ public class Client extends Utilisateur {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "adresse_id")
     private Adresse adresse;
+
     private LocalDate dateNaissance;
+    //localDate.now
     private LocalDate dateInscription;
     @ElementCollection
     private List<Permis> listePermis;

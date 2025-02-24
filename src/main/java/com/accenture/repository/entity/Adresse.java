@@ -30,4 +30,6 @@ public class Adresse {
     @NotBlank(message = "la ville ne doit pas être vide")
     private String ville;
 
+    public Adresse(String rue, String codePostal, String ville) {
+    }
 }
