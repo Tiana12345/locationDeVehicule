@@ -9,17 +9,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED)
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "Vehicules")
-@DiscriminatorColumn(name = "DISCR")
-@DiscriminatorValue(value = "VEHICULE")
 
-public class Vehicule {
+
+public abstract class Vehicule {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    private Long id;
     private String marque;
     private String modele;
     private String couleur;
     private String type;
+    private long tarifJournalier;
+    private long kilometrage;
+    private Boolean actif;
+    private Boolean retireDuParc;
 }
