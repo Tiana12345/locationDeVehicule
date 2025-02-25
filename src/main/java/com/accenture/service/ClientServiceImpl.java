@@ -97,7 +97,6 @@ public class ClientServiceImpl implements ClientService {
         Client client = clientMapper.toClient(clientRequestDto);
         client.setMail(mail);
         Client clientEnreg = clientDao.save(client);
-        //return tacheDao.save(tacheRequestDto);
         return clientMapper.toClientResponseDto(clientEnreg);
     }
 
