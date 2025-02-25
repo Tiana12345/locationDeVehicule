@@ -5,31 +5,26 @@ import com.accenture.model.Permis;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@DiscriminatorValue(value = "VOITURE")
 
+@EqualsAndHashCode(callSuper = true)
 public class Voiture extends Vehicule{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
 
-    private int nombreDePlace;
-    private int nombreDePorte;
+    private int nombreDePlaces;
+    private int nombreDePortes;
     private String transmission;
     private Boolean clim;
-    private int nombreDeBagage;
+    private int nombreDeBagages;
+    @ElementCollection
     private List<Permis> listePermis;
     private Carburant carburant;
-    private long tarifJournalier;
-    private long kilometrage;
-    private Boolean actif;
-    private Boolean retireDuParc;
+
 }
