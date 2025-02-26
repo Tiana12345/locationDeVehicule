@@ -1,7 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.ClientDao;
 import com.accenture.repository.entity.Client;
 import com.accenture.service.dto.ClientRequestDto;

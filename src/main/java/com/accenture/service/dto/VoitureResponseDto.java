@@ -1,8 +1,7 @@
 package com.accenture.service.dto;
 
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
-import com.accenture.repository.entity.Vehicule;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
 
 import java.util.List;
 
@@ -11,11 +10,11 @@ public record VoitureResponseDto(  long id,
                                    String modele,
                                    String couleur,
                                    String type,
-                                   int nombreDePlaces,
-                                   int nombreDePortes,
+                                   Integer nombreDePlaces,
+                                   Integer nombreDePortes,
                                    String transmission,
                                    Boolean clim,
-                                   int nombreDeBagages,
+                                   Integer nombreDeBagages,
                                    List<Permis> listePermis,
                                    Carburant carburant,
                                    long tarifJournalier,

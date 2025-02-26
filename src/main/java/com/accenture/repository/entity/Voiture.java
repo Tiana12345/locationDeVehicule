@@ -1,7 +1,7 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,11 +18,11 @@ import java.util.List;
 public class Voiture extends Vehicule{
 
 
-    private int nombreDePlaces;
-    private int nombreDePortes;
+    private Integer nombreDePlaces;
+    private Integer nombreDePortes;
     private String transmission;
     private Boolean clim;
-    private int nombreDeBagages;
+    private Integer nombreDeBagages;
     @ElementCollection
     private List<Permis> listePermis;
     private Carburant carburant;

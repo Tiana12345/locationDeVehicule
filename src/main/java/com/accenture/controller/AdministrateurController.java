@@ -1,21 +1,17 @@
 package com.accenture.controller;
 
-import com.accenture.model.Permis;
 import com.accenture.service.AdministrateurService;
 import com.accenture.service.dto.AdministrateurRequestDto;
 import com.accenture.service.dto.AdministrateurResponseDto;
-import com.accenture.service.dto.ClientResponseDto;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController

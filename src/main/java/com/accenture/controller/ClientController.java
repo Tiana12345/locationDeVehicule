@@ -1,6 +1,6 @@
 package com.accenture.controller;
 
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.service.ClientService;
 import com.accenture.service.dto.ClientRequestDto;
 import com.accenture.service.dto.ClientResponseDto;

@@ -1,6 +1,6 @@
 package com.accenture.service.dto;
 
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Permis;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;

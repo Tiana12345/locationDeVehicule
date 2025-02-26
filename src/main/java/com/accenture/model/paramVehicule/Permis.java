@@ -1,4 +1,4 @@
-package com.accenture.model;
+package com.accenture.model.paramVehicule;
 
 public enum Permis {
     A,A1,A2,

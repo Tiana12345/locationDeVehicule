@@ -1,7 +1,6 @@
 package com.accenture.repository;
 
-import com.accenture.model.Permis;
-import com.accenture.repository.entity.Adresse;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.entity.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 

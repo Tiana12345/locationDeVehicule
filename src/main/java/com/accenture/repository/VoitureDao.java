@@ -1,7 +1,7 @@
 package com.accenture.repository;
 
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.entity.Voiture;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -15,17 +15,17 @@ public interface VoitureDao extends JpaRepository<Voiture, Long> {
 
     List<Voiture> findByCouleurContaining(String couleur);
 
-    List<Voiture> findByNombreDePlaces(int nombreDePlaces);
+    List<Voiture> findByNombreDePlaces(Integer nombreDePlaces);
 
     List<Voiture> findByCarburant(Carburant carburant);
 
-    List<Voiture> findByNombreDePortes(int nombreDePortes);
+    List<Voiture> findByNombreDePortes(Integer nombreDePortes);
 
     List<Voiture> findByTransmissionContaining(String transmission);
 
     List<Voiture> findByClim(Boolean clim);
 
-    List<Voiture> findByNombreDeBagages(int nombreDeBagages);
+    List<Voiture> findByNombreDeBagages(Integer nombreDeBagages);
 
     List<Voiture> findByTypeContaining(String type);
 

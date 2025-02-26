@@ -1,24 +1,40 @@
 package com.accenture.service.dto;
 
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.List;
 
-public record VoitureRequestDto(long id,
-                                String marque,
-                                String modele,
-                                String couleur,
-                                String type,
-                                int nombreDePlaces,
-                                int nombreDePortes,
-                                String transmission,
-                                Boolean clim,
-                                int nombreDeBagages,
-                                List<Permis> listePermis,
-                                Carburant carburant,
-                                long tarifJournalier,
-                                long kilometrage,
-                                Boolean actif,
-                                Boolean retireDuParc) {
+public record VoitureRequestDto(
+        @NotBlank
+        String marque,
+        @NotBlank
+        String modele,
+        @NotBlank
+        String couleur,
+        @NotBlank
+        String type,
+        @NotNull
+        Integer nombreDePlaces,
+        @NotNull
+        Integer nombreDePortes,
+        @NotBlank
+        String transmission,
+        @NotNull
+        Boolean clim,
+        @NotNull
+        Integer nombreDeBagages,
+        List<Permis> listePermis,
+        Carburant carburant,
+        @NotNull
+        long tarifJournalier,
+        @NotNull
+        long kilometrage,
+        @NotNull
+        Boolean actif,
+        @NotNull
+        Boolean retireDuParc)
+        {
 }

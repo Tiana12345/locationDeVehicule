@@ -1,11 +1,8 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
-import com.accenture.model.Permis;
 import com.accenture.repository.AdministrateurDao;
 import com.accenture.repository.entity.Administrateur;
-import com.accenture.repository.entity.Adresse;
-import com.accenture.repository.entity.Client;
 import com.accenture.service.dto.*;
 import com.accenture.service.mapper.AdministrateurMapper;
 import jakarta.persistence.EntityNotFoundException;
@@ -16,12 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)

@@ -1,7 +1,7 @@
 package com.accenture.controller;
 
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.service.VoitureService;
 import com.accenture.service.dto.VoitureRequestDto;
 import com.accenture.service.dto.VoitureResponseDto;
@@ -27,17 +27,38 @@ public class VoitureController {
         this.voitureService = voitureService;
     }
 
+
+//   @PostMapping
+//   ResponseEntity<String> ajouter (@RequestBody @Valid VoitureRequestDto voitureRequestDto, BindingResult br){
+//       ResponseEntity<String> re;
+//       if (br.hasErrors()) {
+//           String message = "";
+//           for (ObjectError error : br.getAllErrors()) {
+//               message = message + error.getDefaultMessage() + "";
+//           }
+//           re = ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(message);
+//       }else {
+//           try{
+//               voitureService.ajouter(voitureRequestDto);
+//               re= ResponseEntity.status(HttpStatus.CREATED).build();
+//           }catch (UtilisateurException e){
+//               re= ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+//           }
+//       }
+//       return re;
+//   }
+
     @PostMapping
     ResponseEntity<Void> ajouter(@RequestBody @Valid VoitureRequestDto voitureRequestDto) {
-        logger.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
+        //logger.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
         VoitureResponseDto voitureEnreg = voitureService.ajouter(voitureRequestDto);
 
-        URI location = ServletUriComponentsBuilder
+        URI voiture = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(voitureEnreg.id())
                 .toUri();
-        return ResponseEntity.created(location).build();
+       return ResponseEntity.created(voiture).build();
     }
 
     @GetMapping
@@ -57,11 +78,6 @@ public class VoitureController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
-    @PutMapping("/{id}")
-    ResponseEntity<VoitureResponseDto> modifier(@PathVariable("id") Long id, @RequestBody @Valid VoitureRequestDto voitureRequestDto) {
-        VoitureResponseDto reponse = voitureService.modifier(id, voitureRequestDto);
-        return ResponseEntity.ok(reponse);
-    }
 
     @PatchMapping("/{id}")
     ResponseEntity<VoitureResponseDto> modifierPartiellement(@PathVariable("id") Long id, @RequestBody VoitureRequestDto voitureRequestDto) {
@@ -74,12 +90,12 @@ public class VoitureController {
             @RequestParam(required = false) String marque,
             @RequestParam(required = false) String modele,
             @RequestParam(required = false) String couleur,
-            @RequestParam(required = false) int nombreDePlaces,
+            @RequestParam(required = false) Integer nombreDePlaces,
             @RequestParam(required = false) Carburant carburant,
-            @RequestParam(required = false) int nombreDePortes,
+            @RequestParam(required = false) Integer nombreDePortes,
             @RequestParam(required = false) String transmission,
             @RequestParam(required = false) Boolean clim,
-            @RequestParam(required = false) int nombreDeBagages,
+            @RequestParam(required = false) Integer nombreDeBagages,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) List<Permis> listePermis,
             @RequestParam(required = false) Long tarifJournalier,

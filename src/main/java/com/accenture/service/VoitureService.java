@@ -1,8 +1,8 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.Carburant;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Carburant;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.entity.Voiture;
 import com.accenture.service.dto.VoitureRequestDto;
 import com.accenture.service.dto.VoitureResponseDto;
@@ -17,15 +17,13 @@ public interface VoitureService {
 
     List<VoitureResponseDto> trouverToutes();
 
-    VoitureResponseDto modifier(Long id, VoitureRequestDto voitureRequestDto) throws VehiculeException, EntityNotFoundException;
-
     VoitureResponseDto modifierPartiellement(Long id, VoitureRequestDto voitureRequestDto) throws VehiculeException, EntityNotFoundException;
 
     VoitureResponseDto getVoitureResponseDto(Voiture voitureEnreg);
 
     void supprimer(Long id) throws EntityNotFoundException;
 
-    List<VoitureResponseDto> rechercher(Long id, String marque, String modele, String couleur, int nombreDePlaces, Carburant carburant, int nombreDePortes,
-                                        String transmission, Boolean clim, int nombreDeBagages, String type, List<Permis> listePermis, Long tarifJournalier,
+    List<VoitureResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant, Integer nombreDePortes,
+                                        String transmission, Boolean clim, Integer nombreDeBagages, String type, List<Permis> listePermis, Long tarifJournalier,
                                         Long kilometrage, Boolean actif, Boolean retireDuParc);
 }

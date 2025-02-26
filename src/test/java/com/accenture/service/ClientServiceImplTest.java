@@ -1,7 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.ClientDao;
 import com.accenture.repository.entity.Adresse;
 import com.accenture.repository.entity.Client;
@@ -10,14 +10,12 @@ import com.accenture.service.dto.ClientRequestDto;
 import com.accenture.service.dto.ClientResponseDto;
 import com.accenture.service.mapper.ClientMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 

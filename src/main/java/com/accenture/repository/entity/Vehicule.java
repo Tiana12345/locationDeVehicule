@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public abstract class Vehicule {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
-    private Long id;
+    private long id;
     private String marque;
     private String modele;
     private String couleur;

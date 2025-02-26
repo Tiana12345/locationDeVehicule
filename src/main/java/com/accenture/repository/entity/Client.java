@@ -1,8 +1,7 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.Permis;
+import com.accenture.model.paramVehicule.Permis;
 import jakarta.persistence.*;
-import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
