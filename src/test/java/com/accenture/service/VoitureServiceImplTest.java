@@ -5,12 +5,9 @@ import com.accenture.model.paramVehicule.Carburant;
 import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.VoitureDao;
 import com.accenture.repository.entity.Voiture;
-import com.accenture.service.dto.AdresseDto;
-import com.accenture.service.dto.ClientRequestDto;
 import com.accenture.service.dto.VoitureRequestDto;
 import com.accenture.service.dto.VoitureResponseDto;
 import com.accenture.service.mapper.VoitureMapper;
-import jakarta.persistence.Entity;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -62,6 +59,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiMarqueBlank() {
         VoitureRequestDto dto = new VoitureRequestDto("      \t   ",
@@ -81,6 +79,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiModeleNull() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -100,6 +99,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiModeleBlank() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -139,6 +139,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiCouleurBlank() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -218,6 +219,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiNombrePlaceInf0() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -297,6 +299,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiNombrePortesInf0() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -397,6 +400,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiNombreBagagesInf0() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -477,6 +481,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiTarifJournalierNull() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -496,6 +501,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiTarifJournalierInf0() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -515,6 +521,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiKilometrageInf0() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -534,6 +541,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiActifNull() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -553,6 +561,7 @@ class VoitureServiceImplTest {
                 false);
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
+
     @Test
     void testAjouterSiRetireDuParcNull() {
         VoitureRequestDto dto = new VoitureRequestDto("Toyota",
@@ -694,6 +703,7 @@ class VoitureServiceImplTest {
         Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
 
     }
+
     @Test
     void modifierPartiellementNok() throws VehiculeException, EntityNotFoundException {
         VoitureRequestDto requestDto = getVoitureRequestDto();
@@ -710,6 +720,128 @@ class VoitureServiceImplTest {
         Mockito.verify(daoMock, never()).save(any(Voiture.class));
         Mockito.verify(mapperMock, never()).toVoiture(any(VoitureRequestDto.class));
         Mockito.verify(mapperMock, never()).toVoitureResponseDto(any(Voiture.class));
+    }
+
+    @Test
+    void modifierPartiellementTousParamRemplis() throws VehiculeException, EntityNotFoundException {
+        VoitureRequestDto requestDto = new VoitureRequestDto(
+                "MarqueTest",
+                "ModeleTest",
+                "CouleurTest",
+                "TypeTest",
+                5,
+                4,
+                "Automatique",
+                true,
+                3,
+                List.of(Permis.B),
+                Carburant.ESSENCE,
+                100,
+                1000,
+                true,
+                false
+        );
+
+        assertNotNull(requestDto, "Le VoitureRequestDto ne doit pas être null");
+
+        Voiture voitureExistante = creerVoiture();
+        Voiture voitureModifiee = creerVoiture2();
+        VoitureResponseDto responseDto = creerVoitureResponseDto();
+
+        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+
+        VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
+
+        assertNotNull(result);
+        assertEquals(responseDto, result);
+        Mockito.verify(daoMock).findById(1L);
+        Mockito.verify(mapperMock).toVoiture(requestDto);
+        Mockito.verify(daoMock).save(voitureExistante);
+        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+    }
+
+    @Test
+    void modifierPartiellementValeursNulles() throws VehiculeException, EntityNotFoundException {
+        VoitureRequestDto requestDto = new VoitureRequestDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null
+        );
+
+        assertNotNull(requestDto, "Le VoitureRequestDto ne doit pas être null");
+
+        Voiture voitureExistante = creerVoiture();
+        Voiture voitureModifiee = creerVoiture2();
+        VoitureResponseDto responseDto = creerVoitureResponseDto();
+
+        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+
+        VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
+
+        assertNotNull(result);
+        assertEquals(responseDto, result);
+        Mockito.verify(daoMock).findById(1L);
+        Mockito.verify(mapperMock).toVoiture(requestDto);
+        Mockito.verify(daoMock).save(voitureExistante);
+        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+    }
+
+    @Test
+    void modifierPartiellementNokValeursInvalides() throws VehiculeException, EntityNotFoundException {
+        VoitureRequestDto requestDto = new VoitureRequestDto(
+                "",
+                "",
+                "", "",
+                -1,
+                -1,
+                null,
+                null,
+                null,
+                null,
+                null,
+                -100,
+                -1L,
+                null,
+                null
+        );
+
+        assertNotNull(requestDto, "Le VoitureRequestDto ne doit pas être null");
+
+        Voiture voitureExistante = creerVoiture();
+        Voiture voitureModifiee = creerVoiture2();
+        VoitureResponseDto responseDto = creerVoitureResponseDto();
+
+        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+
+        VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
+
+        assertNotNull(result);
+        assertEquals(responseDto, result);
+        Mockito.verify(daoMock).findById(1L);
+        Mockito.verify(mapperMock).toVoiture(requestDto);
+        Mockito.verify(daoMock).save(voitureExistante);
+        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
     @Test
@@ -730,12 +862,11 @@ class VoitureServiceImplTest {
     void supprimerVoitureNotOkid() {
         long id = 56;
         Mockito.when(daoMock.existsById(id)).thenReturn(false);
-        assertThrows(EntityNotFoundException.class, ()-> service.supprimer(id) );
+        assertThrows(EntityNotFoundException.class, () -> service.supprimer(id));
 
     }
-    @Test
-    void rechercher() {
-    }
+
+
 
     private static Voiture creerVoiture() {
         Voiture v = new Voiture();
@@ -835,5 +966,6 @@ class VoitureServiceImplTest {
     }
 
 }
+
 
 
