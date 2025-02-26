@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @DiscriminatorValue(value = "VELO ")
 
 public class Velo extends Vehicule{
-    private int tailleCadre;
-    private int poids;
+    private Integer tailleCadre;
+    private Integer poids;
     private Boolean electrique;
-    private int capaciteBatterie;
-    private int autonomie;
+    private Integer capaciteBatterie;
+    private Integer autonomie;
     private Boolean freinsADisque;
 
     }
