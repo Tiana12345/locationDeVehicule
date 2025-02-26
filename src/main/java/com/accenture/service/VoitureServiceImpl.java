@@ -20,6 +20,12 @@ import java.util.stream.Collectors;
 @Slf4j
 
 
+/**
+ * @author tatiana.tessier
+ * Classe d'implémentation du service de gestion des voitures.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des voitures,
+ * ainsi que pour rechercher des voitures en fonction de plusieurs critères.
+ */
 @Service
 public class VoitureServiceImpl implements VoitureService {
 
@@ -27,12 +33,31 @@ public class VoitureServiceImpl implements VoitureService {
     private final VoitureMapper voitureMapper;
     private static final Logger logger = LoggerFactory.getLogger(VoitureServiceImpl.class);
 
+    /**
+     * Constructeur de la classe VoitureServiceImpl.
+     *
+     * @param voitureDao l'objet DAO pour accéder aux données des voitures
+     * @param voitureMapper l'objet Mapper pour convertir entre les entités Voiture et les DTO
+     */
 
     public VoitureServiceImpl(VoitureDao voitureDao, VoitureMapper voitureMapper) {
         this.voitureDao = voitureDao;
         this.voitureMapper = voitureMapper;
     }
 
+    /**
+     * Méthode servant à ajouter une voiture.
+     * Cette méthode prend un objet VoitureRequestDto, vérifie sa validité,
+     * le convertit en entité Voiture, l'enregistre dans la base de données,
+     * puis retourne un objet VoitureResponseDto contenant les informations de la voiture ajoutée.
+     *
+     * @param voitureRequestDto l'objet contenant les informations de la voiture à ajouter
+     *
+     * @return un objet VoitureResponseDto contenant les informations de la voiture ajoutée
+     *         -
+     * @throws VehiculeException si une erreur survient lors de l'ajout de la voiture,
+     *                           par exemple si les informations de la voiture sont invalides
+     */
     @Override
     public VoitureResponseDto ajouter(VoitureRequestDto voitureRequestDto) throws VehiculeException {
         verifVoiture(voitureRequestDto);
@@ -43,6 +68,16 @@ public class VoitureServiceImpl implements VoitureService {
         return voitureMapper.toVoitureResponseDto(voitureEnreg);
     }
 
+    /**
+     * Méthode servant à trouver une voiture par son identifiant.
+     * Cette méthode recherche une voiture dans la base de données à partir de son identifiant.
+     * Si aucune voiture n'est trouvée, une exception EntityNotFoundException est levée.
+     *
+     * @param "l'identifiant unique de la voiture à trouver"
+     * @return un objet VoitureResponseDto contenant les informations de la voiture trouvée
+     *         -
+     * @throws EntityNotFoundException si aucune voiture n'est trouvée avec l'identifiant fourni
+     */
     @Override
     public VoitureResponseDto trouver(long id) throws EntityNotFoundException {
         Optional<Voiture> optVoiture = voitureDao.findById(id);
@@ -52,6 +87,14 @@ public class VoitureServiceImpl implements VoitureService {
         return voitureMapper.toVoitureResponseDto(voiture);
     }
 
+    /**
+     * Méthode servant à trouver toutes les voitures.
+     * Cette méthode récupère toutes les voitures de la base de données,
+     * les convertit en objets VoitureResponseDto et retourne la liste de ces objets.
+     *
+     * @return une liste d'objets VoitureResponseDto contenant les informations de toutes les voitures
+     *
+     */
     @Override
     public List<VoitureResponseDto> trouverToutes() {
         return voitureDao.findAll().stream()
@@ -59,6 +102,22 @@ public class VoitureServiceImpl implements VoitureService {
                 .toList();
     }
 
+    /**
+     * Méthode servant à modifier partiellement une voiture existante.
+     * Cette méthode recherche une voiture dans la base de données à partir de son identifiant.
+     * Si aucune voiture n'est trouvée, une exception EntityNotFoundException est levée.
+     * Si l'identifiant est valide, les informations de la voiture sont partiellement mises à jour
+     * avec les données fournies dans VoitureRequestDto.
+     *
+     * @param id l'identifiant unique de la voiture à modifier
+     * @param voitureRequestDto l'objet contenant les informations à mettre à jour
+     *
+     * @return un objet VoitureResponseDto contenant les informations de la voiture modifiée
+     *
+     * @throws VehiculeException si une erreur survient lors de la modification de la voiture,
+     *                           par exemple si l'identifiant ne correspond à aucune voiture en base
+     * @throws EntityNotFoundException si aucune voiture n'est trouvée avec l'identifiant fourni
+     */
 
     @Override
     public VoitureResponseDto modifierPartiellement(Long id, VoitureRequestDto voitureRequestDto) throws VehiculeException, EntityNotFoundException {
@@ -67,23 +126,42 @@ public class VoitureServiceImpl implements VoitureService {
             throw new VehiculeException("Erreur, l'identifiant ne correspond à aucune voiture en base");
         Voiture voitureExistante = optVoiture.get();
 
-        voitureRequestDto = voitureMapper.toVoitureRequestDto(voitureExistante);
-        verifVoiture(voitureRequestDto);
+
 
         Voiture nouvelle = voitureMapper.toVoiture(voitureRequestDto);
         remplacer(nouvelle, voitureExistante);
-
-
+//
+//        voitureRequestDto = voitureMapper.toVoitureRequestDto(voitureExistante);
+//        verifVoiture(voitureRequestDto);
 
         Voiture voitureEnreg = voitureDao.save(voitureExistante);
         return getVoitureResponseDto(voitureEnreg);
     }
 
+    /**
+     * Méthode servant à convertir une entité Voiture en un objet VoitureResponseDto.
+     * Cette méthode utilise le mapper pour transformer une entité Voiture enregistrée
+     * en un objet VoitureResponseDto contenant les informations de la voiture.
+     *
+     * @param voitureEnreg l'entité Voiture à convertir
+     *
+     * @return un objet VoitureResponseDto contenant les informations de la voiture
+     *
+     */
     @Override
     public VoitureResponseDto getVoitureResponseDto(Voiture voitureEnreg) {
         return voitureMapper.toVoitureResponseDto(voitureEnreg);
     }
 
+    /**
+     * Méthode servant à supprimer une voiture par son identifiant.
+     * Cette méthode vérifie si une voiture existe dans la base de données avec l'identifiant fourni.
+     * Si la voiture existe, elle est supprimée de la base de données.
+     * Si aucune voiture n'est trouvée, une exception EntityNotFoundException est levée.
+     *
+     * @param id l'identifiant unique de la voiture à supprimer
+     * @throws EntityNotFoundException si aucune voiture n'est trouvée avec l'identifiant fourni
+     */
     @Override
     public void supprimer(Long id) throws EntityNotFoundException {
         if (voitureDao.existsById(id))
@@ -92,6 +170,16 @@ public class VoitureServiceImpl implements VoitureService {
             throw new EntityNotFoundException("Aucune voiture n'est enregistrée sous cet identifiant");
     }
 
+    /**
+     * Méthode servant à rechercher des voitures en fonction de plusieurs critères.
+     * Cette méthode récupère toutes les voitures de la base de données, vérifie les objets nécessaires,
+     * applique les critères de recherche fournis, trie les résultats par modèle, et retourne une liste
+     * d'objets VoitureResponseDto correspondant aux critères.
+     *
+     * @return une liste d'objets VoitureResponseDto correspondant aux critères de recherche
+     *
+     * @throws VehiculeException si une erreur survient lors de la recherche, par exemple si les objets nécessaires ne sont pas initialisés
+     */
     @Override
     public List<VoitureResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlaces,
                                                Carburant carburant, Integer nombreDePortes, String transmission, Boolean clim,
@@ -155,38 +243,37 @@ public class VoitureServiceImpl implements VoitureService {
             throw new VehiculeException("Vous devez indiquer si la voiture est retirée du parc");
     }
 
-    private static void remplacer(Voiture voitureRequestDto, Voiture voitureRequestDtoExistante) {
-        if (voitureRequestDto.getMarque() != null)
-            voitureRequestDtoExistante.setMarque(voitureRequestDto.getMarque());
-        if (voitureRequestDto.getModele() != null)
-            voitureRequestDtoExistante.setModele(voitureRequestDto.getModele());
-        if (voitureRequestDto.getCouleur() != null)
-            voitureRequestDtoExistante.setCouleur(voitureRequestDto.getCouleur());
-        if (voitureRequestDto.getNombreDePlaces() == null ||voitureRequestDto.getNombreDePlaces() <= 0)
-            voitureRequestDtoExistante.setNombreDePlaces(voitureRequestDto.getNombreDePlaces());
-        if (voitureRequestDto.getCarburant() != null)
-            voitureRequestDtoExistante.setCarburant(voitureRequestDto.getCarburant());
-
-        if (voitureRequestDto.getNombreDePortes() == null || voitureRequestDto.getNombreDePortes() <= 0)
-            voitureRequestDtoExistante.setNombreDePortes(voitureRequestDto.getNombreDePortes());
-        if (voitureRequestDto.getTransmission() != null)
-            voitureRequestDtoExistante.setTransmission(voitureRequestDto.getTransmission());
-        if (voitureRequestDto.getClim() != null)
-            voitureRequestDtoExistante.setClim(voitureRequestDto.getClim());
-        if (voitureRequestDto.getNombreDeBagages() == null ||voitureRequestDto.getNombreDeBagages() < 0)
-            voitureRequestDtoExistante.setNombreDeBagages(voitureRequestDto.getNombreDeBagages());
-        if (voitureRequestDto.getType() != null)
-            voitureRequestDtoExistante.setType(voitureRequestDto.getType());
-        if (voitureRequestDto.getListePermis() != null && !voitureRequestDto.getListePermis().isEmpty())
-            voitureRequestDtoExistante.setListePermis(voitureRequestDto.getListePermis());
-        if (voitureRequestDto.getTarifJournalier() > 0)
-            voitureRequestDtoExistante.setTarifJournalier(voitureRequestDto.getTarifJournalier());
-        if (voitureRequestDto.getKilometrage() >= 0)
-            voitureRequestDtoExistante.setKilometrage(voitureRequestDto.getKilometrage());
-        if (voitureRequestDto.getActif() != null)
-            voitureRequestDtoExistante.setActif(voitureRequestDto.getActif());
-        if (voitureRequestDto.getRetireDuParc() != null)
-            voitureRequestDtoExistante.setRetireDuParc(voitureRequestDto.getRetireDuParc());
+    private static void remplacer(Voiture voiture, Voiture voitureExistante) {
+        if ( voiture.getMarque() != null && voiture.getMarque().isBlank())
+            voitureExistante.setMarque(voiture.getMarque());
+        if (voiture.getModele() != null && voiture.getModele().isBlank())
+            voitureExistante.setModele(voiture.getModele());
+        if (voiture.getCouleur() != null && voiture.getCouleur().isBlank())
+            voitureExistante.setCouleur(voiture.getCouleur());
+        if (voiture.getNombreDePlaces() == null ||voiture.getNombreDePlaces() <= 0)
+            voitureExistante.setNombreDePlaces(voiture.getNombreDePlaces());
+        if (voiture.getCarburant() != null )
+            voitureExistante.setCarburant(voiture.getCarburant());
+        if (voiture.getNombreDePortes() == null || voiture.getNombreDePortes() <= 0)
+            voitureExistante.setNombreDePortes(voiture.getNombreDePortes());
+        if (voiture.getTransmission() != null && voiture.getTransmission().isBlank())
+            voitureExistante.setTransmission(voiture.getTransmission());
+        if (voiture.getClim() != null)
+            voitureExistante.setClim(voiture.getClim());
+        if (voiture.getNombreDeBagages() == null ||voiture.getNombreDeBagages() < 0)
+            voitureExistante.setNombreDeBagages(voiture.getNombreDeBagages());
+        if (voiture.getType() != null && voiture.getType().isBlank())
+            voitureExistante.setType(voiture.getType());
+        if (voiture.getListePermis() != null && !voiture.getListePermis().isEmpty())
+            voitureExistante.setListePermis(voiture.getListePermis());
+        if (voiture.getTarifJournalier() > 0)
+            voitureExistante.setTarifJournalier(voiture.getTarifJournalier());
+        if (voiture.getKilometrage() >= 0)
+            voitureExistante.setKilometrage(voiture.getKilometrage());
+        if (voiture.getActif() != null)
+            voitureExistante.setActif(voiture.getActif());
+        if (voiture.getRetireDuParc() != null)
+            voitureExistante.setRetireDuParc(voiture.getRetireDuParc());
     }
 
     private static List<Voiture> rechercheVoiture(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant,

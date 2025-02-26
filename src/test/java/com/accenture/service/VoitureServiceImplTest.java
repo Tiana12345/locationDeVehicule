@@ -643,7 +643,7 @@ class VoitureServiceImplTest {
         Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
         Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
-        Mockito.when(mapperMock.toVoitureRequestDto(voitureExistante)).thenReturn(requestDto);
+        //Mockito.when(mapperMock.toVoitureRequestDto(voitureExistante)).thenReturn(requestDto);
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
@@ -654,6 +654,46 @@ class VoitureServiceImplTest {
         Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
+    @Test
+    void modifierPartiellemenOk1ParamRempli() throws VehiculeException, EntityNotFoundException {
+        VoitureRequestDto requestDto = new VoitureRequestDto(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                3,
+                null,
+                null,
+                0,
+                0,
+                null,
+                null);
+
+        assertNotNull(requestDto, "Le VoitureRequestDto ne doit pas être null");
+
+        Voiture voitureExistante = creerVoiture();
+        Voiture voitureModifiee = creerVoiture2();
+        VoitureResponseDto responseDto = creerVoitureResponseDto();
+
+        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+
+        VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
+
+        assertNotNull(result);
+        assertEquals(responseDto, result);
+        Mockito.verify(daoMock).findById(1L);
+        Mockito.verify(mapperMock).toVoiture(requestDto);
+        Mockito.verify(daoMock).save(voitureExistante);
+        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+
+    }
     @Test
     void modifierPartiellementNok() throws VehiculeException, EntityNotFoundException {
         VoitureRequestDto requestDto = getVoitureRequestDto();
