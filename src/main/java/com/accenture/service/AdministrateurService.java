@@ -13,8 +13,6 @@ public interface AdministrateurService {
 
     void supprimer(String mail) throws EntityActionVetoException;
 
-    AdministrateurResponseDto modifier(String mail, AdministrateurRequestDto administrateurRequestDto) throws UtilisateurException, EntityNotFoundException;
-
     AdministrateurResponseDto modifierPartiellement(String mail, AdministrateurRequestDto administrateurRequestDto) throws UtilisateurException, EntityNotFoundException;
 
     List<AdministrateurResponseDto> rechercher(String mail, String prenom, String nom, String fonction );

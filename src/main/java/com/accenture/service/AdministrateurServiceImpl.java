@@ -12,16 +12,28 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-
+/**
+ * Classe d'implémentation du service de gestion des administrateurs.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des administrateurs,
+ * ainsi que pour rechercher des administrateurs en fonction de plusieurs critères.
+ */
 @Service
 public class AdministrateurServiceImpl implements AdministrateurService {
     private final AdministrateurDao administrateurDao;
     private final AdministrateurMapper administrateurMapper;
     private final PasswordEncoder passwordEncoder;
 
-    private static final String REGEX_PW= "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[&#@-_§])[A-Za-z\\d&%$_]{8,16}$";
+    private static final String REGEX_PW = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[&#@-_§])[A-Za-z\\d&%$_]{8,16}$";
 
+    /**
+     * Constructeur de la classe AdministrateurServiceImpl.
+     *
+     * @param administrateurDao    l'objet DAO pour accéder aux données des administrateurs
+     * @param administrateurMapper l'objet Mapper pour convertir entre les entités Administrateur et les DTO
+     * @param passwordEncoder      l'objet pour encoder les mots de passe des administrateurs
+     */
     public AdministrateurServiceImpl(AdministrateurDao administrateurDao, AdministrateurMapper administrateurMapper, PasswordEncoder passwordEncoder) {
         this.administrateurDao = administrateurDao;
         this.administrateurMapper = administrateurMapper;
@@ -29,14 +41,18 @@ public class AdministrateurServiceImpl implements AdministrateurService {
     }
 
     /**
-     *<p>Méthode pour ajouter un administrateur</p>
-     * @param administrateurRequestDto
-     * @return toAdministrateurResponseDto(adminEnreg)
-     * @throws UtilisateurException
+     * Méthode pour ajouter un administrateur.
+     * Cette méthode vérifie la validité des informations de l'administrateur, encode le mot de passe,
+     * enregistre l'administrateur dans la base de données, puis retourne un objet AdministrateurResponseDto
+     * contenant les informations de l'administrateur ajouté.
+     *
+     * @param administrateurRequestDto l'objet contenant les informations de l'administrateur à ajouter
+     * @return un objet AdministrateurResponseDto contenant les informations de l'administrateur ajouté
+     * @throws UtilisateurException si une erreur survient lors de l'ajout de l'administrateur
      */
 
     @Override
-    public AdministrateurResponseDto ajouter(AdministrateurRequestDto administrateurRequestDto)throws UtilisateurException{
+    public AdministrateurResponseDto ajouter(AdministrateurRequestDto administrateurRequestDto) throws UtilisateurException {
         verifAdmin(administrateurRequestDto);
 
         Administrateur admin = administrateurMapper.toAdministrateur(administrateurRequestDto);
@@ -50,13 +66,17 @@ public class AdministrateurServiceImpl implements AdministrateurService {
     }
 
     /**
-     * <p> Méthode pour supprimer un administrateur </p>
-     * @param mail
-     * @throws EntityNotFoundException
+     * Méthode pour supprimer un administrateur.
+     * Cette méthode vérifie si un administrateur existe dans la base de données avec l'adresse email fournie.
+     * Si l'administrateur existe et qu'il n'est pas le dernier administrateur, il est supprimé de la base de données.
+     *
+     * @param mail l'adresse email de l'administrateur à supprimer
+     * @throws EntityNotFoundException si aucun administrateur n'est trouvé avec cette adresse email
+     * @throws IllegalStateException   si l'administrateur à supprimer est le dernier administrateur
      */
 
     @Override
-    public void supprimer(String mail) throws EntityNotFoundException{
+    public void supprimer(String mail) throws EntityNotFoundException {
         if (!administrateurDao.existsById(mail)) {
             throw new EntityNotFoundException("Aucun compte trouvé avec cette adresse mail");
         }
@@ -69,56 +89,47 @@ public class AdministrateurServiceImpl implements AdministrateurService {
         administrateurDao.deleteById(mail);
     }
 
-    public List<AdministrateurResponseDto> rechercher(String mail, String prenom, String nom, String fonction ) {
-        List<Administrateur> liste = null;
-        Optional<Administrateur> optional;
+    /**
+     * Méthode pour rechercher des administrateurs en fonction de plusieurs critères.
+     *
+     * @param mail     l'adresse email de l'administrateur (String)
+     * @param prenom   le prénom de l'administrateur (String)
+     * @param nom      le nom de l'administrateur (String)
+     * @param fonction la fonction de l'administrateur (String)
+     * @return une liste d'objets AdministrateurResponseDto correspondant aux critères de recherche
+     * @throws UtilisateurException si un critère de recherche est obligatoire
+     */
+    @Override
+    public List<AdministrateurResponseDto> rechercher(String mail, String prenom, String nom, String fonction) throws UtilisateurException {
+        List<Administrateur> liste = administrateurDao.findAll();
 
-        if (mail != null)
-            optional = administrateurDao.findByMailContaining(mail);
-         else if (prenom != null)
-            liste = administrateurDao.findByPrenomContaining(prenom);
-         else if (nom != null)
-            liste = administrateurDao.findByNomContaining(nom);
-         else if (fonction != null)
-            liste = administrateurDao.findByFonctionContaining(fonction);
+        if (liste == null) {
+            throw new UtilisateurException("La méthode findAll a retourné null !");
+        }
+        if (administrateurDao == null) {
+            throw new UtilisateurException("administrateurDao n'est pas initialisé !");
+        }
+        if (administrateurMapper == null) {
+            throw new UtilisateurException("administrateurMapper n'est pas initialisé !");
+        }
 
-        if (liste == null)
-            throw new UtilisateurException("Un critère de recherche est obligatoire ! ");
+        liste = rechercheAdministrateur(mail, prenom, nom, fonction, liste);
+
         return liste.stream()
                 .map(administrateurMapper::toAdministrateurResponseDto)
-                .toList();
-    }
-    /**
-     *<p>Méthode pour modifier tous les paramètres d'un admin</p>
-     * @param mail
-     * @param administrateurRequestDto
-     * @return toAdminResponseDto(adminEnreg)
-     * @throws UtilisateurException
-     * @throws EntityNotFoundException
-     */
-
-    @Override
-    public AdministrateurResponseDto modifier(String mail, AdministrateurRequestDto administrateurRequestDto) throws UtilisateurException, EntityNotFoundException {
-        if (!administrateurDao.existsById(mail))
-            throw new UtilisateurException("Erreur, l'identifiant ne correspond pas");
-        verifAdmin(administrateurRequestDto);
-
-        Administrateur admin = administrateurMapper.toAdministrateur(administrateurRequestDto);
-        admin.setMail(mail);
-        Administrateur adminEnreg = administrateurDao.save(admin);
-        return administrateurMapper.toAdministrateurResponseDto(adminEnreg);
-
+                .collect(Collectors.toList());
     }
 
-    /**
-     *<p>Méthode pour modifier un ou plusieurs paramètres d'un compte admin</p>
-     * @param mail
-     * @param administrateurRequestDto
-     * @return toAdministrateurResponseDto(adminEnreg)
-     * @throws UtilisateurException
-     * @throws EntityNotFoundException
-     */
 
+    /**
+     * Méthode pour modifier un ou plusieurs paramètres d'un compte administrateur.
+     *
+     * @param mail                     l'adresse email de l'administrateur à modifier
+     * @param administrateurRequestDto l'objet contenant les nouvelles informations de l'administrateur
+     * @return un objet AdministrateurResponseDto contenant les informations de l'administrateur modifié
+     * @throws UtilisateurException    si une erreur survient lors de la modification de l'administrateur
+     * @throws EntityNotFoundException si aucun administrateur n'est trouvé avec cette adresse email
+     */
     @Override
     public AdministrateurResponseDto modifierPartiellement(String mail, AdministrateurRequestDto administrateurRequestDto) throws UtilisateurException, EntityNotFoundException {
 
@@ -156,15 +167,42 @@ public class AdministrateurServiceImpl implements AdministrateurService {
     }
 
 
-    private static void remplacer(Administrateur administrateurRequestDto, Administrateur administrateurRequestDtoExistant) {
-        if (administrateurRequestDto.getMail() != null)
-            administrateurRequestDtoExistant.setMail(administrateurRequestDto.getMail());
-        if (administrateurRequestDto.getNom() != null)
-            administrateurRequestDtoExistant.setNom(administrateurRequestDto.getNom());
-        if (administrateurRequestDto.getPrenom() != null)
-            administrateurRequestDtoExistant.setPrenom(administrateurRequestDto.getPrenom());
-        if (administrateurRequestDto.getFonction()!= null)
-            administrateurRequestDtoExistant.setFonction(administrateurRequestDto.getFonction());
+    private static void remplacer(Administrateur administrateur, Administrateur administrateurExistant) {
+        if (administrateur.getMail() != null && !administrateur.getMail().isBlank())
+            administrateurExistant.setMail(administrateur.getMail());
+        if (administrateur.getNom() != null && !administrateur.getNom().isBlank())
+            administrateurExistant.setNom(administrateur.getNom());
+        if (administrateur.getPrenom() != null && !administrateur.getPrenom().isBlank())
+            administrateurExistant.setPrenom(administrateur.getPrenom());
+        if (administrateur.getFonction() != null && !administrateur.getFonction().isBlank())
+            administrateurExistant.setFonction(administrateur.getFonction());
+    }
 
+    private static List<Administrateur> rechercheAdministrateur(String mail, String prenom, String nom, String fonction, List<Administrateur> liste) {
+        if (mail != null) {
+            liste = liste.stream()
+                    .filter(admin -> admin.getMail().contains(mail))
+                    .collect(Collectors.toList());
+        }
+        if (prenom != null) {
+            liste = liste.stream()
+                    .filter(admin -> admin.getPrenom().contains(prenom))
+                    .collect(Collectors.toList());
+        }
+        if (nom != null) {
+            liste = liste.stream()
+                    .filter(admin -> admin.getNom().contains(nom))
+                    .collect(Collectors.toList());
+        }
+        if (fonction != null) {
+            liste = liste.stream()
+                    .filter(admin -> admin.getFonction().contains(fonction))
+                    .collect(Collectors.toList());
+        }
+        if (liste == null) {
+            throw new UtilisateurException("Un critère de recherche est obligatoire !");
+        }
+        return liste;
     }
 }
+

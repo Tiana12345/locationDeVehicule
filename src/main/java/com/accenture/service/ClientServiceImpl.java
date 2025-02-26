@@ -1,6 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
+import com.accenture.exception.VehiculeException;
 import com.accenture.model.paramVehicule.Permis;
 import com.accenture.repository.ClientDao;
 import com.accenture.repository.entity.Client;
@@ -12,11 +13,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
- *
+ * Classe d'implémentation du service de gestion des clients.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des clients,
+ * ainsi que pour rechercher des clients en fonction de plusieurs critères.
  */
 @Service
 public class ClientServiceImpl implements ClientService {
@@ -25,7 +30,15 @@ public class ClientServiceImpl implements ClientService {
     private final PasswordEncoder passwordEncoder;
 
 
-    private static final String REGEX_PW= "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[&#@-_§])[A-Za-z\\d&%$_]{8,16}$";
+    private static final String REGEX_PW = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[&#@-_§])[A-Za-z\\d&%$_]{8,16}$";
+
+    /**
+     * Constructeur de la classe ClientServiceImpl.
+     *
+     * @param clientDao       l'objet DAO pour accéder aux données des clients
+     * @param clientMapper    l'objet Mapper pour convertir entre les entités Client et les DTO
+     * @param passwordEncoder l'objet pour encoder les mots de passe des clients
+     */
 
     public ClientServiceImpl(ClientDao clientDao, ClientMapper clientMapper, PasswordEncoder passwordEncoder) {
         this.clientDao = clientDao;
@@ -34,14 +47,17 @@ public class ClientServiceImpl implements ClientService {
     }
 
 
-
     /**
-     * <p>méthode servant a ajouter un client</p>
-     * @param clientRequestDto
-     * @return toClientResponseDto(clientEnreg)
-     * @throws UtilisateurException
+     * Méthode servant à ajouter un client.
+     * Cette méthode vérifie la validité des informations du client, encode le mot de passe,
+     * enregistre le client dans la base de données, puis retourne un objet ClientResponseDto
+     * contenant les informations du client ajouté.
+     *
+     * @param clientRequestDto l'objet contenant les informations du client à ajouter
+     * @return un objet ClientResponseDto contenant les informations du client ajouté
+     * @throws UtilisateurException si une erreur survient lors de l'ajout du client,
+     *                              par exemple si les informations du client sont invalides
      */
-
     @Override
     public ClientResponseDto ajouter(ClientRequestDto clientRequestDto) throws UtilisateurException {
         verifClient(clientRequestDto);
@@ -55,10 +71,11 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
+     * Méthode servant à trouver un client par son adresse email.
      *
-     * @param mail
-     * @return toClientResponseDto(client)
-     * @throws EntityNotFoundException
+     * @param mail l'adresse email du client à trouver
+     * @return un objet ClientResponseDto contenant les informations du client trouvé
+     * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
 
     @Override
@@ -71,8 +88,9 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     *  <p>Méthode pour afficher tout les clients</p>
-     * @return clientDao.findAll()
+     * Méthode pour afficher tous les clients.
+     *
+     * @return une liste d'objets ClientResponseDto contenant les informations de tous les clients
      */
 
     @Override
@@ -83,12 +101,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     *<p>Méthode pour modifier tous les paramètres d'un client</p>
-     * @param mail
-     * @param clientRequestDto
-     * @return toClientResponseDto(clientEnreg)
-     * @throws UtilisateurException
-     * @throws EntityNotFoundException
+     * Méthode pour modifier tous les paramètres d'un client.
+     *
+     * @param mail l'adresse email du client à modifier
+     * @param clientRequestDto l'objet contenant les nouvelles informations du client
+     * @return un objet ClientResponseDto contenant les informations du client modifié
+     * @throws UtilisateurException si une erreur survient lors de la modification du client
+     * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
 
     @Override
@@ -104,12 +123,13 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     *<p>Méthode pour modifier un ou plusieurs paramètres d'un compte client</p>
-     * @param mail
-     * @param clientRequestDto
-     * @return toClientResponseDto(clientEnreg)
-     * @throws UtilisateurException
-     * @throws EntityNotFoundException
+     * Méthode pour modifier un ou plusieurs paramètres d'un compte client.
+     *
+     * @param mail l'adresse email du client à modifier
+     * @param clientRequestDto l'objet contenant les nouvelles informations du client
+     * @return un objet ClientResponseDto contenant les informations du client modifié
+     * @throws UtilisateurException si une erreur survient lors de la modification du client
+     * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
 
     @Override
@@ -128,9 +148,10 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     * <p>Méthode servant à supprimer un client</p>
-     * @param mail
-     * @throws EntityNotFoundException
+     * Méthode servant à supprimer un client.
+     *
+     * @param mail l'adresse email du client à supprimer
+     * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
     //ajouter une vérification si le client possède des locations en cours
     @Override
@@ -143,56 +164,103 @@ public class ClientServiceImpl implements ClientService {
     }
 
     /**
-     * <p>Méthode permettant de retorouver un client selon l'un des paramètres choisi</p>
-     * @param mail
-     * @param prenom
-     * @param nom
-     * @param dateNaissance
-     * @param rue
-     * @param codePostal
-     * @param ville
-     * @param desactive
-     * @param listePermis
-     * @param dateInscription
-     * @return toClientResponseDto
+     * Méthode permettant de retrouver un client selon l'un des paramètres choisis.
+     *
+     * @param mail l'adresse email du client (String)
+     * @param prenom le prénom du client (String)
+     * @param nom le nom du client (String)
+     * @param dateNaissance la date de naissance du client (LocalDate)
+     * @param rue la rue de l'adresse du client (String)
+     * @param codePostal le code postal de l'adresse du client (String)
+     * @param ville la ville de l'adresse du client (String)
+     * @param desactive indique si le client est désactivé (Boolean)
+     * @param listePermis la liste des permis du client (List<Permis>)
+     * @param dateInscription la date d'inscription du client (LocalDate)
+     * @return une liste d'objets ClientResponseDto correspondant aux critères de recherche
+     * @throws UtilisateurException si un critère de recherche est obligatoire
      */
     @Override
-    public List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription) {
-        List<Client> liste = null;
-        Optional<Client> optional;
+    public List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue,
+                                              String codePostal, String ville, Boolean desactive, List<Permis> listePermis,
+                                              LocalDate dateInscription) throws UtilisateurException{
+        List<Client> liste = clientDao.findAll();
 
+        if (liste == null) {
+            throw new UtilisateurException("La méthode findAll a retourné null !");
+        }
+        if (clientDao == null) {
+            throw new UtilisateurException("clientdao n'est pas initialisé !");
+        }
+        if (clientMapper == null) {
+            throw new UtilisateurException("clientMapper n'est pas initialisé !");
+        }
 
-        if (mail != null)
-            optional = clientDao.findByMailContaining(mail);
-        else if (prenom != null)
-            liste = clientDao.findByPrenomContaining(prenom);
-        else if (nom != null)
-            liste = clientDao.findBynomContaining(nom);
-        else if (dateNaissance != null)
-            liste = clientDao.findByDateNaissance(dateNaissance);
-        else if (rue != null)
-            liste = clientDao.findByAdresse_RueContaining(rue);
-        else if (codePostal != null)
-            liste = clientDao.findByAdresse_CodePostalContaining(codePostal);
-        else if (ville != null)
-            liste = clientDao.findByAdresse_VilleContaining(ville);
-        else if (desactive != null)
-            liste = clientDao.findByDesactive(desactive);
-        else if (dateInscription != null)
-            liste = clientDao.findByDateInscription(dateInscription);
-        else if (listePermis != null && !listePermis.isEmpty()) {
-            Permis permis = listePermis.get(0);
-            liste = clientDao.findByListePermisContaining(permis);
+        liste = rechercheClient(mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription, liste);
+
+        return liste.stream()
+                .map(clientMapper::toClientResponseDto)
+                .collect(Collectors.toList());
+    }
+    //______________________________________________________________________________________________________________________
+//    METHODES PRIVEES
+//_______________________________________________________________________________________________________________________
+    private static List<Client> rechercheClient(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription, List<Client> liste) {
+        if (mail != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getMail().contains(mail))
+                    .collect(Collectors.toList());
+        }
+        if (prenom != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getPrenom().contains(prenom))
+                    .collect(Collectors.toList());
+        }
+        if (nom != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getNom().contains(nom))
+                    .collect(Collectors.toList());
+        }
+        if (dateNaissance != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getDateNaissance().equals(dateNaissance))
+                    .collect(Collectors.toList());
+        }
+        if (rue != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getAdresse().getRue().equals(rue))
+                    .collect(Collectors.toList());
+        }
+        if (rue != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getAdresse().getCodePostal().equals(codePostal))
+                    .collect(Collectors.toList());
+        }
+        if (rue != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getAdresse().getVille().equals(ville))
+                    .collect(Collectors.toList());
+        }
+        if (desactive != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getDesactive().equals(desactive))
+                    .collect(Collectors.toList());
+        }
+        if (listePermis != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getListePermis().equals(listePermis))
+                    .collect(Collectors.toList());
+        }
+        if (dateInscription != null ) {
+            liste = liste.stream()
+                    .filter(client -> client.getDateInscription().equals(dateInscription))
+                    .collect(Collectors.toList());
         }
         if (liste == null)
             throw new UtilisateurException("Un critère de recherche est obligatoire ! ");
-        return liste.stream()
-                .map(clientMapper::toClientResponseDto)
-                .toList();
+        return liste;
     }
-//______________________________________________________________________________________________________________________
-//    METHODES PRIVEES
-//_______________________________________________________________________________________________________________________
+
+
     static void verifClient(ClientRequestDto clientRequestDto) {
         if (clientRequestDto == null)
             throw new UtilisateurException("Le clientRequestDto est null");
@@ -208,7 +276,7 @@ public class ClientServiceImpl implements ClientService {
             throw new UtilisateurException("Vous devez renseigner le nom de votre ville");
         if (clientRequestDto.mail() == null || clientRequestDto.mail().isBlank())
             throw new UtilisateurException("L'adresse mail est obligatoire");
-        if (!clientRequestDto.password().matches(REGEX_PW)|| clientRequestDto.password().isBlank())
+        if (!clientRequestDto.password().matches(REGEX_PW) || clientRequestDto.password().isBlank())
             throw new UtilisateurException("Le mot de passe est obligatoire et doit correspondre au type demandé");
         if (clientRequestDto.dateNaissance() == null)
             throw new UtilisateurException("La date de naissance est obligatoire");
@@ -218,25 +286,26 @@ public class ClientServiceImpl implements ClientService {
 //        if (clientRequestDto.dateDeNaissance().isBefore(dateDeReference) || clientRequestDto.dateDeNaissance().isEqual(dateDeReference))
 //            throw new UtilisateurException("Vous devez avoir plus de 18 ans pour vous incrire");
     }
+    private static void remplacer(Client client, Client clientExistant) {
+        if (client.getNom() != null && !client.getNom().isBlank())
+            clientExistant.setNom(client.getNom());
+        if (client.getPrenom() != null && !client.getPrenom().isBlank())
+            clientExistant.setPrenom(client.getPrenom());
 
-    private static void remplacer(Client clientRequestDto, Client clientRequestDtoExistant) {
-        if (clientRequestDto.getNom() != null)
-            clientRequestDtoExistant.setNom(clientRequestDto.getNom());
-        if (clientRequestDto.getPrenom() != null)
-            clientRequestDtoExistant.setPrenom(clientRequestDto.getPrenom());
+        if (client.getAdresse() != null) {
+            if (client.getAdresse().getRue() != null && !client.getAdresse().getRue().isBlank())
+                clientExistant.getAdresse().setRue(client.getAdresse().getRue());
+            if (client.getAdresse().getCodePostal() != null && !client.getAdresse().getCodePostal().isBlank())
+                clientExistant.getAdresse().setCodePostal(client.getAdresse().getCodePostal());
+            if (client.getAdresse().getVille() != null && !client.getAdresse().getVille().isBlank())
+                clientExistant.getAdresse().setVille(client.getAdresse().getVille());
+        }
 
-        if (clientRequestDto.getAdresse().getRue() != null)
-            clientRequestDtoExistant.getAdresse().setRue(clientRequestDto.getAdresse().getRue());
-        if (clientRequestDto.getAdresse().getCodePostal() != null)
-            clientRequestDtoExistant.getAdresse().setCodePostal(clientRequestDto.getAdresse().getCodePostal());
-        if (clientRequestDto.getAdresse().getVille() != null)
-            clientRequestDtoExistant.getAdresse().setVille(clientRequestDto.getAdresse().getVille());
-
-        if (clientRequestDto.getMail() != null)
-            clientRequestDtoExistant.setMail(clientRequestDto.getMail());
-        if (clientRequestDto.getPassword() != null)
-            clientRequestDtoExistant.setPassword(clientRequestDto.getPassword());
-        if (clientRequestDto.getDateNaissance() != null)
-            clientRequestDtoExistant.setDateNaissance(clientRequestDto.getDateNaissance());
+        if (client.getMail() != null && !client.getMail().isBlank())
+            clientExistant.setMail(client.getMail());
+        if (client.getPassword() != null && !client.getPassword().isBlank())
+            clientExistant.setPassword(client.getPassword());
+        if (client.getDateNaissance() != null)
+            clientExistant.setDateNaissance(client.getDateNaissance());
     }
 }
