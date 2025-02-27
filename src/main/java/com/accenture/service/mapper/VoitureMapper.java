@@ -9,5 +9,5 @@ import org.mapstruct.Mapper;
 public interface VoitureMapper {
     Voiture toVoiture (VoitureRequestDto voitureRequestDto);
     VoitureResponseDto toVoitureResponseDto (Voiture voiture);
-    VoitureRequestDto toVoitureRequestDto (Voiture voiture);
+
 }

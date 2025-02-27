@@ -188,15 +188,6 @@ public class VoitureServiceImpl implements VoitureService {
 
         List < Voiture > liste = voitureDao.findAll();
 
-        if (liste == null) {
-            throw new VehiculeException("La méthode findAll a retourné null !");
-        }
-        if (voitureDao == null) {
-            throw new VehiculeException("voitureDao n'est pas initialisé !");
-        }
-        if (voitureMapper == null) {
-            throw new VehiculeException("voitureMapper n'est pas initialisé !");
-        }
 
         liste = rechercheVoiture(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
