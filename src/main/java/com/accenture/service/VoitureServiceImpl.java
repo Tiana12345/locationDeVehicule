@@ -1,8 +1,8 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.VoitureDao;
 import com.accenture.repository.entity.Voiture;
 import com.accenture.service.dto.VoitureRequestDto;
@@ -13,10 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import java.util.Comparator;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
 @Slf4j
 
 
@@ -36,7 +37,7 @@ public class VoitureServiceImpl implements VoitureService {
     /**
      * Constructeur de la classe VoitureServiceImpl.
      *
-     * @param voitureDao l'objet DAO pour accéder aux données des voitures
+     * @param voitureDao    l'objet DAO pour accéder aux données des voitures
      * @param voitureMapper l'objet Mapper pour convertir entre les entités Voiture et les DTO
      */
 
@@ -52,9 +53,8 @@ public class VoitureServiceImpl implements VoitureService {
      * puis retourne un objet VoitureResponseDto contenant les informations de la voiture ajoutée.
      *
      * @param voitureRequestDto l'objet contenant les informations de la voiture à ajouter
-     *
      * @return un objet VoitureResponseDto contenant les informations de la voiture ajoutée
-     *         -
+     * -
      * @throws VehiculeException si une erreur survient lors de l'ajout de la voiture,
      *                           par exemple si les informations de la voiture sont invalides
      */
@@ -75,7 +75,7 @@ public class VoitureServiceImpl implements VoitureService {
      *
      * @param "l'identifiant unique de la voiture à trouver"
      * @return un objet VoitureResponseDto contenant les informations de la voiture trouvée
-     *         -
+     * -
      * @throws EntityNotFoundException si aucune voiture n'est trouvée avec l'identifiant fourni
      */
     @Override
@@ -93,7 +93,6 @@ public class VoitureServiceImpl implements VoitureService {
      * les convertit en objets VoitureResponseDto et retourne la liste de ces objets.
      *
      * @return une liste d'objets VoitureResponseDto contenant les informations de toutes les voitures
-     *
      */
     @Override
     public List<VoitureResponseDto> trouverToutes() {
@@ -109,13 +108,11 @@ public class VoitureServiceImpl implements VoitureService {
      * Si l'identifiant est valide, les informations de la voiture sont partiellement mises à jour
      * avec les données fournies dans VoitureRequestDto.
      *
-     * @param id l'identifiant unique de la voiture à modifier
+     * @param id                l'identifiant unique de la voiture à modifier
      * @param voitureRequestDto l'objet contenant les informations à mettre à jour
-     *
      * @return un objet VoitureResponseDto contenant les informations de la voiture modifiée
-     *
-     * @throws VehiculeException si une erreur survient lors de la modification de la voiture,
-     *                           par exemple si l'identifiant ne correspond à aucune voiture en base
+     * @throws VehiculeException       si une erreur survient lors de la modification de la voiture,
+     *                                 par exemple si l'identifiant ne correspond à aucune voiture en base
      * @throws EntityNotFoundException si aucune voiture n'est trouvée avec l'identifiant fourni
      */
 
@@ -125,7 +122,6 @@ public class VoitureServiceImpl implements VoitureService {
         if (optVoiture.isEmpty())
             throw new VehiculeException("Erreur, l'identifiant ne correspond à aucune voiture en base");
         Voiture voitureExistante = optVoiture.get();
-
 
 
         Voiture nouvelle = voitureMapper.toVoiture(voitureRequestDto);
@@ -144,9 +140,7 @@ public class VoitureServiceImpl implements VoitureService {
      * en un objet VoitureResponseDto contenant les informations de la voiture.
      *
      * @param voitureEnreg l'entité Voiture à convertir
-     *
      * @return un objet VoitureResponseDto contenant les informations de la voiture
-     *
      */
     @Override
     public VoitureResponseDto getVoitureResponseDto(Voiture voitureEnreg) {
@@ -177,7 +171,6 @@ public class VoitureServiceImpl implements VoitureService {
      * d'objets VoitureResponseDto correspondant aux critères.
      *
      * @return une liste d'objets VoitureResponseDto correspondant aux critères de recherche
-     *
      * @throws VehiculeException si une erreur survient lors de la recherche, par exemple si les objets nécessaires ne sont pas initialisés
      */
     @Override
@@ -186,13 +179,13 @@ public class VoitureServiceImpl implements VoitureService {
                                                Integer nombreDeBagages, String type, List<Permis> listePermis, Long tarifJournalier,
                                                Long kilometrage, Boolean actif, Boolean retireDuParc) {
 
-        List < Voiture > liste = voitureDao.findAll();
+        List<Voiture> liste = voitureDao.findAll();
 
 
         liste = rechercheVoiture(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
         return liste.stream()
-               // .sorted(Comparator.comparing(Voiture::getModele))
+                // .sorted(Comparator.comparing(Voiture::getModele))
                 .map(voitureMapper::toVoitureResponseDto)
                 .collect(Collectors.toList());
     }
@@ -212,13 +205,13 @@ public class VoitureServiceImpl implements VoitureService {
             throw new VehiculeException("Vous devez ajouter le nombre de places de la voiture");
         if (voitureRequestDto.carburant() == null)
             throw new VehiculeException("Vous devez ajouter le type de carburant de la voiture");
-        if (voitureRequestDto.nombreDePortes() == null ||voitureRequestDto.nombreDePortes() <= 0)
+        if (voitureRequestDto.nombreDePortes() == null || voitureRequestDto.nombreDePortes() <= 0)
             throw new VehiculeException("Vous devez ajouter le nombre de portes de la voiture");
         if (voitureRequestDto.transmission() == null || voitureRequestDto.transmission().isBlank())
             throw new VehiculeException("Vous devez ajouter la transmission de la voiture");
-        if (voitureRequestDto.clim()== null)
+        if (voitureRequestDto.clim() == null)
             throw new VehiculeException("Vous devez ajouter l'information concernant la clim");
-        if (voitureRequestDto.nombreDeBagages() == null ||voitureRequestDto.nombreDeBagages() < 0)
+        if (voitureRequestDto.nombreDeBagages() == null || voitureRequestDto.nombreDeBagages() < 0)
             throw new VehiculeException("Vous devez ajouter le nombre de bagages de la voiture");
         if (voitureRequestDto.type() == null || voitureRequestDto.type().isBlank())
             throw new VehiculeException("Vous devez ajouter le type de la voiture");
@@ -235,15 +228,15 @@ public class VoitureServiceImpl implements VoitureService {
     }
 
     private static void remplacer(Voiture voiture, Voiture voitureExistante) {
-        if ( voiture.getMarque() != null && voiture.getMarque().isBlank())
+        if (voiture.getMarque() != null && voiture.getMarque().isBlank())
             voitureExistante.setMarque(voiture.getMarque());
         if (voiture.getModele() != null && voiture.getModele().isBlank())
             voitureExistante.setModele(voiture.getModele());
         if (voiture.getCouleur() != null && voiture.getCouleur().isBlank())
             voitureExistante.setCouleur(voiture.getCouleur());
-        if (voiture.getNombreDePlaces() == null ||voiture.getNombreDePlaces() <= 0)
+        if (voiture.getNombreDePlaces() == null || voiture.getNombreDePlaces() <= 0)
             voitureExistante.setNombreDePlaces(voiture.getNombreDePlaces());
-        if (voiture.getCarburant() != null )
+        if (voiture.getCarburant() != null)
             voitureExistante.setCarburant(voiture.getCarburant());
         if (voiture.getNombreDePortes() == null || voiture.getNombreDePortes() <= 0)
             voitureExistante.setNombreDePortes(voiture.getNombreDePortes());
@@ -251,7 +244,7 @@ public class VoitureServiceImpl implements VoitureService {
             voitureExistante.setTransmission(voiture.getTransmission());
         if (voiture.getClim() != null)
             voitureExistante.setClim(voiture.getClim());
-        if (voiture.getNombreDeBagages() == null ||voiture.getNombreDeBagages() < 0)
+        if (voiture.getNombreDeBagages() == null || voiture.getNombreDeBagages() < 0)
             voitureExistante.setNombreDeBagages(voiture.getNombreDeBagages());
         if (voiture.getType() != null && voiture.getType().isBlank())
             voitureExistante.setType(voiture.getType());
@@ -270,12 +263,12 @@ public class VoitureServiceImpl implements VoitureService {
     private static List<Voiture> rechercheVoiture(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant,
                                                   Integer nombreDePortes, String transmission, Boolean clim, Integer nombreDeBagages, String type,
                                                   List<Permis> listePermis, Long tarifJournalier, Long kilometrage, Boolean actif, Boolean retireDuParc,
-                                                  List<Voiture> liste) throws VehiculeException{
+                                                  List<Voiture> liste) throws VehiculeException {
         logger.debug("Initial list size: {}", liste.size());
         if (id != null && id != 0) {
-                liste = liste.stream()
-                        .filter(voiture -> voiture.getId() == id)
-                        .collect(Collectors.toList());
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getId() == id)
+                    .collect(Collectors.toList());
             logger.debug("List size after filtering by ID: {}", liste.size());
         }
         if (marque != null) {
@@ -296,7 +289,7 @@ public class VoitureServiceImpl implements VoitureService {
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by couleur: {}", liste.size());
         }
-        if (nombreDePlaces != null  && nombreDePlaces > 0 ) {
+        if (nombreDePlaces != null && nombreDePlaces > 0) {
             liste = liste.stream()
                     .filter(voiture -> voiture.getNombreDePlaces().equals(nombreDePlaces))
                     .collect(Collectors.toList());
@@ -308,7 +301,7 @@ public class VoitureServiceImpl implements VoitureService {
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by carburant: {}", liste.size());
         }
-        if (nombreDePortes != null  && nombreDePortes > 0 ) {
+        if (nombreDePortes != null && nombreDePortes > 0) {
             liste = liste.stream()
                     .filter(voiture -> voiture.getNombreDePortes().equals(nombreDePortes))
                     .collect(Collectors.toList());
@@ -328,7 +321,7 @@ public class VoitureServiceImpl implements VoitureService {
             logger.debug("List size after filtering by clim: {}", liste.size());
 
         }
-        if (nombreDeBagages!= null  && nombreDeBagages >= 0 ) {
+        if (nombreDeBagages != null && nombreDeBagages >= 0) {
             liste = liste.stream()
                     .filter(voiture -> voiture.getNombreDeBagages().equals(nombreDeBagages))
                     .collect(Collectors.toList());
@@ -350,7 +343,7 @@ public class VoitureServiceImpl implements VoitureService {
             logger.debug("List size after filtering by permis: {}", liste.size());
 
         }
-        if (tarifJournalier != null && tarifJournalier> 0) {
+        if (tarifJournalier != null && tarifJournalier > 0) {
             liste = liste.stream()
                     .filter(voiture -> voiture.getTarifJournalier() == tarifJournalier)
                     .collect(Collectors.toList());

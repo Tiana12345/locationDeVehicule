@@ -1,7 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import com.accenture.service.dto.ClientRequestDto;
 import com.accenture.service.dto.ClientResponseDto;
 import jakarta.persistence.EntityNotFoundException;

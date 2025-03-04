@@ -1,7 +1,8 @@
 package com.accenture.repository.entity;
 
 
-import jakarta.persistence.*;
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,16 +11,17 @@ import lombok.NoArgsConstructor;
 /**
  * Est la classe utilisée pour créer les attributs nécéssaire aux administrateurs
  * Voir classe mère {@link Utilisateur}
+ *
  * @author tatiana.m.tessier
  * @since 1.0
  */
 
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@DiscriminatorValue(value = "ADMIN")
+@DiscriminatorValue(value = "ROLE_ADMIN")
 
 public class Administrateur extends Utilisateur {
 

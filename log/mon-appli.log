@@ -1,0 +1,82 @@
+2025-03-03 14:41:34 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 31656 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 14:41:34 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 14:41:34 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 14:41:44 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 10.708 seconds (process running for 21.975)
+2025-03-03 15:06:22 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 32852 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 15:06:22 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 15:06:22 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 15:06:32 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 10.173 seconds (process running for 12.459)
+2025-03-03 15:07:25 [http-nio-8080-exec-5] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:07:25 [http-nio-8080-exec-5] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:33:11 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:33:11 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:40:09 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 32956 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 15:40:09 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 15:40:09 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 15:42:55 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 39728 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 15:42:56 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 15:42:56 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 15:43:05 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 9.952 seconds (process running for 10.907)
+2025-03-03 15:43:40 [http-nio-8080-exec-4] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:43:40 [http-nio-8080-exec-4] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:44:45 [http-nio-8080-exec-8] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:44:51 [http-nio-8080-exec-6] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:45:12 [http-nio-8080-exec-1] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:45:47 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:51:45 [http-nio-8080-exec-4] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:56:16 [http-nio-8080-exec-9] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 15:57:34 [http-nio-8080-exec-1] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:20:29 [http-nio-8080-exec-5] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:20:38 [http-nio-8080-exec-4] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:20:45 [http-nio-8080-exec-10] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:21:40 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 27392 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 16:21:40 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 16:21:40 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 16:21:53 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 14.14 seconds (process running for 16.937)
+2025-03-03 16:22:32 [http-nio-8080-exec-1] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:26:55 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 39180 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 16:26:55 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 16:26:55 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 16:27:09 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 14.267 seconds (process running for 17.171)
+2025-03-03 16:27:49 [http-nio-8080-exec-1] INFO  c.a.c.AdministrateurController - Ajout d'un nouvel administrateur avec l'email : tatiana@test.com
+2025-03-03 16:27:49 [http-nio-8080-exec-1] DEBUG c.a.c.AdministrateurController - Administrateur créé avec succès : AdministrateurResponseDto[mail=tatiana@test.com, password={bcrypt}$2a$10$H2rBBYhmr2yqzDQTSl3MQeAOykV2gajdXMUx40Jlff.8gfClJ5EkO, nom=Tessier, prenom=Tatiana, fonction=FONCTION_ADMIN]
+2025-03-03 16:28:43 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:28:43 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:29:52 [http-nio-8080-exec-10] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:29:52 [http-nio-8080-exec-10] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:30:15 [http-nio-8080-exec-8] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:30:15 [http-nio-8080-exec-8] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:31:13 [http-nio-8080-exec-5] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:31:13 [http-nio-8080-exec-5] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:31:29 [http-nio-8080-exec-4] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:33:50 [http-nio-8080-exec-9] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:36:29 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:36:29 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:36:41 [http-nio-8080-exec-1] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:55:01 [http-nio-8080-exec-7] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:55:06 [http-nio-8080-exec-6] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 16:55:06 [http-nio-8080-exec-6] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 17:05:08 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 3096 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 17:05:08 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 17:05:08 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 17:05:24 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 19212 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 17:05:24 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 17:05:24 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 17:05:39 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 16.536 seconds (process running for 19.363)
+2025-03-03 17:06:12 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 15348 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 17:06:12 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 17:06:12 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 17:06:30 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 19.212 seconds (process running for 22.381)
+2025-03-03 17:06:57 [http-nio-8080-exec-7] INFO  c.a.c.AdministrateurController - Ajout d'un nouvel administrateur avec l'email : tatiana@test.com
+2025-03-03 17:06:57 [http-nio-8080-exec-7] DEBUG c.a.c.AdministrateurController - Administrateur créé avec succès : AdministrateurResponseDto[mail=tatiana@test.com, password={bcrypt}$2a$10$4klhmhA8K4USBUpfCZJNoeZ9aOyX.f1JyhfwwH8DGqMOvMCncUSKS, nom=Tessier, prenom=Tatiana, fonction=FONCTION_ADMIN]
+2025-03-03 17:10:16 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 5948 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 17:10:16 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 17:10:16 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 17:10:31 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 14.994 seconds (process running for 18.148)
+2025-03-03 17:12:44 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Starting LocationDeVehiculeApplication using Java 23.0.2 with PID 17116 (C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule\target\classes started by tatiana.m.tessier in C:\Users\tatiana.m.tessier\IdeaProjects\locationDeVehicule)
+2025-03-03 17:12:44 [restartedMain] DEBUG c.a.LocationDeVehiculeApplication - Running with Spring Boot v3.4.2, Spring v6.2.2
+2025-03-03 17:12:44 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - No active profile set, falling back to 1 default profile: "default"
+2025-03-03 17:12:54 [restartedMain] INFO  c.a.LocationDeVehiculeApplication - Started LocationDeVehiculeApplication in 9.88 seconds (process running for 11.111)
+2025-03-03 17:14:01 [http-nio-8080-exec-7] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 17:14:01 [http-nio-8080-exec-7] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource
+2025-03-03 17:15:37 [http-nio-8080-exec-2] ERROR c.a.c.security.SecurityConfiguration - Unauthorized request - Full authentication is required to access this resource

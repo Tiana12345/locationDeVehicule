@@ -1,7 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.entity.Moto;
 import com.accenture.service.dto.MotoRequestDto;
 import com.accenture.service.dto.MotoResponseDto;

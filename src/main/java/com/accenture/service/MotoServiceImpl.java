@@ -1,9 +1,9 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Permis;
-import com.accenture.repository.entity.Moto;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.MotoDao;
+import com.accenture.repository.entity.Moto;
 import com.accenture.service.dto.MotoRequestDto;
 import com.accenture.service.dto.MotoResponseDto;
 import com.accenture.service.mapper.MotoMapper;
@@ -15,6 +15,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+/**
+ * Classe d'implémentation du service de gestion des motos.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des motos,
+ * ainsi que pour rechercher des motos en fonction de plusieurs critères.
+ */
 
 @Service
 public class MotoServiceImpl implements MotoService {
@@ -28,6 +34,14 @@ public class MotoServiceImpl implements MotoService {
         this.motoMapper = motoMapper;
     }
 
+    /**
+     * Ajouter une nouvelle moto.
+     *
+     * @param motoRequestDto l'objet contenant les informations de la moto à ajouter
+     * @return un objet MotoResponseDto contenant les informations de la moto ajoutée
+     * @throws VehiculeException si une erreur survient lors de l'ajout de la moto
+     */
+
     @Override
     public MotoResponseDto ajouter(MotoRequestDto motoRequestDto) throws VehiculeException {
         verifMoto(motoRequestDto);
@@ -36,6 +50,14 @@ public class MotoServiceImpl implements MotoService {
         Moto motoEnreg = motoDao.save(moto);
         return motoMapper.toMotoResponseDto(motoEnreg);
     }
+
+    /**
+     * Trouver une moto par son identifiant.
+     *
+     * @param id l'identifiant unique de la moto à trouver
+     * @return un objet MotoResponseDto contenant les informations de la moto trouvée
+     * @throws EntityNotFoundException si aucune moto n'est trouvée avec l'identifiant fourni
+     */
 
     @Override
     public MotoResponseDto trouver(long id) throws EntityNotFoundException {
@@ -46,12 +68,28 @@ public class MotoServiceImpl implements MotoService {
         return motoMapper.toMotoResponseDto(moto);
     }
 
+    /**
+     * Trouver toutes les motos.
+     *
+     * @return une liste d'objets MotoResponseDto contenant les informations de toutes les motos
+     */
+
     @Override
     public List<MotoResponseDto> trouverToutes() {
         return motoDao.findAll().stream()
                 .map(motoMapper::toMotoResponseDto)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Modifier partiellement une moto.
+     *
+     * @param id             l'identifiant unique de la moto à modifier
+     * @param motoRequestDto l'objet contenant les informations de la moto à modifier
+     * @return un objet MotoResponseDto contenant les informations de la moto modifiée
+     * @throws VehiculeException       si une erreur survient lors de la modification de la moto
+     * @throws EntityNotFoundException si aucune moto n'est trouvée avec l'identifiant fourni
+     */
 
     @Override
     public MotoResponseDto modifierPartiellement(Long id, MotoRequestDto motoRequestDto) throws VehiculeException, EntityNotFoundException {
@@ -67,10 +105,24 @@ public class MotoServiceImpl implements MotoService {
         return getMotoResponseDto(motoEnreg);
     }
 
+    /**
+     * Convertir une entité Moto en un objet MotoResponseDto.
+     *
+     * @param motoEnreg l'entité Moto à convertir
+     * @return un objet MotoResponseDto contenant les informations de la moto
+     */
+
     @Override
     public MotoResponseDto getMotoResponseDto(Moto motoEnreg) {
         return motoMapper.toMotoResponseDto(motoEnreg);
     }
+
+    /**
+     * Supprimer une moto par son identifiant.
+     *
+     * @param id l'identifiant unique de la moto à supprimer
+     * @throws EntityNotFoundException si aucune moto n'est trouvée avec l'identifiant fourni
+     */
 
     @Override
     public void supprimer(Long id) throws EntityNotFoundException {
@@ -79,6 +131,26 @@ public class MotoServiceImpl implements MotoService {
         else
             throw new EntityNotFoundException("Aucune moto n'est enregistrée sous cet identifiant");
     }
+
+    /**
+     * Rechercher des motos par critères.
+     *
+     * @param id              l'identifiant de la moto
+     * @param marque          la marque de la moto
+     * @param modele          le modèle de la moto
+     * @param couleur         la couleur de la moto
+     * @param nombreCylindres le nombre de cylindres de la moto
+     * @param poids           le poids de la moto
+     * @param puissanceEnkW   la puissance en kW de la moto
+     * @param hauteurSelle    la hauteur de selle de la moto
+     * @param transmission    la transmission de la moto
+     * @param listePermis     la liste des permis requis pour la moto
+     * @param tarifJournalier le tarif journalier de la moto
+     * @param kilometrage     le kilométrage de la moto
+     * @param actif           la moto est-elle active
+     * @param retireDuParc    la moto est-elle retirée du parc
+     * @return la liste des motos correspondant aux critères
+     */
 
     @Override
     public List<MotoResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
@@ -111,7 +183,7 @@ public class MotoServiceImpl implements MotoService {
         if (motoRequestDto.poids() == null || motoRequestDto.poids() <= 0)
             throw new VehiculeException("Vous devez ajouter le poids de la moto");
         if (motoRequestDto.puissanceEnkW() == null || motoRequestDto.puissanceEnkW() <= 0)
-                throw new VehiculeException("Vous devez ajouter la puissance en kW de la moto");
+            throw new VehiculeException("Vous devez ajouter la puissance en kW de la moto");
         if (motoRequestDto.hauteurSelle() == null || motoRequestDto.hauteurSelle() <= 0)
             throw new VehiculeException("Vous devez ajouter la hauteur de selle de la moto");
         if (motoRequestDto.transmission() == null || motoRequestDto.transmission().isBlank())
@@ -225,13 +297,13 @@ public class MotoServiceImpl implements MotoService {
         }
         if (tarifJournalier != null && tarifJournalier > 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getTarifJournalier()==(tarifJournalier))
+                    .filter(moto -> moto.getTarifJournalier() == (tarifJournalier))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by tarifJournalier: {}", liste.size());
         }
         if (kilometrage != null && kilometrage >= 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getKilometrage()==(kilometrage))
+                    .filter(moto -> moto.getKilometrage() == (kilometrage))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by kilometrage: {}", liste.size());
         }

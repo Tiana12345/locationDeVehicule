@@ -1,7 +1,7 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue(value = "UTILITAIRE")
 
-public class Utilitaire extends Vehicule{
+public class Utilitaire extends Vehicule {
     private Integer nombreDePlace;
     private Carburant carburant;
     private String transmission;

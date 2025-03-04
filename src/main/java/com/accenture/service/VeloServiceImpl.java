@@ -15,6 +15,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Classe d'implémentation du service de gestion des vélos.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des vélos,
+ * ainsi que pour rechercher des vélos en fonction de plusieurs critères.
+ */
+
 @Service
 public class VeloServiceImpl implements VeloService {
 
@@ -27,6 +33,14 @@ public class VeloServiceImpl implements VeloService {
         this.veloMapper = veloMapper;
     }
 
+    /**
+     * Ajouter un nouveau vélo.
+     *
+     * @param veloRequestDto l'objet contenant les informations du vélo à ajouter
+     * @return un objet VeloResponseDto contenant les informations du vélo ajouté
+     * @throws VehiculeException si une erreur survient lors de l'ajout du vélo
+     */
+
     @Override
     public VeloResponseDto ajouter(VeloRequestDto veloRequestDto) throws VehiculeException {
         verifVelo(veloRequestDto);
@@ -36,6 +50,13 @@ public class VeloServiceImpl implements VeloService {
         return veloMapper.toVeloResponseDto(veloEnreg);
     }
 
+    /**
+     * Trouver un vélo par son identifiant.
+     *
+     * @param id l'identifiant unique du vélo à trouver
+     * @return un objet VeloResponseDto contenant les informations du vélo trouvé
+     * @throws EntityNotFoundException si aucun vélo n'est trouvé avec l'identifiant fourni
+     */
 
     @Override
     public VeloResponseDto trouver(long id) throws EntityNotFoundException {
@@ -46,6 +67,11 @@ public class VeloServiceImpl implements VeloService {
         return veloMapper.toVeloResponseDto(velo);
     }
 
+    /**
+     * Trouver tous les vélos.
+     *
+     * @return une liste d'objets VeloResponseDto contenant les informations de tous les vélos
+     */
 
     @Override
     public List<VeloResponseDto> trouverToutes() {
@@ -54,6 +80,15 @@ public class VeloServiceImpl implements VeloService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Modifier partiellement un vélo.
+     *
+     * @param id             l'identifiant unique du vélo à modifier
+     * @param veloRequestDto l'objet contenant les informations du vélo à modifier
+     * @return un objet VeloResponseDto contenant les informations du vélo modifié
+     * @throws VehiculeException       si une erreur survient lors de la modification du vélo
+     * @throws EntityNotFoundException si aucun vélo n'est trouvé avec l'identifiant fourni
+     */
     @Override
     public VeloResponseDto modifierPartiellement(Long id, VeloRequestDto veloRequestDto) throws VehiculeException, EntityNotFoundException {
         Optional<Velo> optVelo = veloDao.findById(id);
@@ -68,11 +103,24 @@ public class VeloServiceImpl implements VeloService {
         return getVeloResponseDto(veloEnreg);
     }
 
+    /**
+     * Convertir une entité Velo en un objet VeloResponseDto.
+     *
+     * @param veloEnreg l'entité Velo à convertir
+     * @return un objet VeloResponseDto contenant les informations du vélo
+     */
+
     @Override
     public VeloResponseDto getVeloResponseDto(Velo veloEnreg) {
         return veloMapper.toVeloResponseDto(veloEnreg);
     }
 
+    /**
+     * Supprimer un vélo par son identifiant.
+     *
+     * @param id l'identifiant unique du vélo à supprimer
+     * @throws EntityNotFoundException si aucun vélo n'est trouvé avec l'identifiant fourni
+     */
     @Override
     public void supprimer(Long id) throws EntityNotFoundException {
         if (veloDao.existsById(id))
@@ -80,6 +128,26 @@ public class VeloServiceImpl implements VeloService {
         else
             throw new EntityNotFoundException("Aucun vélo n'est enregistré sous cet identifiant");
     }
+
+    /**
+     * Rechercher des vélos par critères.
+     *
+     * @param id               l'identifiant du vélo
+     * @param marque           la marque du vélo
+     * @param modele           le modèle du vélo
+     * @param couleur          la couleur du vélo
+     * @param tailleCadre      la taille du cadre du vélo
+     * @param poids            le poids du vélo
+     * @param electrique       le vélo est-il électrique
+     * @param capaciteBatterie la capacité de la batterie du vélo
+     * @param autonomie        l'autonomie du vélo
+     * @param freinsADisque    le vélo a-t-il des freins à disque
+     * @param tarifJournalier  le tarif journalier du vélo
+     * @param kilometrage      le kilométrage du vélo
+     * @param actif            le vélo est-il actif
+     * @param retireDuParc     le vélo est-il retiré du parc
+     * @return la liste des vélos correspondant aux critères
+     */
 
     @Override
     public List<VeloResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer tailleCadre,

@@ -1,6 +1,6 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @DiscriminatorValue(value = "MOTO")
 
-public class Moto extends Vehicule{
+public class Moto extends Vehicule {
     private Integer nombreCylindres;
     private Integer poids;
     private Integer puissanceEnkW;

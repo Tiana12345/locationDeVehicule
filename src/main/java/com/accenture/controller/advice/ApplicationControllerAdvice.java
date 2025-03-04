@@ -44,14 +44,11 @@ public class ApplicationControllerAdvice {
         ErreurReponse er = new ErreurReponse(LocalDateTime.now(), "Validation erreur ", message);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
     }
-//    @ExceptionHandler(StaleObjectStateException.class)
-//    public ResponseEntity<ErreurReponse> problemeEtat(StaleObjectStateException ex){
-//        ErreurReponse er = new ErreurReponse(LocalDateTime.now(), "Erreur Status", ex.getMessage());
-//        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(er);
 
-//    }
-//    @ExceptionHandler(ObjectOptimisticLockingFailureException.class)
-//    public ResponseEntity<String> handleObjectOptimisticLockingFailureException(ObjectOptimisticLockingFailureException ex) {
-//        return ResponseEntity.status(HttpStatus.CONFLICT).body("L'entité a été mise à jour ou supprimée par une autre transaction.");
-//    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErreurReponse> problemeAuthentification (Exception ex){
+        ErreurReponse er = new ErreurReponse(LocalDateTime.now(), "Vous devez vous authentifier ", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(er);
+    }
+
 }

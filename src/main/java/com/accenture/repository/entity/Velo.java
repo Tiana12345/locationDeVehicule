@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @DiscriminatorValue(value = "VELO ")
 
-public class Velo extends Vehicule{
+public class Velo extends Vehicule {
     private Integer tailleCadre;
     private Integer poids;
     private Boolean electrique;
@@ -22,4 +22,4 @@ public class Velo extends Vehicule{
     private Integer autonomie;
     private Boolean freinsADisque;
 
-    }
+}

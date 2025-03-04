@@ -1,28 +1,29 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDate;
 import java.util.List;
 
 /**
  * Est la classe utilisée pour créer les attributs nécéssaire aux clients
  * Voir classe mère {@link Utilisateur}
+ *
  * @author tatiana.m.tessier
  * @since 1.0
- *
  */
 
-@EqualsAndHashCode(callSuper=false)
+@EqualsAndHashCode(callSuper = false)
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
-@DiscriminatorValue(value = "CLIENT")
+@DiscriminatorValue(value = "ROLE_CLIENT")
 
 public class Client extends Utilisateur {
 

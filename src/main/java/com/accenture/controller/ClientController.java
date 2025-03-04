@@ -1,6 +1,6 @@
 package com.accenture.controller;
 
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import com.accenture.service.ClientService;
 import com.accenture.service.dto.ClientRequestDto;
 import com.accenture.service.dto.ClientResponseDto;
@@ -105,7 +105,7 @@ public class ClientController {
             @Parameter(description = "Statut désactivé du client") @RequestParam(required = false) Boolean desactive,
             @Parameter(description = "Liste des permis du client") @RequestParam(required = false) List<Permis> listePermis,
             @Parameter(description = "Date d'inscription du client") @RequestParam(required = false) LocalDate dateInscription
-    ){
+    ) {
         return clientService.rechercher(mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription);
     }
 }

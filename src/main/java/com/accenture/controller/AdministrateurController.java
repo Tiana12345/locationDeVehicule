@@ -37,13 +37,15 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "201", description = "Administrateur créé avec succès"),
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
-    ResponseEntity<Void> ajouter(@RequestBody @Valid AdministrateurRequestDto administrateurRequestDto){
+    ResponseEntity<Void> ajouter(@RequestBody @Valid AdministrateurRequestDto administrateurRequestDto) {
+        logger.info("Ajout d'un nouvel administrateur avec l'email : {}", administrateurRequestDto.mail());
         AdministrateurResponseDto adminEnreg = administrateurService.ajouter(administrateurRequestDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(adminEnreg.mail())
                 .toUri();
+        logger.debug("Administrateur créé avec succès : {}", adminEnreg);
         return ResponseEntity.created(location).build();
     }
 
@@ -54,7 +56,10 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "404", description = "Administrateur non trouvé")
     })
     ResponseEntity<AdministrateurResponseDto> modifierPartiellement(@Parameter(description = "ID de l'administrateur à modifier") @PathVariable("id") String mail, @RequestBody AdministrateurRequestDto administrateurRequestDto) {
-        return ResponseEntity.ok(administrateurService.modifierPartiellement(mail, administrateurRequestDto));
+        logger.info("Modification partielle de l'administrateur avec l'email : {}", mail);
+        AdministrateurResponseDto adminModifie = administrateurService.modifierPartiellement(mail, administrateurRequestDto);
+        logger.debug("Administrateur modifié avec succès : {}", adminModifie);
+        return ResponseEntity.ok(adminModifie);
     }
 
     @DeleteMapping("/{id}")
@@ -63,8 +68,10 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "204", description = "Administrateur supprimé avec succès"),
             @ApiResponse(responseCode = "404", description = "Administrateur non trouvé")
     })
-    ResponseEntity<Void> supprimer(@Parameter(description = "ID de l'administrateur à supprimer") @PathVariable("id") String mail){
+    ResponseEntity<Void> supprimer(@Parameter(description = "ID de l'administrateur à supprimer") @PathVariable("id") String mail) {
+        logger.info("Suppression de l'administrateur avec l'email : {}", mail);
         administrateurService.supprimer(mail);
+        logger.debug("Administrateur supprimé avec succès");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -78,7 +85,10 @@ public class AdministrateurController {
             @Parameter(description = "Prénom de l'administrateur") @RequestParam(required = false) String prenom,
             @Parameter(description = "Nom de l'administrateur") @RequestParam(required = false) String nom,
             @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = false) String fonction
-    ){
-        return administrateurService.rechercher(mail, prenom, nom, fonction);
+    ) {
+        logger.info("Recherche des administrateurs avec les critères - mail: {}, prenom: {}, nom: {}, fonction: {}", mail, prenom, nom, fonction);
+        List<AdministrateurResponseDto> resultats = administrateurService.rechercher(mail, prenom, nom, fonction);
+        logger.debug("Nombre d'administrateurs trouvés : {}", resultats.size());
+        return resultats;
     }
 }

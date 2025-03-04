@@ -1,8 +1,8 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.VoitureDao;
 import com.accenture.repository.entity.Voiture;
 import com.accenture.service.dto.VoitureRequestDto;

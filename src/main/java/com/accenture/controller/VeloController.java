@@ -11,6 +11,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Contrôleur pour gérer les opérations liées aux vélos.
+ */
+
+
 @RestController
 @RequestMapping("/velos")
 @Tag(name = "Velos", description = "Gestion des velos")
@@ -22,12 +27,26 @@ public class VeloController {
         this.veloService = veloService;
     }
 
+    /**
+     * Ajouter un nouveau vélo.
+     *
+     * @param veloRequestDto les détails du vélo à ajouter
+     * @return les détails du vélo ajouté
+     */
+
     @Operation(summary = "Ajouter un nouveau vélo")
     @PostMapping
     public ResponseEntity<VeloResponseDto> ajouter(@RequestBody VeloRequestDto veloRequestDto) {
         VeloResponseDto veloResponseDto = veloService.ajouter(veloRequestDto);
         return ResponseEntity.ok(veloResponseDto);
     }
+
+    /**
+     * Trouver un vélo par son identifiant.
+     *
+     * @param id l'identifiant du vélo
+     * @return les détails du vélo trouvé
+     */
 
     @Operation(summary = "Trouver un vélo par son identifiant")
     @GetMapping("/{id}")
@@ -36,12 +55,25 @@ public class VeloController {
         return ResponseEntity.ok(veloResponseDto);
     }
 
+    /**
+     * Trouver tous les vélos.
+     *
+     * @return la liste de tous les vélos
+     */
     @Operation(summary = "Trouver tous les vélos")
     @GetMapping
     public ResponseEntity<List<VeloResponseDto>> trouverToutes() {
         List<VeloResponseDto> velos = veloService.trouverToutes();
         return ResponseEntity.ok(velos);
     }
+
+    /**
+     * Modifier partiellement un vélo.
+     *
+     * @param id             l'identifiant du vélo
+     * @param veloRequestDto les détails du vélo à modifier
+     * @return les détails du vélo modifié
+     */
 
     @Operation(summary = "Modifier partiellement un vélo")
     @PatchMapping("/{id}")
@@ -50,12 +82,39 @@ public class VeloController {
         return ResponseEntity.ok(veloResponseDto);
     }
 
+    /**
+     * Supprimer un vélo par son identifiant.
+     *
+     * @param id l'identifiant du vélo
+     * @return une réponse vide
+     */
+
     @Operation(summary = "Supprimer un vélo par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant du vélo") @PathVariable Long id) {
         veloService.supprimer(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Rechercher des vélos par critères.
+     *
+     * @param id               l'identifiant du vélo
+     * @param marque           la marque du vélo
+     * @param modele           le modèle du vélo
+     * @param couleur          la couleur du vélo
+     * @param tailleCadre      la taille du cadre du vélo
+     * @param poids            le poids du vélo
+     * @param electrique       le vélo est-il électrique
+     * @param capaciteBatterie la capacité de la batterie du vélo
+     * @param autonomie        l'autonomie du vélo
+     * @param freinsADisque    le vélo a-t-il des freins à disque
+     * @param tarifJournalier  le tarif journalier du vélo
+     * @param kilometrage      le kilométrage du vélo
+     * @param actif            le vélo est-il actif
+     * @param retireDuParc     le vélo est-il retiré du parc
+     * @return la liste des vélos correspondant aux critères
+     */
 
     @Operation(summary = "Rechercher des vélos par critères")
     @GetMapping("/rechercher")

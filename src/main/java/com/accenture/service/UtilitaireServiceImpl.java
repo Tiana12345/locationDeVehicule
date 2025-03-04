@@ -1,8 +1,8 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.UtilitaireDao;
 import com.accenture.repository.entity.Utilitaire;
 import com.accenture.service.dto.UtilitaireRequestDto;
@@ -17,6 +17,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Classe d'implémentation du service de gestion des utilitaires.
+ * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des utilitaires,
+ * ainsi que pour rechercher des utilitaires en fonction de plusieurs critères.
+ */
+
 @Service
 public class UtilitaireServiceImpl implements UtilitaireService {
 
@@ -29,6 +35,14 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         this.utilitaireMapper = utilitaireMapper;
     }
 
+    /**
+     * Ajouter un nouvel utilitaire.
+     *
+     * @param utilitaireRequestDto l'objet contenant les informations de l'utilitaire à ajouter
+     * @return un objet UtilitaireResponseDto contenant les informations de l'utilitaire ajouté
+     * @throws VehiculeException si une erreur survient lors de l'ajout de l'utilitaire
+     */
+
     @Override
     public UtilitaireResponseDto ajouter(UtilitaireRequestDto utilitaireRequestDto) throws VehiculeException {
         verifUtilitaire(utilitaireRequestDto);
@@ -37,6 +51,14 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         Utilitaire utilitaireEnreg = utilitaireDao.save(utilitaire);
         return utilitaireMapper.toUtilitaireResponseDto(utilitaireEnreg);
     }
+
+    /**
+     * Trouver un utilitaire par son identifiant.
+     *
+     * @param id l'identifiant unique de l'utilitaire à trouver
+     * @return un objet UtilitaireResponseDto contenant les informations de l'utilitaire trouvé
+     * @throws EntityNotFoundException si aucun utilitaire n'est trouvé avec l'identifiant fourni
+     */
 
     @Override
     public UtilitaireResponseDto trouver(long id) throws EntityNotFoundException {
@@ -47,12 +69,29 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         return utilitaireMapper.toUtilitaireResponseDto(utilitaire);
     }
 
+    /**
+     * Trouver tous les utilitaires.
+     *
+     * @return une liste d'objets UtilitaireResponseDto contenant les informations de tous les utilitaires
+     */
+
     @Override
     public List<UtilitaireResponseDto> trouverToutes() {
         return utilitaireDao.findAll().stream()
                 .map(utilitaireMapper::toUtilitaireResponseDto)
                 .collect(Collectors.toList());
     }
+
+    /**
+     * Modifier partiellement un utilitaire.
+     *
+     * @param id                   l'identifiant unique de l'utilitaire à modifier
+     * @param utilitaireRequestDto l'objet contenant les informations de l'utilitaire à modifier
+     * @return un objet UtilitaireResponseDto contenant les informations de l'utilitaire modifié
+     * @throws VehiculeException       si une erreur survient lors de la modification de l'utilitaire
+     * @throws EntityNotFoundException si aucun utilitaire n'est trouvé avec l'identifiant fourni
+     */
+
 
     @Override
     public UtilitaireResponseDto modifierPartiellement(Long id, UtilitaireRequestDto utilitaireRequestDto) throws VehiculeException, EntityNotFoundException {
@@ -68,10 +107,24 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         return getUtilitaireResponseDto(utilitaireEnreg);
     }
 
+    /**
+     * Convertir une entité Utilitaire en un objet UtilitaireResponseDto.
+     *
+     * @param utilitaireEnreg l'entité Utilitaire à convertir
+     * @return un objet UtilitaireResponseDto contenant les informations de l'utilitaire
+     */
+
     @Override
     public UtilitaireResponseDto getUtilitaireResponseDto(Utilitaire utilitaireEnreg) {
         return utilitaireMapper.toUtilitaireResponseDto(utilitaireEnreg);
     }
+
+    /**
+     * Supprimer un utilitaire par son identifiant.
+     *
+     * @param id l'identifiant unique de l'utilitaire à supprimer
+     * @throws EntityNotFoundException si aucun utilitaire n'est trouvé avec l'identifiant fourni
+     */
 
     @Override
     public void supprimer(Long id) throws EntityNotFoundException {
@@ -80,6 +133,28 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         else
             throw new EntityNotFoundException("Aucun utilitaire n'est enregistré sous cet identifiant");
     }
+
+    /**
+     * Rechercher des utilitaires par critères.
+     *
+     * @param id              l'identifiant de l'utilitaire
+     * @param marque          la marque de l'utilitaire
+     * @param modele          le modèle de l'utilitaire
+     * @param couleur         la couleur de l'utilitaire
+     * @param nombreDePlace   le nombre de places de l'utilitaire
+     * @param carburant       le type de carburant de l'utilitaire
+     * @param transmission    la transmission de l'utilitaire
+     * @param clim            l'utilitaire a-t-il la climatisation
+     * @param chargeMax       la charge maximale de l'utilitaire
+     * @param poidsPATC       le poids PATC de l'utilitaire
+     * @param capaciteM3      la capacité en m3 de l'utilitaire
+     * @param listePermis     la liste des permis requis pour l'utilitaire
+     * @param tarifJournalier le tarif journalier de l'utilitaire
+     * @param kilometrage     le kilométrage de l'utilitaire
+     * @param actif           l'utilitaire est-il actif
+     * @param retireDuParc    l'utilitaire est-il retiré du parc
+     * @return la liste des utilitaires correspondant aux critères
+     */
 
     @Override
     public List<UtilitaireResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
@@ -166,10 +241,10 @@ public class UtilitaireServiceImpl implements UtilitaireService {
             utilitaireExistante.setRetireDuParc(utilitaire.getRetireDuParc());
     }
 
-       private static List<Utilitaire>rechercheUtilitaire(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
-                                                          Carburant carburant, String transmission, Boolean clim, Integer chargeMax,
-                                                          Integer poidsPATC, Integer capaciteM3, List<Permis> listePermis, Long tarifJournalier,
-                                                          Long kilometrage, Boolean actif, Boolean retireDuParc, List<Utilitaire> liste) throws VehiculeException {
+    private static List<Utilitaire> rechercheUtilitaire(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
+                                                        Carburant carburant, String transmission, Boolean clim, Integer chargeMax,
+                                                        Integer poidsPATC, Integer capaciteM3, List<Permis> listePermis, Long tarifJournalier,
+                                                        Long kilometrage, Boolean actif, Boolean retireDuParc, List<Utilitaire> liste) throws VehiculeException {
         logger.debug("Initial list size: {}", liste.size());
         if (id != null && id != 0) {
             liste = liste.stream()
@@ -246,13 +321,13 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         }
         if (tarifJournalier != null && tarifJournalier > 0) {
             liste = liste.stream()
-                    .filter(utilitaire -> utilitaire.getTarifJournalier()==(tarifJournalier))
+                    .filter(utilitaire -> utilitaire.getTarifJournalier() == (tarifJournalier))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by tarifJournalier: {}", liste.size());
         }
         if (kilometrage != null && kilometrage >= 0) {
             liste = liste.stream()
-                    .filter(utilitaire -> utilitaire.getKilometrage()==(kilometrage))
+                    .filter(utilitaire -> utilitaire.getKilometrage() == (kilometrage))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by kilometrage: {}", liste.size());
         }

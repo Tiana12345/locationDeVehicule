@@ -1,7 +1,7 @@
 package com.accenture.controller;
 
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
 import com.accenture.service.VoitureService;
 import com.accenture.service.dto.VoitureRequestDto;
 import com.accenture.service.dto.VoitureResponseDto;

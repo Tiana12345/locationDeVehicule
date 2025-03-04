@@ -1,4 +1,4 @@
-package com.accenture.model.paramVehicule;
+package com.accenture.model.param;
 
 public enum Carburant {
     DIESEL,

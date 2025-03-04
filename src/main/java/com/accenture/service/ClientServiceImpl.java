@@ -1,8 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.UtilisateurException;
-import com.accenture.exception.VehiculeException;
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.ClientDao;
 import com.accenture.repository.entity.Client;
 import com.accenture.service.dto.ClientRequestDto;
@@ -13,7 +12,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -103,10 +101,10 @@ public class ClientServiceImpl implements ClientService {
     /**
      * Méthode pour modifier tous les paramètres d'un client.
      *
-     * @param mail l'adresse email du client à modifier
+     * @param mail             l'adresse email du client à modifier
      * @param clientRequestDto l'objet contenant les nouvelles informations du client
      * @return un objet ClientResponseDto contenant les informations du client modifié
-     * @throws UtilisateurException si une erreur survient lors de la modification du client
+     * @throws UtilisateurException    si une erreur survient lors de la modification du client
      * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
 
@@ -125,10 +123,10 @@ public class ClientServiceImpl implements ClientService {
     /**
      * Méthode pour modifier un ou plusieurs paramètres d'un compte client.
      *
-     * @param mail l'adresse email du client à modifier
+     * @param mail             l'adresse email du client à modifier
      * @param clientRequestDto l'objet contenant les nouvelles informations du client
      * @return un objet ClientResponseDto contenant les informations du client modifié
-     * @throws UtilisateurException si une erreur survient lors de la modification du client
+     * @throws UtilisateurException    si une erreur survient lors de la modification du client
      * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
      */
 
@@ -166,15 +164,15 @@ public class ClientServiceImpl implements ClientService {
     /**
      * Méthode permettant de retrouver un client selon l'un des paramètres choisis.
      *
-     * @param mail l'adresse email du client (String)
-     * @param prenom le prénom du client (String)
-     * @param nom le nom du client (String)
-     * @param dateNaissance la date de naissance du client (LocalDate)
-     * @param rue la rue de l'adresse du client (String)
-     * @param codePostal le code postal de l'adresse du client (String)
-     * @param ville la ville de l'adresse du client (String)
-     * @param desactive indique si le client est désactivé (Boolean)
-     * @param listePermis la liste des permis du client (List<Permis>)
+     * @param mail            l'adresse email du client (String)
+     * @param prenom          le prénom du client (String)
+     * @param nom             le nom du client (String)
+     * @param dateNaissance   la date de naissance du client (LocalDate)
+     * @param rue             la rue de l'adresse du client (String)
+     * @param codePostal      le code postal de l'adresse du client (String)
+     * @param ville           la ville de l'adresse du client (String)
+     * @param desactive       indique si le client est désactivé (Boolean)
+     * @param listePermis     la liste des permis du client (List<Permis>)
      * @param dateInscription la date d'inscription du client (LocalDate)
      * @return une liste d'objets ClientResponseDto correspondant aux critères de recherche
      * @throws UtilisateurException si un critère de recherche est obligatoire
@@ -182,7 +180,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     public List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue,
                                               String codePostal, String ville, Boolean desactive, List<Permis> listePermis,
-                                              LocalDate dateInscription) throws UtilisateurException{
+                                              LocalDate dateInscription) throws UtilisateurException {
         List<Client> liste = clientDao.findAll();
 
         if (liste == null) {
@@ -201,11 +199,12 @@ public class ClientServiceImpl implements ClientService {
                 .map(clientMapper::toClientResponseDto)
                 .collect(Collectors.toList());
     }
+
     //______________________________________________________________________________________________________________________
 //    METHODES PRIVEES
 //_______________________________________________________________________________________________________________________
     private static List<Client> rechercheClient(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription, List<Client> liste) {
-        if (mail != null ) {
+        if (mail != null) {
             liste = liste.stream()
                     .filter(client -> client.getMail().contains(mail))
                     .collect(Collectors.toList());
@@ -225,17 +224,17 @@ public class ClientServiceImpl implements ClientService {
                     .filter(client -> client.getDateNaissance().equals(dateNaissance))
                     .collect(Collectors.toList());
         }
-        if (rue != null ) {
+        if (rue != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getRue().equals(rue))
                     .collect(Collectors.toList());
         }
-        if (rue != null ) {
+        if (rue != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getCodePostal().equals(codePostal))
                     .collect(Collectors.toList());
         }
-        if (rue != null ) {
+        if (rue != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getVille().equals(ville))
                     .collect(Collectors.toList());
@@ -245,12 +244,12 @@ public class ClientServiceImpl implements ClientService {
                     .filter(client -> client.getDesactive().equals(desactive))
                     .collect(Collectors.toList());
         }
-        if (listePermis != null ) {
+        if (listePermis != null) {
             liste = liste.stream()
                     .filter(client -> client.getListePermis().equals(listePermis))
                     .collect(Collectors.toList());
         }
-        if (dateInscription != null ) {
+        if (dateInscription != null) {
             liste = liste.stream()
                     .filter(client -> client.getDateInscription().equals(dateInscription))
                     .collect(Collectors.toList());
@@ -286,6 +285,7 @@ public class ClientServiceImpl implements ClientService {
 //        if (clientRequestDto.dateDeNaissance().isBefore(dateDeReference) || clientRequestDto.dateDeNaissance().isEqual(dateDeReference))
 //            throw new UtilisateurException("Vous devez avoir plus de 18 ans pour vous incrire");
     }
+
     private static void remplacer(Client client, Client clientExistant) {
         if (client.getNom() != null && !client.getNom().isBlank())
             clientExistant.setNom(client.getNom());

@@ -1,21 +1,23 @@
 package com.accenture.repository.entity;
 
-import com.accenture.model.paramVehicule.Carburant;
-import com.accenture.model.paramVehicule.Permis;
-import jakarta.persistence.*;
+import com.accenture.model.param.Carburant;
+import com.accenture.model.param.Permis;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 
 @EqualsAndHashCode(callSuper = true)
-public class Voiture extends Vehicule{
+public class Voiture extends Vehicule {
 
 
     private Integer nombreDePlaces;

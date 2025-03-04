@@ -1,6 +1,6 @@
 package com.accenture.service.dto;
 
-import com.accenture.model.paramVehicule.Permis;
+import com.accenture.model.param.Permis;
 import com.accenture.repository.entity.Adresse;
 import io.swagger.v3.oas.annotations.media.Schema;
 
