@@ -14,9 +14,8 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
-
-import javax.sql.DataSource;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -31,31 +30,31 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**","/swagger-ui.html").permitAll()
                         .requestMatchers("/utilisateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/clients/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/clients/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/clients/**").permitAll()
-                        .requestMatchers("/administrateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/voitures/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/voitures/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/voitures/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/voitures/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/velos/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/velos/**").permitAll()
+                        .requestMatchers("/administrateurs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/voitures/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/voitures/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/voitures/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/voitures/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/velos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/velos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/velos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/velos/**").hasAnyRole("ADMIN", "SUPERADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/velos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/utilitaires/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/utilitaires/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/utilitaires/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/utilitaires/**").hasAnyRole("ADMIN", "SUPERADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/utilitaires/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/motos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/motos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PATCH, "/motos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/motos/**").hasAnyRole("ADMIN", "SUPERADMIN")
-                        .requestMatchers(HttpMethod.GET, "/administrateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/administrateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/administrateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.DELETE, "/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/motos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/administrateurs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/administrateurs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/administrateurs/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/administrateurs/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
