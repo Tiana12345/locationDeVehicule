@@ -7,9 +7,11 @@ import com.accenture.service.dto.MotoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 
 /**
@@ -23,6 +25,7 @@ import java.util.List;
 public class MotoController {
 
     private final MotoService motoService;
+    private Logger logger = LoggerFactory.getLogger(MotoController.class);
 
     public MotoController(MotoService motoService) {
         this.motoService = motoService;
@@ -34,15 +37,14 @@ public class MotoController {
      * @param motoRequestDto les détails de la moto à ajouter
      * @return les détails de la moto ajoutée
      */
-
-
     @Operation(summary = "Ajouter une nouvelle moto")
     @PostMapping
     public ResponseEntity<MotoResponseDto> ajouter(@RequestBody MotoRequestDto motoRequestDto) {
+        logger.info("Ajout d'une nouvelle moto : {}", motoRequestDto);
         MotoResponseDto motoResponseDto = motoService.ajouter(motoRequestDto);
+        logger.info("Moto ajoutée avec succès : {}", motoResponseDto);
         return ResponseEntity.ok(motoResponseDto);
     }
-
 
     /**
      * Trouver une moto par son identifiant.
@@ -50,12 +52,18 @@ public class MotoController {
      * @param id l'identifiant de la moto
      * @return les détails de la moto trouvée
      */
-
     @Operation(summary = "Trouver une moto par son identifiant")
     @GetMapping("/{id}")
     public ResponseEntity<MotoResponseDto> trouver(@Parameter(description = "Identifiant de la moto") @PathVariable long id) {
+        logger.info("Recherche de la moto avec ID : {}", id);
         MotoResponseDto motoResponseDto = motoService.trouver(id);
-        return ResponseEntity.ok(motoResponseDto);
+        if (motoResponseDto != null) {
+            logger.info("Moto trouvée : {}", motoResponseDto);
+            return ResponseEntity.ok(motoResponseDto);
+        } else {
+            logger.error("Moto non trouvée avec ID : {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
@@ -63,11 +71,12 @@ public class MotoController {
      *
      * @return la liste de toutes les motos
      */
-
     @Operation(summary = "Trouver toutes les motos")
     @GetMapping
     public ResponseEntity<List<MotoResponseDto>> trouverToutes() {
+        logger.info("Recherche de toutes les motos");
         List<MotoResponseDto> motos = motoService.trouverToutes();
+        logger.info("Nombre de motos trouvées : {}", motos.size());
         return ResponseEntity.ok(motos);
     }
 
@@ -78,11 +87,12 @@ public class MotoController {
      * @param motoRequestDto les détails de la moto à modifier
      * @return les détails de la moto modifiée
      */
-
     @Operation(summary = "Modifier partiellement une moto")
     @PatchMapping("/{id}")
     public ResponseEntity<MotoResponseDto> modifierPartiellement(@Parameter(description = "Identifiant de la moto") @PathVariable Long id, @RequestBody MotoRequestDto motoRequestDto) {
+        logger.info("Modification partielle de la moto avec ID : {}", id);
         MotoResponseDto motoResponseDto = motoService.modifierPartiellement(id, motoRequestDto);
+        logger.info("Moto modifiée avec succès : {}", motoResponseDto);
         return ResponseEntity.ok(motoResponseDto);
     }
 
@@ -95,7 +105,9 @@ public class MotoController {
     @Operation(summary = "Supprimer une moto par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant de la moto") @PathVariable Long id) {
+        logger.info("Suppression de la moto avec ID : {}", id);
         motoService.supprimer(id);
+        logger.info("Moto supprimée avec succès : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -118,7 +130,6 @@ public class MotoController {
      * @param retireDuParc    la moto est-elle retirée du parc
      * @return la liste des motos correspondant aux critères
      */
-
     @Operation(summary = "Rechercher des motos par critères")
     @GetMapping("/rechercher")
     public ResponseEntity<List<MotoResponseDto>> rechercher(
@@ -136,7 +147,10 @@ public class MotoController {
             @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "La moto est-elle active") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "La moto est-elle retirée du parc") @RequestParam(required = false) Boolean retireDuParc) {
+        logger.info("Recherche de motos avec les critères : id={}, marque={}, modele={}, couleur={}, nombreCylindres={}, poids={}, puissanceEnkW={}, hauteurSelle={}, transmission={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<MotoResponseDto> motos = motoService.rechercher(id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Nombre de motos trouvées : {}", motos.size());
         return ResponseEntity.ok(motos);
     }
 }

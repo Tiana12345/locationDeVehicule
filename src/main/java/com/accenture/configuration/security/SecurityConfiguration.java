@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
@@ -30,43 +31,48 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(authorizeRequests -> authorizeRequests
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs*/**","/swagger-ui.html").permitAll()
                         .requestMatchers("/utilisateurs/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/clients/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/clients/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/clients/**").permitAll()
-                        .requestMatchers("/administrateurs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/voitures/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/voitures/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/voitures/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/voitures/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/velos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/velos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/velos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/velos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/utilitaires/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/utilitaires/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/utilitaires/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/utilitaires/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/motos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/motos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/motos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/motos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/administrateurs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/administrateurs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/administrateurs/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/administrateurs/**").hasRole("ADMIN")
+                        .requestMatchers("/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/vehicules/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/vehicules/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/vehicules/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/vehicules/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/voitures/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/voitures/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/voitures/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/voitures/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/velos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/velos/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/velos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/velos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/utilitaires/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/utilitaires/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/utilitaires/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/utilitaires/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/motos/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/motos/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/motos/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/motos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/administrateurs/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
                         .authenticationEntryPoint((request, response, authException) -> {
-                            log.error("Unauthorized request - {}", authException.getMessage());
-                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                            log.error("Requête non autorisée - {}", authException.getMessage());
+                            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Non autorisé");
                         })
                         .accessDeniedHandler((request, response, accessDeniedException) -> {
-                            log.error("Access denied - {}", accessDeniedException.getMessage());
-                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Forbidden");
+                            log.error("Accès refusé - {}", accessDeniedException.getMessage());
+                            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Interdit");
                         })
-                );
+                )
+                .addFilterBefore(new CustomLoggingFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 

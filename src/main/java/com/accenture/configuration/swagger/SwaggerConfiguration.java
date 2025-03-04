@@ -31,11 +31,15 @@ public class SwaggerConfiguration {
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
                                         .scheme("basic")
+                                        .bearerFormat("Basic")
+                                        .name("basicAuth")
+
                         )
                 )
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"));
 
     }
+
 //                .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
 //                .components(new io.swagger.v3.oas.models.Components()
 //                        .addSecuritySchemes("basicAuth", new SecurityScheme()

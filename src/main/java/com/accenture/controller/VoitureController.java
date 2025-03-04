@@ -40,6 +40,7 @@ public class VoitureController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     ResponseEntity<Void> ajouter(@RequestBody @Valid VoitureRequestDto voitureRequestDto) {
+        logger.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
         VoitureResponseDto voitureEnreg = voitureService.ajouter(voitureRequestDto);
 
         URI voiture = ServletUriComponentsBuilder
@@ -47,6 +48,7 @@ public class VoitureController {
                 .path("/{id}")
                 .buildAndExpand(voitureEnreg.id())
                 .toUri();
+        logger.info("Voiture ajoutée avec succès : {}", voitureEnreg);
         return ResponseEntity.created(voiture).build();
     }
 
@@ -56,7 +58,10 @@ public class VoitureController {
             @ApiResponse(responseCode = "200", description = "Liste des voitures récupérée avec succès")
     })
     List<VoitureResponseDto> voiture() {
-        return voitureService.trouverToutes();
+        logger.info("Récupération de toutes les voitures");
+        List<VoitureResponseDto> voitures = voitureService.trouverToutes();
+        logger.info("Nombre de voitures récupérées : {}", voitures.size());
+        return voitures;
     }
 
     @GetMapping("/{id}")
@@ -66,8 +71,15 @@ public class VoitureController {
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
     ResponseEntity<VoitureResponseDto> uneVoiture(@Parameter(description = "ID de la voiture à récupérer") @PathVariable("id") Long id) {
+        logger.info("Récupération de la voiture avec ID : {}", id);
         VoitureResponseDto trouve = voitureService.trouver(id);
-        return ResponseEntity.ok(trouve);
+        if (trouve != null) {
+            logger.info("Voiture trouvée : {}", trouve);
+            return ResponseEntity.ok(trouve);
+        } else {
+            logger.error("Voiture non trouvée avec ID : {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -77,7 +89,9 @@ public class VoitureController {
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
     ResponseEntity<Void> supprimer(@Parameter(description = "ID de la voiture à supprimer") @PathVariable("id") Long id) {
+        logger.info("Suppression de la voiture avec ID : {}", id);
         voitureService.supprimer(id);
+        logger.info("Voiture supprimée avec succès : {}", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -88,7 +102,10 @@ public class VoitureController {
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
     ResponseEntity<VoitureResponseDto> modifierPartiellement(@Parameter(description = "ID de la voiture à modifier") @PathVariable("id") Long id, @RequestBody VoitureRequestDto voitureRequestDto) {
-        return ResponseEntity.ok(voitureService.modifierPartiellement(id, voitureRequestDto));
+        logger.info("Modification partielle de la voiture avec ID : {}", id);
+        VoitureResponseDto voitureModifiee = voitureService.modifierPartiellement(id, voitureRequestDto);
+        logger.info("Voiture modifiée avec succès : {}", voitureModifiee);
+        return ResponseEntity.ok(voitureModifiee);
     }
 
     @GetMapping("/search")
@@ -114,7 +131,11 @@ public class VoitureController {
             @Parameter(description = "Statut actif de la voiture") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = false) Boolean retireDuParc
     ) {
-        return voitureService.rechercher(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim,
+        logger.info("Recherche de voitures avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlaces={}, carburant={}, nombreDePortes={}, transmission={}, clim={}, nombreDeBagages={}, type={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        List<VoitureResponseDto> voitures = voitureService.rechercher(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim,
                 nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Nombre de voitures trouvées : {}", voitures.size());
+        return voitures;
     }
 }

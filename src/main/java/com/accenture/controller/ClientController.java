@@ -40,12 +40,14 @@ public class ClientController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     ResponseEntity<Void> ajouter(@RequestBody @Valid ClientRequestDto clientRequestDto) {
+        logger.info("Ajout d'un nouveau client : {}", clientRequestDto);
         ClientResponseDto clientEnreg = clientService.ajouter(clientRequestDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(clientEnreg.mail())
                 .toUri();
+        logger.info("Client ajouté avec succès : {}", clientEnreg);
         return ResponseEntity.created(location).build();
     }
 
@@ -56,7 +58,10 @@ public class ClientController {
     })
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     List<ClientResponseDto> client() {
-        return clientService.trouverTous();
+        logger.info("Récupération de tous les clients");
+        List<ClientResponseDto> clients = clientService.trouverTous();
+        logger.info("Nombre de clients récupérés : {}", clients.size());
+        return clients;
     }
 
     @GetMapping("/{id}")
@@ -66,8 +71,15 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
     ResponseEntity<ClientResponseDto> unClient(@Parameter(description = "ID du client à récupérer") @PathVariable("id") String mail) {
+        logger.info("Récupération du client avec ID : {}", mail);
         ClientResponseDto trouve = clientService.trouver(mail);
-        return ResponseEntity.ok(trouve);
+        if (trouve != null) {
+            logger.info("Client trouvé : {}", trouve);
+            return ResponseEntity.ok(trouve);
+        } else {
+            logger.error("Client non trouvé avec ID : {}", mail);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     @DeleteMapping("/{id}")
@@ -77,7 +89,9 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
     ResponseEntity<Void> supprimer(@Parameter(description = "ID du client à supprimer") @PathVariable("id") String mail) {
+        logger.info("Suppression du client avec ID : {}", mail);
         clientService.supprimer(mail);
+        logger.info("Client supprimé avec succès : {}", mail);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -88,7 +102,10 @@ public class ClientController {
             @ApiResponse(responseCode = "404", description = "Client non trouvé")
     })
     ResponseEntity<ClientResponseDto> modifierPartiellement(@Parameter(description = "ID du client à modifier") @PathVariable("id") String mail, @RequestBody ClientRequestDto clientRequestDto) {
-        return ResponseEntity.ok(clientService.modifierPartiellement(mail, clientRequestDto));
+        logger.info("Modification partielle du client avec ID : {}", mail);
+        ClientResponseDto clientModifie = clientService.modifierPartiellement(mail, clientRequestDto);
+        logger.info("Client mis à jour avec succès : {}", clientModifie);
+        return ResponseEntity.ok(clientModifie);
     }
 
     @GetMapping("/search")
@@ -108,6 +125,10 @@ public class ClientController {
             @Parameter(description = "Liste des permis du client") @RequestParam(required = false) List<Permis> listePermis,
             @Parameter(description = "Date d'inscription du client") @RequestParam(required = false) LocalDate dateInscription
     ) {
-        return clientService.rechercher(mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription);
+        logger.info("Recherche de clients avec les critères : mail={}, prenom={}, nom={}, dateNaissance={}, rue={}, codePostal={}, ville={}, desactive={}, listePermis={}, dateInscription={}",
+                mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription);
+        List<ClientResponseDto> clients = clientService.rechercher(mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription);
+        logger.info("Nombre de clients trouvés : {}", clients.size());
+        return clients;
     }
 }

@@ -8,8 +8,11 @@ import com.accenture.service.dto.UtilitaireResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -23,6 +26,7 @@ import java.util.List;
 public class UtilitaireController {
 
     private final UtilitaireService utilitaireService;
+    private Logger logger = LoggerFactory.getLogger(UtilitaireController.class);
 
     public UtilitaireController(UtilitaireService utilitaireService) {
         this.utilitaireService = utilitaireService;
@@ -34,11 +38,12 @@ public class UtilitaireController {
      * @param utilitaireRequestDto les détails de l'utilitaire à ajouter
      * @return les détails de l'utilitaire ajouté
      */
-
     @Operation(summary = "Ajouter un nouvel utilitaire")
     @PostMapping
     public ResponseEntity<UtilitaireResponseDto> ajouter(@RequestBody UtilitaireRequestDto utilitaireRequestDto) {
+        logger.info("Ajout d'un nouvel utilitaire : {}", utilitaireRequestDto);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.ajouter(utilitaireRequestDto);
+        logger.info("Utilitaire ajouté avec succès : {}", utilitaireResponseDto);
         return ResponseEntity.ok(utilitaireResponseDto);
     }
 
@@ -48,12 +53,18 @@ public class UtilitaireController {
      * @param id l'identifiant de l'utilitaire
      * @return les détails de l'utilitaire trouvé
      */
-
     @Operation(summary = "Trouver un utilitaire par son identifiant")
     @GetMapping("/{id}")
     public ResponseEntity<UtilitaireResponseDto> trouver(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable long id) {
+        logger.info("Recherche de l'utilitaire avec ID : {}", id);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.trouver(id);
-        return ResponseEntity.ok(utilitaireResponseDto);
+        if (utilitaireResponseDto != null) {
+            logger.info("Utilitaire trouvé : {}", utilitaireResponseDto);
+            return ResponseEntity.ok(utilitaireResponseDto);
+        } else {
+            logger.error("Utilitaire non trouvé avec ID : {}", id);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
     }
 
     /**
@@ -61,11 +72,12 @@ public class UtilitaireController {
      *
      * @return la liste de tous les utilitaires
      */
-
     @Operation(summary = "Trouver tous les utilitaires")
     @GetMapping
     public ResponseEntity<List<UtilitaireResponseDto>> trouverToutes() {
+        logger.info("Recherche de tous les utilitaires");
         List<UtilitaireResponseDto> utilitaires = utilitaireService.trouverToutes();
+        logger.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
         return ResponseEntity.ok(utilitaires);
     }
 
@@ -76,14 +88,14 @@ public class UtilitaireController {
      * @param utilitaireRequestDto les détails de l'utilitaire à modifier
      * @return les détails de l'utilitaire modifié
      */
-
     @Operation(summary = "Modifier partiellement un utilitaire")
     @PatchMapping("/{id}")
     public ResponseEntity<UtilitaireResponseDto> modifierPartiellement(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable Long id, @RequestBody UtilitaireRequestDto utilitaireRequestDto) {
+        logger.info("Modification partielle de l'utilitaire avec ID : {}", id);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.modifierPartiellement(id, utilitaireRequestDto);
+        logger.info("Utilitaire modifié avec succès : {}", utilitaireResponseDto);
         return ResponseEntity.ok(utilitaireResponseDto);
     }
-
 
     /**
      * Supprimer un utilitaire par son identifiant.
@@ -94,10 +106,11 @@ public class UtilitaireController {
     @Operation(summary = "Supprimer un utilitaire par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable Long id) {
+        logger.info("Suppression de l'utilitaire avec ID : {}", id);
         utilitaireService.supprimer(id);
+        logger.info("Utilitaire supprimé avec succès : {}", id);
         return ResponseEntity.noContent().build();
     }
-
 
     /**
      * Rechercher des utilitaires par critères.
@@ -139,7 +152,10 @@ public class UtilitaireController {
             @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "L'utilitaire est-il actif") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "L'utilitaire est-il retiré du parc") @RequestParam(required = false) Boolean retireDuParc) {
+        logger.info("Recherche d'utilitaires avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlace={}, carburant={}, transmission={}, clim={}, chargeMax={}, poidsPATC={}, capaciteM3={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<UtilitaireResponseDto> utilitaires = utilitaireService.rechercher(id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
         return ResponseEntity.ok(utilitaires);
     }
 }
