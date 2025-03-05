@@ -47,6 +47,13 @@ public class MotoServiceImpl implements MotoService {
         verifMoto(motoRequestDto);
 
         Moto moto = motoMapper.toMoto(motoRequestDto);
+        if (moto.getPuissanceEnkW() <= 11) {
+            moto.setPermis(Permis.A1);
+        } else if (moto.getPuissanceEnkW() > 11 && moto.getPuissanceEnkW() < 35) {
+            moto.setPermis(Permis.A2);
+        } else {
+            moto.setPermis(Permis.A);
+        }
         Moto motoEnreg = motoDao.save(moto);
         return motoMapper.toMotoResponseDto(motoEnreg);
     }
@@ -144,7 +151,7 @@ public class MotoServiceImpl implements MotoService {
      * @param puissanceEnkW   la puissance en kW de la moto
      * @param hauteurSelle    la hauteur de selle de la moto
      * @param transmission    la transmission de la moto
-     * @param listePermis     la liste des permis requis pour la moto
+     * @param permis          permis requis pour la moto
      * @param tarifJournalier le tarif journalier de la moto
      * @param kilometrage     le kilométrage de la moto
      * @param actif           la moto est-elle active
@@ -155,14 +162,14 @@ public class MotoServiceImpl implements MotoService {
     @Override
     public List<MotoResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
                                             Integer poids, Integer puissanceEnkW, Integer hauteurSelle, String transmission,
-                                            List<Permis> listePermis, Long tarifJournalier, Long kilometrage, Boolean actif,
+                                            Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif,
                                             Boolean retireDuParc) {
 
         List<Moto> liste = motoDao.findAll();
 
 
         liste = rechercheMoto(id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle,
-                transmission, listePermis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
+                transmission, permis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
         return liste.stream()
                 .map(motoMapper::toMotoResponseDto)
@@ -188,8 +195,6 @@ public class MotoServiceImpl implements MotoService {
             throw new VehiculeException("Vous devez ajouter la hauteur de selle de la moto");
         if (motoRequestDto.transmission() == null || motoRequestDto.transmission().isBlank())
             throw new VehiculeException("Vous devez ajouter la transmission de la moto");
-        if (motoRequestDto.listePermis() == null || motoRequestDto.listePermis().isEmpty())
-            throw new VehiculeException("Vous devez ajouter les permis requis pour la moto");
         if (motoRequestDto.tarifJournalier() <= 0)
             throw new VehiculeException("Vous devez ajouter le tarif journalier de la moto");
         if (motoRequestDto.kilometrage() < 0)
@@ -217,8 +222,8 @@ public class MotoServiceImpl implements MotoService {
             motoExistante.setHauteurSelle(moto.getHauteurSelle());
         if (moto.getTransmission() != null && !moto.getTransmission().isBlank())
             motoExistante.setTransmission(moto.getTransmission());
-        if (moto.getListePermis() != null && !moto.getListePermis().isEmpty())
-            motoExistante.setListePermis(moto.getListePermis());
+        if (moto.getPermis() != null)
+            motoExistante.setPermis(moto.getPermis());
         if (moto.getTarifJournalier() > 0)
             motoExistante.setTarifJournalier(moto.getTarifJournalier());
         if (moto.getKilometrage() >= 0)
@@ -231,7 +236,7 @@ public class MotoServiceImpl implements MotoService {
 
     private static List<Moto> rechercheMoto(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
                                             Integer poids, Integer puissanceEnkW, Integer hauteurSelle, String transmission,
-                                            List<Permis> listePermis, Long tarifJournalier, Long kilometrage, Boolean actif,
+                                           Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif,
                                             Boolean retireDuParc, List<Moto> liste) throws VehiculeException {
         logger.debug("Initial list size: {}", liste.size());
         if (id != null && id != 0) {
@@ -288,10 +293,9 @@ public class MotoServiceImpl implements MotoService {
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by transmission: {}", liste.size());
         }
-        if (listePermis != null && !listePermis.isEmpty()) {
-            Permis permis = listePermis.getFirst();
+        if (permis != null ) {
             liste = liste.stream()
-                    .filter(moto -> moto.getListePermis().contains(permis))
+                    .filter(moto -> moto.getPermis()==(permis))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by permis: {}", liste.size());
         }

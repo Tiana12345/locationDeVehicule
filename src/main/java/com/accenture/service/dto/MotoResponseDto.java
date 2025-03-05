@@ -3,8 +3,6 @@ package com.accenture.service.dto;
 import com.accenture.model.param.Permis;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
-
 @Schema(description = "Détails de la moto")
 public record MotoResponseDto(
         @Schema(description = "ID de la moto", example = "1")
@@ -38,7 +36,7 @@ public record MotoResponseDto(
         String transmission,
 
         @Schema(description = "Liste des permis requis pour conduire la moto")
-        List<Permis> listePermis,
+        Permis permis,
 
         @Schema(description = "Tarif journalier de la moto", example = "50")
         long tarifJournalier,

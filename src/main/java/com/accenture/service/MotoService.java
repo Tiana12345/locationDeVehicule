@@ -24,6 +24,6 @@ public interface MotoService {
 
     List<MotoResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
                                      Integer poids, Integer puissanceEnkW, Integer hauteurSelle, String transmission,
-                                     List<Permis> listePermis, Long tarifJournalier, Long kilometrage, Boolean actif,
+                                     Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif,
                                      Boolean retireDuParc);
 }

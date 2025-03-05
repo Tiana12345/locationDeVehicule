@@ -45,9 +45,6 @@ public record MotoRequestDto(
         @NotBlank
         String transmission,
 
-        @Schema(description = "Liste des permis requis pour conduire la moto")
-        List<Permis> listePermis,
-
         @Schema(description = "Tarif journalier de la moto", example = "50")
         @NotNull
         long tarifJournalier,

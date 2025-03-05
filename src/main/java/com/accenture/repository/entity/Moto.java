@@ -1,8 +1,7 @@
 package com.accenture.repository.entity;
 
 import com.accenture.model.param.Permis;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -23,5 +22,6 @@ public class Moto extends Vehicule {
     private Integer puissanceEnkW;
     private Integer hauteurSelle;
     private String transmission;
-    private List<Permis> listePermis;
+    @Enumerated(EnumType.STRING)
+    private Permis permis;
 }

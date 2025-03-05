@@ -7,11 +7,12 @@ import com.accenture.service.dto.MotoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 /**
@@ -123,7 +124,7 @@ public class MotoController {
      * @param puissanceEnkW   la puissance en kW de la moto
      * @param hauteurSelle    la hauteur de selle de la moto
      * @param transmission    la transmission de la moto
-     * @param listePermis     la liste des permis requis pour la moto
+     * @param permis          le permis requis pour la moto
      * @param tarifJournalier le tarif journalier de la moto
      * @param kilometrage     le kilométrage de la moto
      * @param actif           la moto est-elle active
@@ -142,14 +143,14 @@ public class MotoController {
             @Parameter(description = "Puissance en kW de la moto") @RequestParam(required = false) Integer puissanceEnkW,
             @Parameter(description = "Hauteur de selle de la moto") @RequestParam(required = false) Integer hauteurSelle,
             @Parameter(description = "Transmission de la moto") @RequestParam(required = false) String transmission,
-            @Parameter(description = "Liste des permis requis pour la moto") @RequestParam(required = false) List<Permis> listePermis,
+            @Parameter(description = "Liste des permis requis pour la moto") @RequestParam(required = false) Permis permis,
             @Parameter(description = "Tarif journalier de la moto") @RequestParam(required = false) Long tarifJournalier,
             @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "La moto est-elle active") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "La moto est-elle retirée du parc") @RequestParam(required = false) Boolean retireDuParc) {
-        logger.info("Recherche de motos avec les critères : id={}, marque={}, modele={}, couleur={}, nombreCylindres={}, poids={}, puissanceEnkW={}, hauteurSelle={}, transmission={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
-                id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
-        List<MotoResponseDto> motos = motoService.rechercher(id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Recherche de motos avec les critères : id={}, marque={}, modele={}, couleur={}, nombreCylindres={}, poids={}, puissanceEnkW={}, hauteurSelle={}, transmission={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, permis, tarifJournalier, kilometrage, actif, retireDuParc);
+        List<MotoResponseDto> motos = motoService.rechercher(id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         logger.info("Nombre de motos trouvées : {}", motos.size());
         return ResponseEntity.ok(motos);
     }
