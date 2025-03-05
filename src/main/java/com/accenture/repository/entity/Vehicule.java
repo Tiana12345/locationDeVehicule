@@ -1,5 +1,6 @@
 package com.accenture.repository.entity;
 
+import com.accenture.model.param.TypeVehiculeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,9 @@ public abstract class Vehicule {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
     private long id;
+
+    @Enumerated(EnumType.STRING)
+    private TypeVehiculeEnum typeVehiculeEnum;
     private String marque;
     private String modele;
     private String couleur;

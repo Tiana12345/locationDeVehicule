@@ -60,6 +60,10 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/administrateurs/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/administrateurs/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/administrateurs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/locations/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/locations/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/locations/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/locations/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptionHandling -> exceptionHandling
