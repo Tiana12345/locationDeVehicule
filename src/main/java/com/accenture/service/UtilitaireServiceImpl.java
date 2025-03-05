@@ -48,6 +48,14 @@ public class UtilitaireServiceImpl implements UtilitaireService {
         verifUtilitaire(utilitaireRequestDto);
 
         Utilitaire utilitaire = utilitaireMapper.toUtilitaire(utilitaireRequestDto);
+        if (utilitaire.getPoidsPATC()<= 3.5){
+        utilitaire.setPermis(Permis.B);
+        }
+        else if (utilitaire.getPoidsPATC()> 3.5 && utilitaire.getPoidsPATC()<7.5){
+            utilitaire.setPermis(Permis.C1);
+        }
+        else logger.info("L'utilitaire est trop lourd");
+
         Utilitaire utilitaireEnreg = utilitaireDao.save(utilitaire);
         return utilitaireMapper.toUtilitaireResponseDto(utilitaireEnreg);
     }
@@ -148,7 +156,7 @@ public class UtilitaireServiceImpl implements UtilitaireService {
      * @param chargeMax       la charge maximale de l'utilitaire
      * @param poidsPATC       le poids PATC de l'utilitaire
      * @param capaciteM3      la capacité en m3 de l'utilitaire
-     * @param listePermis     la liste des permis requis pour l'utilitaire
+     * @param permis     la liste des permis requis pour l'utilitaire
      * @param tarifJournalier le tarif journalier de l'utilitaire
      * @param kilometrage     le kilométrage de l'utilitaire
      * @param actif           l'utilitaire est-il actif
@@ -159,14 +167,14 @@ public class UtilitaireServiceImpl implements UtilitaireService {
     @Override
     public List<UtilitaireResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
                                                   Carburant carburant, String transmission, Boolean clim, Integer chargeMax,
-                                                  Integer poidsPATC, Integer capaciteM3, List<Permis> listePermis, Long tarifJournalier,
+                                                  Integer poidsPATC, Integer capaciteM3,Permis permis, Long tarifJournalier,
                                                   Long kilometrage, Boolean actif, Boolean retireDuParc) {
 
         List<Utilitaire> liste = utilitaireDao.findAll();
 
 
         liste = rechercheUtilitaire(id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax,
-                poidsPATC, capaciteM3, listePermis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
+                poidsPATC, capaciteM3, permis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
         return liste.stream()
                 .map(utilitaireMapper::toUtilitaireResponseDto)
@@ -196,8 +204,6 @@ public class UtilitaireServiceImpl implements UtilitaireService {
             throw new VehiculeException("Vous devez ajouter le poids PATC de l'utilitaire");
         if (utilitaireRequestDto.capaciteM3() == null || utilitaireRequestDto.capaciteM3() <= 0)
             throw new VehiculeException("Vous devez ajouter la capacité en m3 de l'utilitaire");
-        if (utilitaireRequestDto.listePermis() == null || utilitaireRequestDto.listePermis().isEmpty())
-            throw new VehiculeException("Vous devez ajouter les permis requis pour l'utilitaire");
         if (utilitaireRequestDto.tarifJournalier() <= 0)
             throw new VehiculeException("Vous devez ajouter le tarif journalier de l'utilitaire");
         if (utilitaireRequestDto.kilometrage() < 0)
@@ -229,8 +235,8 @@ public class UtilitaireServiceImpl implements UtilitaireService {
             utilitaireExistante.setPoidsPATC(utilitaire.getPoidsPATC());
         if (utilitaire.getCapaciteM3() != null && utilitaire.getCapaciteM3() > 0)
             utilitaireExistante.setCapaciteM3(utilitaire.getCapaciteM3());
-        if (utilitaire.getListePermis() != null && !utilitaire.getListePermis().isEmpty())
-            utilitaireExistante.setListePermis(utilitaire.getListePermis());
+        if (utilitaire.getPermis() != null)
+            utilitaireExistante.setPermis(utilitaire.getPermis());
         if (utilitaire.getTarifJournalier() > 0)
             utilitaireExistante.setTarifJournalier(utilitaire.getTarifJournalier());
         if (utilitaire.getKilometrage() >= 0)
@@ -243,7 +249,7 @@ public class UtilitaireServiceImpl implements UtilitaireService {
 
     private static List<Utilitaire> rechercheUtilitaire(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
                                                         Carburant carburant, String transmission, Boolean clim, Integer chargeMax,
-                                                        Integer poidsPATC, Integer capaciteM3, List<Permis> listePermis, Long tarifJournalier,
+                                                        Integer poidsPATC, Integer capaciteM3, Permis permis, Long tarifJournalier,
                                                         Long kilometrage, Boolean actif, Boolean retireDuParc, List<Utilitaire> liste) throws VehiculeException {
         logger.debug("Initial list size: {}", liste.size());
         if (id != null && id != 0) {
@@ -312,10 +318,9 @@ public class UtilitaireServiceImpl implements UtilitaireService {
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by capaciteM3: {}", liste.size());
         }
-        if (listePermis != null && !listePermis.isEmpty()) {
-            Permis permis = listePermis.getFirst();
+        if (permis != null) {
             liste = liste.stream()
-                    .filter(utilitaire -> utilitaire.getListePermis().contains(permis))
+                    .filter(utilitaire -> utilitaire.getPermis()==(permis))
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by permis: {}", liste.size());
         }

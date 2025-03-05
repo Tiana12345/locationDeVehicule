@@ -8,11 +8,11 @@ import com.accenture.service.dto.UtilitaireResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -126,7 +126,7 @@ public class UtilitaireController {
      * @param chargeMax       la charge maximale de l'utilitaire
      * @param poidsPATC       le poids PATC de l'utilitaire
      * @param capaciteM3      la capacité en m3 de l'utilitaire
-     * @param listePermis     la liste des permis requis pour l'utilitaire
+     * @param permis          le permis requis pour l'utilitaire
      * @param tarifJournalier le tarif journalier de l'utilitaire
      * @param kilometrage     le kilométrage de l'utilitaire
      * @param actif           l'utilitaire est-il actif
@@ -147,14 +147,14 @@ public class UtilitaireController {
             @Parameter(description = "Charge maximale de l'utilitaire") @RequestParam(required = false) Integer chargeMax,
             @Parameter(description = "Poids PATC de l'utilitaire") @RequestParam(required = false) Integer poidsPATC,
             @Parameter(description = "Capacité en m3 de l'utilitaire") @RequestParam(required = false) Integer capaciteM3,
-            @Parameter(description = "Liste des permis requis pour l'utilitaire") @RequestParam(required = false) List<Permis> listePermis,
+            @Parameter(description = "Permis requis pour l'utilitaire") @RequestParam(required = false) Permis permis,
             @Parameter(description = "Tarif journalier de l'utilitaire") @RequestParam(required = false) Long tarifJournalier,
             @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "L'utilitaire est-il actif") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "L'utilitaire est-il retiré du parc") @RequestParam(required = false) Boolean retireDuParc) {
-        logger.info("Recherche d'utilitaires avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlace={}, carburant={}, transmission={}, clim={}, chargeMax={}, poidsPATC={}, capaciteM3={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
-                id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
-        List<UtilitaireResponseDto> utilitaires = utilitaireService.rechercher(id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Recherche d'utilitaires avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlace={}, carburant={}, transmission={}, clim={}, chargeMax={}, poidsPATC={}, capaciteM3={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, permis, tarifJournalier, kilometrage, actif, retireDuParc);
+        List<UtilitaireResponseDto> utilitaires = utilitaireService.rechercher(id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         logger.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
         return ResponseEntity.ok(utilitaires);
     }

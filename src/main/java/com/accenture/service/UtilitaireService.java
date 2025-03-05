@@ -25,6 +25,6 @@ public interface UtilitaireService {
 
     List<UtilitaireResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlace,
                                            Carburant carburant, String transmission, Boolean clim, Integer chargeMax,
-                                           Integer poidsPATC, Integer capaciteM3, List<Permis> listePermis, Long tarifJournalier,
+                                           Integer poidsPATC, Integer capaciteM3, Permis permis, Long tarifJournalier,
                                            Long kilometrage, Boolean actif, Boolean retireDuParc);
 }

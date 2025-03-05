@@ -48,14 +48,11 @@ public record UtilitaireRequestDto(
 
         @Schema(description = "Poids total autorisé en charge (PTAC) de l'utilitaire en kg", example = "3500")
         @NotNull
-        Integer poidsPATC,
+        Double poidsPATC,
 
         @Schema(description = "Capacité en m3 de l'utilitaire", example = "12")
         @NotNull
         Integer capaciteM3,
-
-        @Schema(description = "Liste des permis requis pour conduire l'utilitaire")
-        List<Permis> listePermis,
 
         @Schema(description = "Tarif journalier de l'utilitaire", example = "80")
         @NotNull
