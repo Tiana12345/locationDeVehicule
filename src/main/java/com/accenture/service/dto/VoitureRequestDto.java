@@ -46,9 +46,6 @@ public record VoitureRequestDto(
         @NotNull
         Integer nombreDeBagages,
 
-        @Schema(description = "Liste des permis requis pour conduire la voiture")
-        List<Permis> listePermis,
-
         @Schema(description = "Type de carburant de la voiture", example = "ESSENCE")
         Carburant carburant,
 

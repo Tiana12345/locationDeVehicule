@@ -24,6 +24,6 @@ public interface VoitureService {
     void supprimer(Long id) throws EntityNotFoundException;
 
     List<VoitureResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant, Integer nombreDePortes,
-                                        String transmission, Boolean clim, Integer nombreDeBagages, String type, List<Permis> listePermis, Long tarifJournalier,
+                                        String transmission, Boolean clim, Integer nombreDeBagages, String type,Permis permis, Long tarifJournalier,
                                         Long kilometrage, Boolean actif, Boolean retireDuParc);
 }

@@ -4,6 +4,8 @@ import com.accenture.model.param.Carburant;
 import com.accenture.model.param.Permis;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,8 +27,9 @@ public class Voiture extends Vehicule {
     private String transmission;
     private Boolean clim;
     private Integer nombreDeBagages;
-    @ElementCollection
-    private List<Permis> listePermis;
+    @Enumerated(EnumType.STRING)
+    private Permis permis;
+    @Enumerated(EnumType.STRING)
     private Carburant carburant;
 
 }

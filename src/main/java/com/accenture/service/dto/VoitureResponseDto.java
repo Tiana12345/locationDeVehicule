@@ -38,8 +38,8 @@ public record VoitureResponseDto(
         @Schema(description = "Nombre de bagages que la voiture peut contenir", example = "5")
         Integer nombreDeBagages,
 
-        @Schema(description = "Liste des permis requis pour conduire la voiture")
-        List<Permis> listePermis,
+        @Schema(description = "Permis requis pour conduire la voiture")
+        Permis permis,
 
         @Schema(description = "Type de carburant de la voiture", example = "ESSENCE")
         Carburant carburant,

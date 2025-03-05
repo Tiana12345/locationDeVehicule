@@ -125,16 +125,16 @@ public class VoitureController {
             @Parameter(description = "Climatisation de la voiture") @RequestParam(required = false) Boolean clim,
             @Parameter(description = "Nombre de bagages que la voiture peut contenir") @RequestParam(required = false) Integer nombreDeBagages,
             @Parameter(description = "Type de la voiture") @RequestParam(required = false) String type,
-            @Parameter(description = "Liste des permis requis pour conduire la voiture") @RequestParam(required = false) List<Permis> listePermis,
+            @Parameter(description = "Permis requis pour conduire la voiture") @RequestParam(required = false) Permis permis,
             @Parameter(description = "Tarif journalier de la voiture") @RequestParam(required = false) Long tarifJournalier,
             @Parameter(description = "Kilométrage de la voiture") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "Statut actif de la voiture") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = false) Boolean retireDuParc
     ) {
-        logger.info("Recherche de voitures avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlaces={}, carburant={}, nombreDePortes={}, transmission={}, clim={}, nombreDeBagages={}, type={}, listePermis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
-                id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+        logger.info("Recherche de voitures avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlaces={}, carburant={}, nombreDePortes={}, transmission={}, clim={}, nombreDeBagages={}, type={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+                id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<VoitureResponseDto> voitures = voitureService.rechercher(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim,
-                nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc);
+                nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         logger.info("Nombre de voitures trouvées : {}", voitures.size());
         return voitures;
     }

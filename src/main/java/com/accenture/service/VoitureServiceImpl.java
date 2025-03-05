@@ -63,7 +63,12 @@ public class VoitureServiceImpl implements VoitureService {
         verifVoiture(voitureRequestDto);
 
         Voiture voiture = voitureMapper.toVoiture(voitureRequestDto);
-
+        if (voiture.getNombreDePlaces()<= 9) {
+        voiture.setPermis(Permis.B);
+        }
+        else {
+            voiture.setPermis(Permis.D1);
+        }
         Voiture voitureEnreg = voitureDao.save(voiture);
         return voitureMapper.toVoitureResponseDto(voitureEnreg);
     }
@@ -176,13 +181,13 @@ public class VoitureServiceImpl implements VoitureService {
     @Override
     public List<VoitureResponseDto> rechercher(Long id, String marque, String modele, String couleur, Integer nombreDePlaces,
                                                Carburant carburant, Integer nombreDePortes, String transmission, Boolean clim,
-                                               Integer nombreDeBagages, String type, List<Permis> listePermis, Long tarifJournalier,
+                                               Integer nombreDeBagages, String type,Permis permis, Long tarifJournalier,
                                                Long kilometrage, Boolean actif, Boolean retireDuParc) {
 
         List<Voiture> liste = voitureDao.findAll();
 
 
-        liste = rechercheVoiture(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, listePermis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
+        liste = rechercheVoiture(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
         return liste.stream()
                 // .sorted(Comparator.comparing(Voiture::getModele))
@@ -215,8 +220,6 @@ public class VoitureServiceImpl implements VoitureService {
             throw new VehiculeException("Vous devez ajouter le nombre de bagages de la voiture");
         if (voitureRequestDto.type() == null || voitureRequestDto.type().isBlank())
             throw new VehiculeException("Vous devez ajouter le type de la voiture");
-        if (voitureRequestDto.listePermis() == null || voitureRequestDto.listePermis().isEmpty())
-            throw new VehiculeException("Vous devez ajouter les permis requis pour la voiture");
         if (voitureRequestDto.tarifJournalier() <= 0)
             throw new VehiculeException("Vous devez ajouter le tarif journalier de la voiture");
         if (voitureRequestDto.kilometrage() < 0)
@@ -248,8 +251,6 @@ public class VoitureServiceImpl implements VoitureService {
             voitureExistante.setNombreDeBagages(voiture.getNombreDeBagages());
         if (voiture.getType() != null && voiture.getType().isBlank())
             voitureExistante.setType(voiture.getType());
-        if (voiture.getListePermis() != null && !voiture.getListePermis().isEmpty())
-            voitureExistante.setListePermis(voiture.getListePermis());
         if (voiture.getTarifJournalier() > 0)
             voitureExistante.setTarifJournalier(voiture.getTarifJournalier());
         if (voiture.getKilometrage() >= 0)
@@ -262,7 +263,7 @@ public class VoitureServiceImpl implements VoitureService {
 
     private static List<Voiture> rechercheVoiture(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant,
                                                   Integer nombreDePortes, String transmission, Boolean clim, Integer nombreDeBagages, String type,
-                                                  List<Permis> listePermis, Long tarifJournalier, Long kilometrage, Boolean actif, Boolean retireDuParc,
+                                                  Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif, Boolean retireDuParc,
                                                   List<Voiture> liste) throws VehiculeException {
         logger.debug("Initial list size: {}", liste.size());
         if (id != null && id != 0) {
@@ -335,10 +336,9 @@ public class VoitureServiceImpl implements VoitureService {
             logger.debug("List size after filtering by type: {}", liste.size());
 
         }
-        if (listePermis != null && !listePermis.isEmpty()) {
-            Permis permis = listePermis.get(0);
+        if (permis != null ) {
             liste = liste.stream()
-                    .filter(voiture -> voiture.getListePermis().contains(permis))
+                    .filter(voiture -> voiture.getPermis() == permis)
                     .collect(Collectors.toList());
             logger.debug("List size after filtering by permis: {}", liste.size());
 
