@@ -4,8 +4,6 @@ import com.accenture.model.param.Carburant;
 import com.accenture.model.param.Permis;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
-
 @Schema(description = "Détails de l'utilitaire")
 public record UtilitaireResponseDto(
         @Schema(description = "ID de l'utilitaire", example = "1")
@@ -38,8 +36,8 @@ public record UtilitaireResponseDto(
         @Schema(description = "Charge maximale de l'utilitaire en kg", example = "1500")
         Integer chargeMax,
 
-        @Schema(description = "Poids total autorisé en charge (PTAC) de l'utilitaire en kg", example = "3500")
-        Double poidsPATC,
+        @Schema(description = "Poids total autorisé en charge (PTAC) de l'utilitaire en T", example = "3.5")
+        Double poidsPTAC,
 
         @Schema(description = "Capacité en m3 de l'utilitaire", example = "12")
         Integer capaciteM3,

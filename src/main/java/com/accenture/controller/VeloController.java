@@ -5,12 +5,15 @@ import com.accenture.service.dto.VeloRequestDto;
 import com.accenture.service.dto.VeloResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 
 import java.util.List;
 
@@ -18,14 +21,13 @@ import java.util.List;
  * Contrôleur pour gérer les opérations liées aux vélos.
  */
 
-
+@Slf4j
 @RestController
 @RequestMapping("/velos")
 @Tag(name = "Velos", description = "Gestion des velos")
 public class VeloController {
 
     private final VeloService veloService;
-    private Logger logger = LoggerFactory.getLogger(VeloController.class);
 
     public VeloController(VeloService veloService) {
         this.veloService = veloService;
@@ -37,12 +39,24 @@ public class VeloController {
      * @param veloRequestDto les détails du vélo à ajouter
      * @return les détails du vélo ajouté
      */
-    @Operation(summary = "Ajouter un nouveau vélo")
     @PostMapping
-    public ResponseEntity<VeloResponseDto> ajouter(@RequestBody VeloRequestDto veloRequestDto) {
-        logger.info("Ajout d'un nouveau vélo : {}", veloRequestDto);
+    @Operation(summary = "Ajouter un nouveau vélo", description = "Ajoute un nouveau vélo à la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Vélo créé avec succès"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide")
+    })
+    public ResponseEntity<VeloResponseDto> ajouter(
+            @Parameter(description = "Détails du vélo à ajouter", required = false) @RequestBody @Valid VeloRequestDto veloRequestDto,
+            @Parameter(description = "Marque du vélo") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle du vélo") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur du vélo") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Nombre de vitesses du vélo") @RequestParam(required = false) Integer nombreDeVitesses,
+            @Parameter(description = "Type de frein du vélo") @RequestParam(required = false) String typeDeFrein,
+            @Parameter(description = "Taille du cadre du vélo") @RequestParam(required = false) String tailleDuCadre,
+            @Parameter(description = "Type de suspension du vélo") @RequestParam(required = false) String typeDeSuspension) {
+        log.info("Ajout d'un nouveau vélo : {}", veloRequestDto);
         VeloResponseDto veloResponseDto = veloService.ajouter(veloRequestDto);
-        logger.info("Vélo ajouté avec succès : {}", veloResponseDto);
+        log.info("Vélo ajouté avec succès : {}", veloResponseDto);
         return ResponseEntity.ok(veloResponseDto);
     }
 
@@ -55,13 +69,13 @@ public class VeloController {
     @Operation(summary = "Trouver un vélo par son identifiant")
     @GetMapping("/{id}")
     public ResponseEntity<VeloResponseDto> trouver(@Parameter(description = "Identifiant du vélo") @PathVariable long id) {
-        logger.info("Recherche du vélo avec ID : {}", id);
+        log.info("Recherche du vélo avec ID : {}", id);
         VeloResponseDto veloResponseDto = veloService.trouver(id);
         if (veloResponseDto != null) {
-            logger.info("Vélo trouvé : {}", veloResponseDto);
+            log.info("Vélo trouvé : {}", veloResponseDto);
             return ResponseEntity.ok(veloResponseDto);
         } else {
-            logger.error("Vélo non trouvé avec ID : {}", id);
+            log.error("Vélo non trouvé avec ID : {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -74,9 +88,9 @@ public class VeloController {
     @Operation(summary = "Trouver tous les vélos")
     @GetMapping
     public ResponseEntity<List<VeloResponseDto>> trouverToutes() {
-        logger.info("Recherche de tous les vélos");
+        log.info("Recherche de tous les vélos");
         List<VeloResponseDto> velos = veloService.trouverToutes();
-        logger.info("Nombre de vélos trouvés : {}", velos.size());
+        log.info("Nombre de vélos trouvés : {}", velos.size());
         return ResponseEntity.ok(velos);
     }
 
@@ -87,12 +101,25 @@ public class VeloController {
      * @param veloRequestDto les détails du vélo à modifier
      * @return les détails du vélo modifié
      */
-    @Operation(summary = "Modifier partiellement un vélo")
     @PatchMapping("/{id}")
-    public ResponseEntity<VeloResponseDto> modifierPartiellement(@Parameter(description = "Identifiant du vélo") @PathVariable Long id, @RequestBody VeloRequestDto veloRequestDto) {
-        logger.info("Modification partielle du vélo avec ID : {}", id);
+    @Operation(summary = "Modifier partiellement un vélo", description = "Met à jour partiellement les détails d'un vélo existant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Vélo mis à jour avec succès"),
+            @ApiResponse(responseCode = "404", description = "Vélo non trouvé")
+    })
+    public ResponseEntity<VeloResponseDto> modifierPartiellement(
+            @Parameter(description = "Identifiant du vélo", required = false) @PathVariable Long id,
+            @Parameter(description = "Détails du vélo à modifier", required = false) @RequestBody VeloRequestDto veloRequestDto,
+            @Parameter(description = "Marque du vélo") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle du vélo") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur du vélo") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Nombre de vitesses du vélo") @RequestParam(required = false) Integer nombreDeVitesses,
+            @Parameter(description = "Type de frein du vélo") @RequestParam(required = false) String typeDeFrein,
+            @Parameter(description = "Taille du cadre du vélo") @RequestParam(required = false) String tailleDuCadre,
+            @Parameter(description = "Type de suspension du vélo") @RequestParam(required = false) String typeDeSuspension) {
+        log.info("Modification partielle du vélo avec ID : {}", id);
         VeloResponseDto veloResponseDto = veloService.modifierPartiellement(id, veloRequestDto);
-        logger.info("Vélo modifié avec succès : {}", veloResponseDto);
+        log.info("Vélo modifié avec succès : {}", veloResponseDto);
         return ResponseEntity.ok(veloResponseDto);
     }
 
@@ -105,9 +132,9 @@ public class VeloController {
     @Operation(summary = "Supprimer un vélo par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant du vélo") @PathVariable Long id) {
-        logger.info("Suppression du vélo avec ID : {}", id);
+        log.info("Suppression du vélo avec ID : {}", id);
         veloService.supprimer(id);
-        logger.info("Vélo supprimé avec succès : {}", id);
+        log.info("Vélo supprimé avec succès : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -147,10 +174,10 @@ public class VeloController {
             @Parameter(description = "Kilométrage du vélo") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "Le vélo est-il actif") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "Le vélo est-il retiré du parc") @RequestParam(required = false) Boolean retireDuParc) {
-        logger.info("Recherche de vélos avec les critères : id={}, marque={}, modele={}, couleur={}, tailleCadre={}, poids={}, electrique={}, capaciteBatterie={}, autonomie={}, freinsADisque={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+        log.info("Recherche de vélos avec les critères : id={}, marque={}, modele={}, couleur={}, tailleCadre={}, poids={}, electrique={}, capaciteBatterie={}, autonomie={}, freinsADisque={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
                 id, marque, modele, couleur, tailleCadre, poids, electrique, capaciteBatterie, autonomie, freinsADisque, tarifJournalier, kilometrage, actif, retireDuParc);
         List<VeloResponseDto> velos = veloService.rechercher(id, marque, modele, couleur, tailleCadre, poids, electrique, capaciteBatterie, autonomie, freinsADisque, tarifJournalier, kilometrage, actif, retireDuParc);
-        logger.info("Nombre de vélos trouvés : {}", velos.size());
+        log.info("Nombre de vélos trouvés : {}", velos.size());
         return ResponseEntity.ok(velos);
     }
 }

@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Classe d'implémentation du service de gestion des clients.
@@ -98,27 +97,6 @@ public class ClientServiceImpl implements ClientService {
                 .toList();
     }
 
-    /**
-     * Méthode pour modifier tous les paramètres d'un client.
-     *
-     * @param mail             l'adresse email du client à modifier
-     * @param clientRequestDto l'objet contenant les nouvelles informations du client
-     * @return un objet ClientResponseDto contenant les informations du client modifié
-     * @throws UtilisateurException    si une erreur survient lors de la modification du client
-     * @throws EntityNotFoundException si aucun client n'est trouvé avec cette adresse email
-     */
-
-    @Override
-    public ClientResponseDto modifier(String mail, ClientRequestDto clientRequestDto) throws UtilisateurException, EntityNotFoundException {
-        if (!clientDao.existsById(mail))
-            throw new UtilisateurException("Erreur, l'identifiant ne correspond pas");
-        verifClient(clientRequestDto);
-
-        Client client = clientMapper.toClient(clientRequestDto);
-        client.setMail(mail);
-        Client clientEnreg = clientDao.save(client);
-        return clientMapper.toClientResponseDto(clientEnreg);
-    }
 
     /**
      * Méthode pour modifier un ou plusieurs paramètres d'un compte client.
@@ -183,115 +161,142 @@ public class ClientServiceImpl implements ClientService {
                                               LocalDate dateInscription) throws UtilisateurException {
         List<Client> liste = clientDao.findAll();
 
-        if (liste == null) {
-            throw new UtilisateurException("La méthode findAll a retourné null !");
-        }
-        if (clientDao == null) {
-            throw new UtilisateurException("clientdao n'est pas initialisé !");
-        }
-        if (clientMapper == null) {
-            throw new UtilisateurException("clientMapper n'est pas initialisé !");
-        }
-
         liste = rechercheClient(mail, prenom, nom, dateNaissance, rue, codePostal, ville, desactive, listePermis, dateInscription, liste);
 
         return liste.stream()
                 .map(clientMapper::toClientResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     //______________________________________________________________________________________________________________________
 //    METHODES PRIVEES
 //_______________________________________________________________________________________________________________________
     private static List<Client> rechercheClient(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription, List<Client> liste) {
+
+        if (listePermis != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getListePermis().equals(listePermis))
+                    .toList();
+        }
+        if (liste == null)
+            throw new UtilisateurException("Un critère de recherche est obligatoire ! ");
+
+        liste = rechercheClientParProprieteCompte(desactive, dateInscription, liste);
+        liste = rechercheClientParPropriete(mail, prenom, nom, dateNaissance, liste);
+        liste = rechercherClientParAdresse(rue, codePostal, ville, liste);
+
+        return liste;
+    }
+
+    private static List<Client> rechercheClientParProprieteCompte(Boolean desactive, LocalDate dateInscription, List<Client> liste) {
+        if (desactive != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getDesactive().equals(desactive))
+                    .toList();
+        }
+
+        if (dateInscription != null) {
+            liste = liste.stream()
+                    .filter(client -> client.getDateInscription().equals(dateInscription))
+                    .toList();
+        }
+        return liste;
+    }
+
+    private static List<Client> rechercheClientParPropriete(String mail, String prenom, String nom, LocalDate dateNaissance, List<Client> liste) {
         if (mail != null) {
             liste = liste.stream()
                     .filter(client -> client.getMail().contains(mail))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (prenom != null) {
             liste = liste.stream()
                     .filter(client -> client.getPrenom().contains(prenom))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (nom != null) {
             liste = liste.stream()
                     .filter(client -> client.getNom().contains(nom))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (dateNaissance != null) {
             liste = liste.stream()
                     .filter(client -> client.getDateNaissance().equals(dateNaissance))
-                    .collect(Collectors.toList());
+                    .toList();
         }
+        return liste;
+    }
+
+    private static List<Client> rechercherClientParAdresse(String rue, String codePostal, String ville, List<Client> liste) {
         if (rue != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getRue().equals(rue))
-                    .collect(Collectors.toList());
+                    .toList();
         }
-        if (rue != null) {
+        if (codePostal != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getCodePostal().equals(codePostal))
-                    .collect(Collectors.toList());
+                    .toList();
         }
-        if (rue != null) {
+        if (ville != null) {
             liste = liste.stream()
                     .filter(client -> client.getAdresse().getVille().equals(ville))
-                    .collect(Collectors.toList());
+                    .toList();
         }
-        if (desactive != null) {
-            liste = liste.stream()
-                    .filter(client -> client.getDesactive().equals(desactive))
-                    .collect(Collectors.toList());
-        }
-        if (listePermis != null) {
-            liste = liste.stream()
-                    .filter(client -> client.getListePermis().equals(listePermis))
-                    .collect(Collectors.toList());
-        }
-        if (dateInscription != null) {
-            liste = liste.stream()
-                    .filter(client -> client.getDateInscription().equals(dateInscription))
-                    .collect(Collectors.toList());
-        }
-        if (liste == null)
-            throw new UtilisateurException("Un critère de recherche est obligatoire ! ");
         return liste;
     }
 
 
-    static void verifClient(ClientRequestDto clientRequestDto) {
+    private static void verifClient(ClientRequestDto clientRequestDto) {
         if (clientRequestDto == null)
             throw new UtilisateurException("Le clientRequestDto est null");
+        verifClientAuth(clientRequestDto);
+        verifProprieteClient(clientRequestDto);
+        verifClientAdresse(clientRequestDto);
+    }
+
+    private static void verifClientAuth(ClientRequestDto clientRequestDto) {
+        if (clientRequestDto.mail() == null || clientRequestDto.mail().isBlank())
+            throw new UtilisateurException("L'adresse mail est obligatoire");
+        if (!clientRequestDto.password().matches(REGEX_PW) || clientRequestDto.password().isBlank())
+            throw new UtilisateurException("Le mot de passe est obligatoire et doit correspondre au type demandé");
+    }
+
+    private static void verifProprieteClient(ClientRequestDto clientRequestDto) {
         if (clientRequestDto.nom() == null || clientRequestDto.nom().isBlank())
             throw new UtilisateurException("Le nom est obligatoire");
         if (clientRequestDto.prenom() == null || clientRequestDto.prenom().isBlank())
             throw new UtilisateurException("Le prenom est obligatoire");
+        if (clientRequestDto.dateNaissance() == null)
+            throw new UtilisateurException("La date de naissance est obligatoire");
+        if (clientRequestDto.dateNaissance().isAfter(LocalDate.now().minusYears(18)))
+            throw new UtilisateurException("Vous devez avoir au moins 18 ans pour vous inscrire");
+    }
+
+    private static void verifClientAdresse(ClientRequestDto clientRequestDto) {
         if (clientRequestDto.adresse().rue() == null || clientRequestDto.adresse().rue().isBlank())
             throw new UtilisateurException("Vous devez renseigner le nom de votre rue");
         if (clientRequestDto.adresse().codePostal() == null || clientRequestDto.adresse().codePostal().isBlank())
             throw new UtilisateurException("Vous devez renseigner votre code postal");
         if (clientRequestDto.adresse().ville() == null || clientRequestDto.adresse().ville().isBlank())
             throw new UtilisateurException("Vous devez renseigner le nom de votre ville");
-        if (clientRequestDto.mail() == null || clientRequestDto.mail().isBlank())
-            throw new UtilisateurException("L'adresse mail est obligatoire");
-        if (!clientRequestDto.password().matches(REGEX_PW) || clientRequestDto.password().isBlank())
-            throw new UtilisateurException("Le mot de passe est obligatoire et doit correspondre au type demandé");
-        if (clientRequestDto.dateNaissance() == null)
-            throw new UtilisateurException("La date de naissance est obligatoire");
-        if (clientRequestDto.dateNaissance().isAfter(LocalDate.now().minusYears(18)))
-            throw new UtilisateurException("Vous devez avoir au moins 18 ans pour vous inscrire");
-        LocalDate dateDeReference = LocalDate.now().minusYears(18);
-//        if (clientRequestDto.dateDeNaissance().isBefore(dateDeReference) || clientRequestDto.dateDeNaissance().isEqual(dateDeReference))
-//            throw new UtilisateurException("Vous devez avoir plus de 18 ans pour vous incrire");
     }
 
     private static void remplacer(Client client, Client clientExistant) {
+        remplacerClientAdresse(client, clientExistant);
+        remplacerClientIdentite(client, clientExistant);
+        remplacerClientAuth(client, clientExistant);
+    }
+
+    private static void remplacerClientIdentite(Client client, Client clientExistant) {
         if (client.getNom() != null && !client.getNom().isBlank())
             clientExistant.setNom(client.getNom());
         if (client.getPrenom() != null && !client.getPrenom().isBlank())
             clientExistant.setPrenom(client.getPrenom());
+        if (client.getDateNaissance() != null)
+            clientExistant.setDateNaissance(client.getDateNaissance());}
 
+    private static void remplacerClientAdresse(Client client, Client clientExistant) {
         if (client.getAdresse() != null) {
             if (client.getAdresse().getRue() != null && !client.getAdresse().getRue().isBlank())
                 clientExistant.getAdresse().setRue(client.getAdresse().getRue());
@@ -300,12 +305,12 @@ public class ClientServiceImpl implements ClientService {
             if (client.getAdresse().getVille() != null && !client.getAdresse().getVille().isBlank())
                 clientExistant.getAdresse().setVille(client.getAdresse().getVille());
         }
-
+    }
+    private static void remplacerClientAuth(Client client, Client clientExistant) {
         if (client.getMail() != null && !client.getMail().isBlank())
             clientExistant.setMail(client.getMail());
         if (client.getPassword() != null && !client.getPassword().isBlank())
             clientExistant.setPassword(client.getPassword());
-        if (client.getDateNaissance() != null)
-            clientExistant.setDateNaissance(client.getDateNaissance());
     }
+   
 }

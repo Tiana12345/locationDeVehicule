@@ -7,8 +7,6 @@ import com.accenture.service.dto.LocationRequestDto;
 import com.accenture.service.dto.LocationResponseDto;
 import com.accenture.service.mapper.LocationMapper;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +17,6 @@ public class LocationServiceImpl implements LocationService {
 
     private final LocationDao locationDao;
     private final LocationMapper locationMapper;
-    private static final Logger logger = LoggerFactory.getLogger(LocationServiceImpl.class);
 
 
     public LocationServiceImpl(LocationDao locationDao, LocationMapper locationMapper) {
@@ -49,9 +46,9 @@ public class LocationServiceImpl implements LocationService {
     private static void verifLocation(LocationRequestDto locationRequestDto) {
         if (locationRequestDto == null)
             throw new LocationException("La locationRequestDto est null");
-        if (locationRequestDto.clientMail() == null || locationRequestDto.clientMail().isBlank())
+        if (locationRequestDto.clientMail() == null )
             throw new LocationException("Vous devez ajouter l'email du client");
-        if (locationRequestDto.idVehicule() == null)
+        if (locationRequestDto.vehiculeId() == null)
             throw new LocationException("Vous devez ajouter l'id du  véhicule");
         if (locationRequestDto.dateDebut() == null)
             throw new LocationException("Vous devez ajouter la date de début de la location");
@@ -61,8 +58,6 @@ public class LocationServiceImpl implements LocationService {
             throw new LocationException("Vous devez ajouter les kilomètres parcourus");
         if (locationRequestDto.montantTotal() <= 0)
             throw new LocationException("Vous devez ajouter le montant total de la location");
-        if (locationRequestDto.dateValidation() == null)
-            throw new LocationException("Vous devez ajouter la date de validation de la location");
         if (locationRequestDto.etat() == null)
             throw new LocationException("Vous devez ajouter l'état de la location");
     }

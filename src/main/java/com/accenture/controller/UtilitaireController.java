@@ -7,9 +7,11 @@ import com.accenture.service.dto.UtilitaireRequestDto;
 import com.accenture.service.dto.UtilitaireResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +21,13 @@ import java.util.List;
 /**
  * Contrôleur pour gérer les opérations liées aux utilitaires.
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/utilitaires")
 @Tag(name = "Utilitaires", description = "Gestion des utilitaires")
 public class UtilitaireController {
 
     private final UtilitaireService utilitaireService;
-    private Logger logger = LoggerFactory.getLogger(UtilitaireController.class);
 
     public UtilitaireController(UtilitaireService utilitaireService) {
         this.utilitaireService = utilitaireService;
@@ -38,12 +39,32 @@ public class UtilitaireController {
      * @param utilitaireRequestDto les détails de l'utilitaire à ajouter
      * @return les détails de l'utilitaire ajouté
      */
-    @Operation(summary = "Ajouter un nouvel utilitaire")
     @PostMapping
-    public ResponseEntity<UtilitaireResponseDto> ajouter(@RequestBody UtilitaireRequestDto utilitaireRequestDto) {
-        logger.info("Ajout d'un nouvel utilitaire : {}", utilitaireRequestDto);
+    @Operation(summary = "Ajouter un nouvel utilitaire", description = "Ajoute un nouvel utilitaire à la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Utilitaire créé avec succès"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide")
+    })
+    public ResponseEntity<UtilitaireResponseDto> ajouter(
+            @Parameter(description = "Détails de l'utilitaire à ajouter", required = true) @RequestBody @Valid UtilitaireRequestDto utilitaireRequestDto,
+            @Parameter(description = "Marque de l'utilitaire") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de l'utilitaire") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur de l'utilitaire") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Type de l'utilitaire") @RequestParam(required = false) String type,
+            @Parameter(description = "Nombre de places dans l'utilitaire") @RequestParam(required = false) Integer nombreDePlace,
+            @Parameter(description = "Type de carburant de l'utilitaire") @RequestParam(required = false) Carburant carburant,
+            @Parameter(description = "Transmission de l'utilitaire") @RequestParam(required = false) String transmission,
+            @Parameter(description = "Climatisation de l'utilitaire") @RequestParam(required = false) Boolean clim,
+            @Parameter(description = "Charge maximale de l'utilitaire") @RequestParam(required = false) Integer chargeMax,
+            @Parameter(description = "Poids total autorisé en charge (PTAC) de l'utilitaire") @RequestParam(required = false) Double poidsPATC,
+            @Parameter(description = "Capacité en mètres cubes de l'utilitaire") @RequestParam(required = false) Integer capaciteM3,
+            @Parameter(description = "Tarif journalier de l'utilitaire") @RequestParam(required = false) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = false) Long kilometrage,
+            @Parameter(description = "Statut actif de l'utilitaire") @RequestParam(required = false) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de l'utilitaire") @RequestParam(required = false) Boolean retireDuParc) {
+        log.info("Ajout d'un nouvel utilitaire : {}", utilitaireRequestDto);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.ajouter(utilitaireRequestDto);
-        logger.info("Utilitaire ajouté avec succès : {}", utilitaireResponseDto);
+        log.info("Utilitaire ajouté avec succès : {}", utilitaireResponseDto);
         return ResponseEntity.ok(utilitaireResponseDto);
     }
 
@@ -56,13 +77,13 @@ public class UtilitaireController {
     @Operation(summary = "Trouver un utilitaire par son identifiant")
     @GetMapping("/{id}")
     public ResponseEntity<UtilitaireResponseDto> trouver(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable long id) {
-        logger.info("Recherche de l'utilitaire avec ID : {}", id);
+        log.info("Recherche de l'utilitaire avec ID : {}", id);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.trouver(id);
         if (utilitaireResponseDto != null) {
-            logger.info("Utilitaire trouvé : {}", utilitaireResponseDto);
+            log.info("Utilitaire trouvé : {}", utilitaireResponseDto);
             return ResponseEntity.ok(utilitaireResponseDto);
         } else {
-            logger.error("Utilitaire non trouvé avec ID : {}", id);
+            log.error("Utilitaire non trouvé avec ID : {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -75,9 +96,9 @@ public class UtilitaireController {
     @Operation(summary = "Trouver tous les utilitaires")
     @GetMapping
     public ResponseEntity<List<UtilitaireResponseDto>> trouverToutes() {
-        logger.info("Recherche de tous les utilitaires");
+        log.info("Recherche de tous les utilitaires");
         List<UtilitaireResponseDto> utilitaires = utilitaireService.trouverToutes();
-        logger.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
+        log.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
         return ResponseEntity.ok(utilitaires);
     }
 
@@ -88,12 +109,33 @@ public class UtilitaireController {
      * @param utilitaireRequestDto les détails de l'utilitaire à modifier
      * @return les détails de l'utilitaire modifié
      */
-    @Operation(summary = "Modifier partiellement un utilitaire")
     @PatchMapping("/{id}")
-    public ResponseEntity<UtilitaireResponseDto> modifierPartiellement(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable Long id, @RequestBody UtilitaireRequestDto utilitaireRequestDto) {
-        logger.info("Modification partielle de l'utilitaire avec ID : {}", id);
+    @Operation(summary = "Modifier partiellement un utilitaire", description = "Met à jour partiellement les détails d'un utilitaire existant")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Utilitaire mis à jour avec succès"),
+            @ApiResponse(responseCode = "404", description = "Utilitaire non trouvé")
+    })
+    public ResponseEntity<UtilitaireResponseDto> modifierPartiellement(
+            @Parameter(description = "Identifiant de l'utilitaire", required = true) @PathVariable Long id,
+            @Parameter(description = "Détails de l'utilitaire à modifier", required = true) @RequestBody UtilitaireRequestDto utilitaireRequestDto,
+            @Parameter(description = "Marque de l'utilitaire") @RequestParam(required = true) String marque,
+            @Parameter(description = "Modèle de l'utilitaire") @RequestParam(required = true) String modele,
+            @Parameter(description = "Couleur de l'utilitaire") @RequestParam(required = true) String couleur,
+            @Parameter(description = "Type de l'utilitaire") @RequestParam(required = true) String type,
+            @Parameter(description = "Nombre de places dans l'utilitaire") @RequestParam(required = true) Integer nombreDePlace,
+            @Parameter(description = "Type de carburant de l'utilitaire") @RequestParam(required = true) Carburant carburant,
+            @Parameter(description = "Transmission de l'utilitaire") @RequestParam(required = true) String transmission,
+            @Parameter(description = "Climatisation de l'utilitaire") @RequestParam(required = true) Boolean clim,
+            @Parameter(description = "Charge maximale de l'utilitaire") @RequestParam(required = true) Integer chargeMax,
+            @Parameter(description = "Poids total autorisé en charge (PTAC) de l'utilitaire") @RequestParam(required = true) Double poidsPATC,
+            @Parameter(description = "Capacité en mètres cubes de l'utilitaire") @RequestParam(required = true) Integer capaciteM3,
+            @Parameter(description = "Tarif journalier de l'utilitaire") @RequestParam(required = true) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = true) Long kilometrage,
+            @Parameter(description = "Statut actif de l'utilitaire") @RequestParam(required = true) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de l'utilitaire") @RequestParam(required = true) Boolean retireDuParc) {
+        log.info("Modification partielle de l'utilitaire avec ID : {}", id);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.modifierPartiellement(id, utilitaireRequestDto);
-        logger.info("Utilitaire modifié avec succès : {}", utilitaireResponseDto);
+        log.info("Utilitaire modifié avec succès : {}", utilitaireResponseDto);
         return ResponseEntity.ok(utilitaireResponseDto);
     }
 
@@ -106,9 +148,9 @@ public class UtilitaireController {
     @Operation(summary = "Supprimer un utilitaire par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant de l'utilitaire") @PathVariable Long id) {
-        logger.info("Suppression de l'utilitaire avec ID : {}", id);
+        log.info("Suppression de l'utilitaire avec ID : {}", id);
         utilitaireService.supprimer(id);
-        logger.info("Utilitaire supprimé avec succès : {}", id);
+        log.info("Utilitaire supprimé avec succès : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -152,10 +194,10 @@ public class UtilitaireController {
             @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "L'utilitaire est-il actif") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "L'utilitaire est-il retiré du parc") @RequestParam(required = false) Boolean retireDuParc) {
-        logger.info("Recherche d'utilitaires avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlace={}, carburant={}, transmission={}, clim={}, chargeMax={}, poidsPATC={}, capaciteM3={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+        log.info("Recherche d'utilitaires avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlace={}, carburant={}, transmission={}, clim={}, chargeMax={}, poidsPATC={}, capaciteM3={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
                 id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<UtilitaireResponseDto> utilitaires = utilitaireService.rechercher(id, marque, modele, couleur, nombreDePlace, carburant, transmission, clim, chargeMax, poidsPATC, capaciteM3, permis, tarifJournalier, kilometrage, actif, retireDuParc);
-        logger.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
+        log.info("Nombre d'utilitaires trouvés : {}", utilitaires.size());
         return ResponseEntity.ok(utilitaires);
     }
 }

@@ -1,10 +1,13 @@
 package com.accenture.repository.entity;
 
+import com.accenture.model.param.Accessoires;
 import com.accenture.model.param.TypeVehiculeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -21,6 +24,8 @@ public abstract class Vehicule {
 
     @Enumerated(EnumType.STRING)
     private TypeVehiculeEnum typeVehiculeEnum;
+    @Enumerated(EnumType.STRING)
+    private List<Accessoires> listeAccessoires;
     private String marque;
     private String modele;
     private String couleur;
@@ -29,4 +34,11 @@ public abstract class Vehicule {
     private long kilometrage;
     private Boolean actif;
     private Boolean retireDuParc;
+
+
+    public void ajouterAccessoire(Accessoires accessoire) {
+        if (accessoire.getType() == this.typeVehiculeEnum) {
+            listeAccessoires.add(accessoire);
+        }
+    }
 }

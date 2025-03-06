@@ -4,7 +4,6 @@ import com.accenture.model.param.Carburant;
 import com.accenture.model.param.Permis;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.List;
 
 @Schema(description = "Détails de la voiture")
 public record VoitureResponseDto(

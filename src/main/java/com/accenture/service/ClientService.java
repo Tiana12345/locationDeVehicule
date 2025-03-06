@@ -18,11 +18,10 @@ public interface ClientService {
 
     List<ClientResponseDto> trouverTous();
 
-    ClientResponseDto modifier(String mail, ClientRequestDto clientRequestDto) throws UtilisateurException, EntityNotFoundException;
-
     ClientResponseDto modifierPartiellement(String mail, ClientRequestDto clientRequestDto) throws UtilisateurException, EntityNotFoundException;
 
     void supprimer(String mail) throws EntityNotFoundException;
 
-    List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal, String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription);
+    List<ClientResponseDto> rechercher(String mail, String prenom, String nom, LocalDate dateNaissance, String rue, String codePostal,
+                                       String ville, Boolean desactive, List<Permis> listePermis, LocalDate dateInscription);
 }

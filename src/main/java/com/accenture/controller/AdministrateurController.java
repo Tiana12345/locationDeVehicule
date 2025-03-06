@@ -9,8 +9,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +17,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
-
+@Slf4j
 @RestController
 @RequestMapping("/administrateurs")
 @Tag(name = "Administrateurs", description = "Gestion des administrateurs")
 public class AdministrateurController {
 
     private final AdministrateurService administrateurService;
-    private Logger logger = LoggerFactory.getLogger(AdministrateurController.class);
 
     public AdministrateurController(AdministrateurService administrateurService) {
         this.administrateurService = administrateurService;
@@ -37,15 +35,21 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "201", description = "Administrateur créé avec succès"),
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
-    ResponseEntity<Void> ajouter(@RequestBody @Valid AdministrateurRequestDto administrateurRequestDto) {
-        logger.info("Ajout d'un nouvel administrateur avec l'email : {}", administrateurRequestDto.mail());
+    public ResponseEntity<Void> ajouter(
+            @Parameter(description = "Détails de l'administrateur à ajouter", required = true) @RequestBody @Valid AdministrateurRequestDto administrateurRequestDto,
+            @Parameter(description = "Adresse email de l'administrateur") @RequestParam(required = false) String mail,
+            @Parameter(description = "Mot de passe de l'administrateur") @RequestParam(required = false) String password,
+            @Parameter(description = "Nom de l'administrateur") @RequestParam(required = false) String nom,
+            @Parameter(description = "Prénom de l'administrateur") @RequestParam(required = false) String prenom,
+            @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = false) String fonction) {
+        log.info("Ajout d'un nouvel administrateur avec l'email : {}", administrateurRequestDto.mail());
         AdministrateurResponseDto adminEnreg = administrateurService.ajouter(administrateurRequestDto);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")
                 .buildAndExpand(adminEnreg.mail())
                 .toUri();
-        logger.debug("Administrateur créé avec succès : {}", adminEnreg);
+        log.debug("Administrateur créé avec succès : {}", adminEnreg);
         return ResponseEntity.created(location).build();
     }
 
@@ -55,10 +59,16 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "200", description = "Administrateur mis à jour avec succès"),
             @ApiResponse(responseCode = "404", description = "Administrateur non trouvé")
     })
-    ResponseEntity<AdministrateurResponseDto> modifierPartiellement(@Parameter(description = "ID de l'administrateur à modifier") @PathVariable("id") String mail, @RequestBody AdministrateurRequestDto administrateurRequestDto) {
-        logger.info("Modification partielle de l'administrateur avec l'email : {}", mail);
+    public ResponseEntity<AdministrateurResponseDto> modifierPartiellement(
+            @Parameter(description = "ID de l'administrateur à modifier", required = true) @PathVariable("id") String mail,
+            @Parameter(description = "Détails de l'administrateur à modifier", required = true) @RequestBody AdministrateurRequestDto administrateurRequestDto,
+            @Parameter(description = "Mot de passe de l'administrateur") @RequestParam(required = false) String password,
+            @Parameter(description = "Nom de l'administrateur") @RequestParam(required = false) String nom,
+            @Parameter(description = "Prénom de l'administrateur") @RequestParam(required = false) String prenom,
+            @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = false) String fonction) {
+        log.info("Modification partielle de l'administrateur avec ID : {}", mail);
         AdministrateurResponseDto adminModifie = administrateurService.modifierPartiellement(mail, administrateurRequestDto);
-        logger.debug("Administrateur modifié avec succès : {}", adminModifie);
+        log.info("Administrateur mis à jour avec succès : {}", adminModifie);
         return ResponseEntity.ok(adminModifie);
     }
 
@@ -69,9 +79,9 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "404", description = "Administrateur non trouvé")
     })
     ResponseEntity<Void> supprimer(@Parameter(description = "ID de l'administrateur à supprimer") @PathVariable("id") String mail) {
-        logger.info("Suppression de l'administrateur avec l'email : {}", mail);
+        log.info("Suppression de l'administrateur avec l'email : {}", mail);
         administrateurService.supprimer(mail);
-        logger.debug("Administrateur supprimé avec succès");
+        log.debug("Administrateur supprimé avec succès");
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -86,9 +96,9 @@ public class AdministrateurController {
             @Parameter(description = "Nom de l'administrateur") @RequestParam(required = false) String nom,
             @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = false) String fonction
     ) {
-        logger.info("Recherche des administrateurs avec les critères - mail: {}, prenom: {}, nom: {}, fonction: {}", mail, prenom, nom, fonction);
+        log.info("Recherche des administrateurs avec les critères - mail: {}, prenom: {}, nom: {}, fonction: {}", mail, prenom, nom, fonction);
         List<AdministrateurResponseDto> resultats = administrateurService.rechercher(mail, prenom, nom, fonction);
-        logger.debug("Nombre d'administrateurs trouvés : {}", resultats.size());
+        log.debug("Nombre d'administrateurs trouvés : {}", resultats.size());
         return resultats;
     }
 }

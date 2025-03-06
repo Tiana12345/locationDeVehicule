@@ -1,6 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
+import com.accenture.model.param.Accessoires;
 import com.accenture.model.param.Permis;
 import com.accenture.repository.MotoDao;
 import com.accenture.repository.entity.Moto;
@@ -8,26 +9,25 @@ import com.accenture.service.dto.MotoRequestDto;
 import com.accenture.service.dto.MotoResponseDto;
 import com.accenture.service.mapper.MotoMapper;
 import jakarta.persistence.EntityNotFoundException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Classe d'implémentation du service de gestion des motos.
  * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des motos,
  * ainsi que pour rechercher des motos en fonction de plusieurs critères.
  */
-
+@Slf4j
 @Service
 public class MotoServiceImpl implements MotoService {
 
     private final MotoDao motoDao;
     private final MotoMapper motoMapper;
-    private static final Logger logger = LoggerFactory.getLogger(MotoServiceImpl.class);
 
     public MotoServiceImpl(MotoDao motoDao, MotoMapper motoMapper) {
         this.motoDao = motoDao;
@@ -54,6 +54,12 @@ public class MotoServiceImpl implements MotoService {
         } else {
             moto.setPermis(Permis.A);
         }
+
+        moto.ajouterAccessoire(Accessoires.CASQUE_MOTO);
+        moto.ajouterAccessoire(Accessoires.GANTS_MOTO);
+        moto.ajouterAccessoire(Accessoires.ANTIVOL_MOTO);
+        moto.ajouterAccessoire(Accessoires.PANTALON_PLUIE_MOTO);
+
         Moto motoEnreg = motoDao.save(moto);
         return motoMapper.toMotoResponseDto(motoEnreg);
     }
@@ -85,7 +91,7 @@ public class MotoServiceImpl implements MotoService {
     public List<MotoResponseDto> trouverToutes() {
         return motoDao.findAll().stream()
                 .map(motoMapper::toMotoResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -173,16 +179,26 @@ public class MotoServiceImpl implements MotoService {
 
         return liste.stream()
                 .map(motoMapper::toMotoResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static void verifMoto(MotoRequestDto motoRequestDto) {
         if (motoRequestDto == null)
             throw new VehiculeException("Le motoRequestDto est null");
+        verifMotoMarqueModele(motoRequestDto);
+        verifMotoCaracteristiques(motoRequestDto);
+        verifMotoTransmissionTarif(motoRequestDto);
+        verifMotoEtat(motoRequestDto);
+    }
+
+    private static void verifMotoMarqueModele(MotoRequestDto motoRequestDto) {
         if (motoRequestDto.marque() == null || motoRequestDto.marque().isBlank())
             throw new VehiculeException("Vous devez ajouter la marque de la moto");
         if (motoRequestDto.modele() == null || motoRequestDto.modele().isBlank())
             throw new VehiculeException("Vous devez ajouter le modèle de la moto");
+    }
+
+    private static void verifMotoCaracteristiques(MotoRequestDto motoRequestDto) {
         if (motoRequestDto.couleur() == null || motoRequestDto.couleur().isBlank())
             throw new VehiculeException("Vous devez ajouter la couleur de la moto");
         if (motoRequestDto.nombreCylindres() == null || motoRequestDto.nombreCylindres() <= 0)
@@ -193,23 +209,41 @@ public class MotoServiceImpl implements MotoService {
             throw new VehiculeException("Vous devez ajouter la puissance en kW de la moto");
         if (motoRequestDto.hauteurSelle() == null || motoRequestDto.hauteurSelle() <= 0)
             throw new VehiculeException("Vous devez ajouter la hauteur de selle de la moto");
+    }
+
+    private static void verifMotoTransmissionTarif(MotoRequestDto motoRequestDto) {
         if (motoRequestDto.transmission() == null || motoRequestDto.transmission().isBlank())
             throw new VehiculeException("Vous devez ajouter la transmission de la moto");
         if (motoRequestDto.tarifJournalier() <= 0)
             throw new VehiculeException("Vous devez ajouter le tarif journalier de la moto");
         if (motoRequestDto.kilometrage() < 0)
             throw new VehiculeException("Vous devez ajouter le kilométrage de la moto");
+    }
+
+    private static void verifMotoEtat(MotoRequestDto motoRequestDto) {
         if (motoRequestDto.actif() == null)
             throw new VehiculeException("Vous devez indiquer si la moto est active");
         if (motoRequestDto.retireDuParc() == null)
             throw new VehiculeException("Vous devez indiquer si la moto est retirée du parc");
     }
 
+
     private static void remplacer(Moto moto, Moto motoExistante) {
+        remplacerMarqueModele(moto, motoExistante);
+        remplacerCaracteristiques(moto, motoExistante);
+        remplacerTransmissionPermis(moto, motoExistante);
+        remplacerTarifKilometrage(moto, motoExistante);
+        remplacerEtat(moto, motoExistante);
+    }
+
+    private static void remplacerMarqueModele(Moto moto, Moto motoExistante) {
         if (moto.getMarque() != null && !moto.getMarque().isBlank())
             motoExistante.setMarque(moto.getMarque());
         if (moto.getModele() != null && !moto.getModele().isBlank())
             motoExistante.setModele(moto.getModele());
+    }
+
+    private static void remplacerCaracteristiques(Moto moto, Moto motoExistante) {
         if (moto.getCouleur() != null && !moto.getCouleur().isBlank())
             motoExistante.setCouleur(moto.getCouleur());
         if (moto.getNombreCylindres() != null && moto.getNombreCylindres() > 0)
@@ -220,109 +254,134 @@ public class MotoServiceImpl implements MotoService {
             motoExistante.setPuissanceEnkW(moto.getPuissanceEnkW());
         if (moto.getHauteurSelle() != null && moto.getHauteurSelle() > 0)
             motoExistante.setHauteurSelle(moto.getHauteurSelle());
+    }
+
+    private static void remplacerTransmissionPermis(Moto moto, Moto motoExistante) {
         if (moto.getTransmission() != null && !moto.getTransmission().isBlank())
             motoExistante.setTransmission(moto.getTransmission());
         if (moto.getPermis() != null)
             motoExistante.setPermis(moto.getPermis());
+    }
+
+    private static void remplacerTarifKilometrage(Moto moto, Moto motoExistante) {
         if (moto.getTarifJournalier() > 0)
             motoExistante.setTarifJournalier(moto.getTarifJournalier());
         if (moto.getKilometrage() >= 0)
             motoExistante.setKilometrage(moto.getKilometrage());
+    }
+
+    private static void remplacerEtat(Moto moto, Moto motoExistante) {
         if (moto.getActif() != null)
             motoExistante.setActif(moto.getActif());
         if (moto.getRetireDuParc() != null)
             motoExistante.setRetireDuParc(moto.getRetireDuParc());
     }
 
-    private static List<Moto> rechercheMoto(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
-                                            Integer poids, Integer puissanceEnkW, Integer hauteurSelle, String transmission,
-                                           Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif,
-                                            Boolean retireDuParc, List<Moto> liste) throws VehiculeException {
-        logger.debug("Initial list size: {}", liste.size());
+    private static List<Moto> filtrerParCaracteristiquesPhysiques(Integer poids, Integer puissanceEnkW, Integer hauteurSelle, List<Moto> liste) {
+        if (poids != null && poids > 0) {
+            liste = liste.stream()
+                    .filter(moto -> Objects.equals(moto.getPoids(), poids))
+                    .toList();
+            log.debug("List size after filtering by poids: {}", liste.size());
+        }
+        if (puissanceEnkW != null && puissanceEnkW > 0) {
+            liste = liste.stream()
+                    .filter(moto -> Objects.equals(moto.getPuissanceEnkW(), puissanceEnkW))
+                    .toList();
+            log.debug("List size after filtering by puissanceEnkW: {}", liste.size());
+        }
+        if (hauteurSelle != null && hauteurSelle > 0) {
+            liste = liste.stream()
+                    .filter(moto -> Objects.equals(moto.getHauteurSelle(), hauteurSelle))
+                    .toList();
+            log.debug("List size after filtering by hauteurSelle: {}", liste.size());
+        }
+        return liste;
+    }
+    private static List<Moto> filtrerParAttributsDeBase(Long id, String marque, String modele, String couleur, List<Moto> liste) {
         if (id != null && id != 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getId() == id)
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by ID: {}", liste.size());
+                    .filter(moto -> Objects.equals(moto.getId(), id))
+                    .toList();
+            log.debug("List size after filtering by ID: {}", liste.size());
         }
         if (marque != null) {
             liste = liste.stream()
                     .filter(moto -> moto.getMarque().contains(marque))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by marque: {}", liste.size());
+                    .toList();
+            log.debug("List size after filtering by marque: {}", liste.size());
         }
         if (modele != null) {
             liste = liste.stream()
                     .filter(moto -> moto.getModele().contains(modele))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by modele: {}", liste.size());
+                    .toList();
+            log.debug("List size after filtering by modele: {}", liste.size());
         }
         if (couleur != null) {
             liste = liste.stream()
                     .filter(moto -> moto.getCouleur().contains(couleur))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by couleur: {}", liste.size());
+                    .toList();
+            log.debug("List size after filtering by couleur: {}", liste.size());
         }
+        return liste;
+    }
+
+    private static List<Moto> filtrerParEtatEtDisponibilite(Boolean actif, Boolean retireDuParc, List<Moto> liste) {
+        if (actif != null) {
+            liste = liste.stream()
+                    .filter(moto -> Objects.equals(moto.getActif(), actif))
+                    .toList();
+            log.debug("List size after filtering by actif: {}", liste.size());
+        }
+        if (retireDuParc != null) {
+            liste = liste.stream()
+                    .filter(moto -> Objects.equals(moto.getRetireDuParc(), retireDuParc))
+                    .toList();
+            log.debug("List size after filtering by retireDuParc: {}", liste.size());
+        }
+        return liste;
+    }
+    private static List<Moto> rechercheMoto(Long id, String marque, String modele, String couleur, Integer nombreCylindres,
+                                            Integer poids, Integer puissanceEnkW, Integer hauteurSelle, String transmission,
+                                            Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif,
+                                            Boolean retireDuParc, List<Moto> liste) throws VehiculeException {
+        log.debug("Initial list size: {}", liste.size());
+
+        liste = filtrerParAttributsDeBase(id, marque, modele, couleur, liste);
+        liste = filtrerParCaracteristiquesPhysiques(poids, puissanceEnkW, hauteurSelle, liste);
+        liste = filtrerParEtatEtDisponibilite(actif, retireDuParc, liste);
+
         if (nombreCylindres != null && nombreCylindres > 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getNombreCylindres().equals(nombreCylindres))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by nombreCylindres: {}", liste.size());
-        }
-        if (poids != null && poids > 0) {
-            liste = liste.stream()
-                    .filter(moto -> moto.getPoids().equals(poids))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by poids: {}", liste.size());
-        }
-        if (puissanceEnkW != null && puissanceEnkW > 0) {
-            liste = liste.stream()
-                    .filter(moto -> moto.getPuissanceEnkW().equals(puissanceEnkW))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by puissanceEnkW: {}", liste.size());
-        }
-        if (hauteurSelle != null && hauteurSelle > 0) {
-            liste = liste.stream()
-                    .filter(moto -> moto.getHauteurSelle().equals(hauteurSelle))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by hauteurSelle: {}", liste.size());
+                    .filter(moto -> Objects.equals(moto.getNombreCylindres(), nombreCylindres))
+                    .toList();
+            log.debug("List size after filtering by nombreCylindres: {}", liste.size());
         }
         if (transmission != null && (transmission.equals("automatique") || transmission.equals("manuelle"))) {
             liste = liste.stream()
                     .filter(moto -> moto.getTransmission().contains(transmission))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by transmission: {}", liste.size());
+                    .toList();
+            log.debug("List size after filtering by transmission: {}", liste.size());
         }
-        if (permis != null ) {
+        if (permis != null) {
             liste = liste.stream()
-                    .filter(moto -> moto.getPermis()==(permis))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by permis: {}", liste.size());
+                    .filter(moto -> Objects.equals(moto.getPermis(), permis))
+                    .toList();
+            log.debug("List size after filtering by permis: {}", liste.size());
         }
         if (tarifJournalier != null && tarifJournalier > 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getTarifJournalier() == (tarifJournalier))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by tarifJournalier: {}", liste.size());
+                    .filter(moto -> Objects.equals(moto.getTarifJournalier(), tarifJournalier))
+                    .toList();
+            log.debug("List size after filtering by tarifJournalier: {}", liste.size());
         }
         if (kilometrage != null && kilometrage >= 0) {
             liste = liste.stream()
-                    .filter(moto -> moto.getKilometrage() == (kilometrage))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by kilometrage: {}", liste.size());
+                    .filter(moto -> Objects.equals(moto.getKilometrage(), kilometrage))
+                    .toList();
+            log.debug("List size after filtering by kilometrage: {}", liste.size());
         }
-        if (actif != null) {
-            liste = liste.stream()
-                    .filter(moto -> moto.getActif().equals(actif))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by actif: {}", liste.size());
-        }
-        if (retireDuParc != null) {
-            liste = liste.stream()
-                    .filter(moto -> moto.getRetireDuParc().equals(retireDuParc))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by retireDuParc: {}", liste.size());
-        }
+
         if (liste.isEmpty()) {
             throw new VehiculeException("Un critère de recherche est obligatoire !");
         }

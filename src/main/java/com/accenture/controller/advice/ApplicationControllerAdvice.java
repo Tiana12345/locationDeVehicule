@@ -4,10 +4,9 @@ import com.accenture.exception.UtilisateurException;
 import com.accenture.exception.VehiculeException;
 import com.accenture.model.ErreurReponse;
 import jakarta.persistence.EntityNotFoundException;
-import org.hibernate.StaleObjectStateException;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -38,7 +37,7 @@ public class ApplicationControllerAdvice {
     public ResponseEntity<ErreurReponse> problemeValidation(MethodArgumentNotValidException ex){
         String message = ex.getBindingResult().getAllErrors()
                 .stream()
-                .map(objectError -> objectError.getDefaultMessage())
+                .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(","));
 
         ErreurReponse er = new ErreurReponse(LocalDateTime.now(), "Validation erreur ", message);

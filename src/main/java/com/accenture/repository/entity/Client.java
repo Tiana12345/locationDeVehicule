@@ -33,7 +33,7 @@ public class Client extends Utilisateur {
 
     private LocalDate dateNaissance;
     //localDate.now
-    private LocalDate dateInscription;
+    private LocalDate dateInscription = LocalDate.now();
     @ElementCollection
     private List<Permis> listePermis;
     private Boolean desactive;

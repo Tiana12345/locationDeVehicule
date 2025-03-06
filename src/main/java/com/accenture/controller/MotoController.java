@@ -6,9 +6,11 @@ import com.accenture.service.dto.MotoRequestDto;
 import com.accenture.service.dto.MotoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +21,13 @@ import java.util.List;
  * Contrôleur pour gérer les opérations liées aux motos.
  */
 
-
+@Slf4j
 @RestController
 @RequestMapping("/motos")
 @Tag(name = "Motos", description = "Gestion des motos")
 public class MotoController {
 
     private final MotoService motoService;
-    private Logger logger = LoggerFactory.getLogger(MotoController.class);
 
     public MotoController(MotoService motoService) {
         this.motoService = motoService;
@@ -38,12 +39,30 @@ public class MotoController {
      * @param motoRequestDto les détails de la moto à ajouter
      * @return les détails de la moto ajoutée
      */
-    @Operation(summary = "Ajouter une nouvelle moto")
     @PostMapping
-    public ResponseEntity<MotoResponseDto> ajouter(@RequestBody MotoRequestDto motoRequestDto) {
-        logger.info("Ajout d'une nouvelle moto : {}", motoRequestDto);
+    @Operation(summary = "Ajouter une nouvelle moto", description = "Ajoute une nouvelle moto à la base de données")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Moto créée avec succès"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide")
+    })
+    public ResponseEntity<MotoResponseDto> ajouter(
+            @Parameter(description = "Détails de la moto à ajouter", required = true) @RequestBody @Valid MotoRequestDto motoRequestDto,
+            @Parameter(description = "Marque de la moto") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de la moto") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur de la moto") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Type de la moto") @RequestParam(required = false) String type,
+            @Parameter(description = "Nombre de cylindres de la moto") @RequestParam(required = false) Integer nombreCylindres,
+            @Parameter(description = "Poids de la moto") @RequestParam(required = false) Integer poids,
+            @Parameter(description = "Puissance en kW de la moto") @RequestParam(required = false) Integer puissanceEnkW,
+            @Parameter(description = "Hauteur de selle de la moto") @RequestParam(required = false) Integer hauteurSelle,
+            @Parameter(description = "Transmission de la moto") @RequestParam(required = false) String transmission,
+            @Parameter(description = "Tarif journalier de la moto") @RequestParam(required = false) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
+            @Parameter(description = "Statut actif de la moto") @RequestParam(required = false) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de la moto") @RequestParam(required = false) Boolean retireDuParc) {
+        log.info("Ajout d'une nouvelle moto : {}", motoRequestDto);
         MotoResponseDto motoResponseDto = motoService.ajouter(motoRequestDto);
-        logger.info("Moto ajoutée avec succès : {}", motoResponseDto);
+        log.info("Moto ajoutée avec succès : {}", motoResponseDto);
         return ResponseEntity.ok(motoResponseDto);
     }
 
@@ -56,13 +75,13 @@ public class MotoController {
     @Operation(summary = "Trouver une moto par son identifiant")
     @GetMapping("/{id}")
     public ResponseEntity<MotoResponseDto> trouver(@Parameter(description = "Identifiant de la moto") @PathVariable long id) {
-        logger.info("Recherche de la moto avec ID : {}", id);
+        log.info("Recherche de la moto avec ID : {}", id);
         MotoResponseDto motoResponseDto = motoService.trouver(id);
         if (motoResponseDto != null) {
-            logger.info("Moto trouvée : {}", motoResponseDto);
+            log.info("Moto trouvée : {}", motoResponseDto);
             return ResponseEntity.ok(motoResponseDto);
         } else {
-            logger.error("Moto non trouvée avec ID : {}", id);
+            log.error("Moto non trouvée avec ID : {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -75,9 +94,9 @@ public class MotoController {
     @Operation(summary = "Trouver toutes les motos")
     @GetMapping
     public ResponseEntity<List<MotoResponseDto>> trouverToutes() {
-        logger.info("Recherche de toutes les motos");
+        log.info("Recherche de toutes les motos");
         List<MotoResponseDto> motos = motoService.trouverToutes();
-        logger.info("Nombre de motos trouvées : {}", motos.size());
+        log.info("Nombre de motos trouvées : {}", motos.size());
         return ResponseEntity.ok(motos);
     }
 
@@ -88,12 +107,31 @@ public class MotoController {
      * @param motoRequestDto les détails de la moto à modifier
      * @return les détails de la moto modifiée
      */
-    @Operation(summary = "Modifier partiellement une moto")
     @PatchMapping("/{id}")
-    public ResponseEntity<MotoResponseDto> modifierPartiellement(@Parameter(description = "Identifiant de la moto") @PathVariable Long id, @RequestBody MotoRequestDto motoRequestDto) {
-        logger.info("Modification partielle de la moto avec ID : {}", id);
+    @Operation(summary = "Modifier partiellement une moto", description = "Met à jour partiellement les détails d'une moto existante")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Moto mise à jour avec succès"),
+            @ApiResponse(responseCode = "404", description = "Moto non trouvée")
+    })
+    public ResponseEntity<MotoResponseDto> modifierPartiellement(
+            @Parameter(description = "Identifiant de la moto", required = false) @PathVariable Long id,
+            @Parameter(description = "Détails de la moto à modifier", required = false) @RequestBody MotoRequestDto motoRequestDto,
+            @Parameter(description = "Marque de la moto") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de la moto") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur de la moto") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Type de la moto") @RequestParam(required = false) String type,
+            @Parameter(description = "Nombre de cylindres de la moto") @RequestParam(required = false) Integer nombreCylindres,
+            @Parameter(description = "Poids de la moto") @RequestParam(required = false) Integer poids,
+            @Parameter(description = "Puissance en kW de la moto") @RequestParam(required = false) Integer puissanceEnkW,
+            @Parameter(description = "Hauteur de selle de la moto") @RequestParam(required = false) Integer hauteurSelle,
+            @Parameter(description = "Transmission de la moto") @RequestParam(required = false) String transmission,
+            @Parameter(description = "Tarif journalier de la moto") @RequestParam(required = false) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
+            @Parameter(description = "Statut actif de la moto") @RequestParam(required = false) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de la moto") @RequestParam(required = false) Boolean retireDuParc) {
+        log.info("Modification partielle de la moto avec ID : {}", id);
         MotoResponseDto motoResponseDto = motoService.modifierPartiellement(id, motoRequestDto);
-        logger.info("Moto modifiée avec succès : {}", motoResponseDto);
+        log.info("Moto modifiée avec succès : {}", motoResponseDto);
         return ResponseEntity.ok(motoResponseDto);
     }
 
@@ -106,9 +144,9 @@ public class MotoController {
     @Operation(summary = "Supprimer une moto par son identifiant")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> supprimer(@Parameter(description = "Identifiant de la moto") @PathVariable Long id) {
-        logger.info("Suppression de la moto avec ID : {}", id);
+        log.info("Suppression de la moto avec ID : {}", id);
         motoService.supprimer(id);
-        logger.info("Moto supprimée avec succès : {}", id);
+        log.info("Moto supprimée avec succès : {}", id);
         return ResponseEntity.noContent().build();
     }
 
@@ -148,10 +186,10 @@ public class MotoController {
             @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
             @Parameter(description = "La moto est-elle active") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "La moto est-elle retirée du parc") @RequestParam(required = false) Boolean retireDuParc) {
-        logger.info("Recherche de motos avec les critères : id={}, marque={}, modele={}, couleur={}, nombreCylindres={}, poids={}, puissanceEnkW={}, hauteurSelle={}, transmission={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+        log.info("Recherche de motos avec les critères : id={}, marque={}, modele={}, couleur={}, nombreCylindres={}, poids={}, puissanceEnkW={}, hauteurSelle={}, transmission={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
                 id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<MotoResponseDto> motos = motoService.rechercher(id, marque, modele, couleur, nombreCylindres, poids, puissanceEnkW, hauteurSelle, transmission, permis, tarifJournalier, kilometrage, actif, retireDuParc);
-        logger.info("Nombre de motos trouvées : {}", motos.size());
+        log.info("Nombre de motos trouvées : {}", motos.size());
         return ResponseEntity.ok(motos);
     }
 }

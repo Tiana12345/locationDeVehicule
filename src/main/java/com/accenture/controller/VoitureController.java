@@ -11,8 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,13 +20,13 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@Slf4j
 @RestController
 @RequestMapping("/voitures")
 @Tag(name = "Voitures", description = "Gestion des voitures")
 public class VoitureController {
 
     private final VoitureService voitureService;
-    private Logger logger = LoggerFactory.getLogger(VoitureController.class);
 
     public VoitureController(VoitureService voitureService) {
         this.voitureService = voitureService;
@@ -39,8 +38,24 @@ public class VoitureController {
             @ApiResponse(responseCode = "201", description = "Voiture créée avec succès"),
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
-    ResponseEntity<Void> ajouter(@RequestBody @Valid VoitureRequestDto voitureRequestDto) {
-        logger.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
+    ResponseEntity<Void> ajouter(
+            @Parameter(description = "Détails de la voiture à ajouter", required = false) @RequestBody @Valid VoitureRequestDto voitureRequestDto,
+
+            @Parameter(description = "Marque de la voiture") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de la voiture") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur de la voiture") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Nombre de places dans la voiture") @RequestParam(required = false) Integer nombreDePlaces,
+            @Parameter(description = "Type de carburant de la voiture") @RequestParam(required = false) Carburant carburant,
+            @Parameter(description = "Nombre de portes de la voiture") @RequestParam(required = false) Integer nombreDePortes,
+            @Parameter(description = "Transmission de la voiture") @RequestParam(required = false) String transmission,
+            @Parameter(description = "Climatisation de la voiture") @RequestParam(required = false) Boolean clim,
+            @Parameter(description = "Nombre de bagages que la voiture peut contenir") @RequestParam(required = false) Integer nombreDeBagages,
+            @Parameter(description = "Type de la voiture") @RequestParam(required = false) String type,
+            @Parameter(description = "Tarif journalier de la voiture") @RequestParam(required = false) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de la voiture") @RequestParam(required = false) Long kilometrage,
+            @Parameter(description = "Statut actif de la voiture") @RequestParam(required = false) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = false) Boolean retireDuParc) {
+        log.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
         VoitureResponseDto voitureEnreg = voitureService.ajouter(voitureRequestDto);
 
         URI voiture = ServletUriComponentsBuilder
@@ -48,7 +63,7 @@ public class VoitureController {
                 .path("/{id}")
                 .buildAndExpand(voitureEnreg.id())
                 .toUri();
-        logger.info("Voiture ajoutée avec succès : {}", voitureEnreg);
+        log.info("Voiture ajoutée avec succès : {}", voitureEnreg);
         return ResponseEntity.created(voiture).build();
     }
 
@@ -58,9 +73,9 @@ public class VoitureController {
             @ApiResponse(responseCode = "200", description = "Liste des voitures récupérée avec succès")
     })
     List<VoitureResponseDto> voiture() {
-        logger.info("Récupération de toutes les voitures");
+        log.info("Récupération de toutes les voitures");
         List<VoitureResponseDto> voitures = voitureService.trouverToutes();
-        logger.info("Nombre de voitures récupérées : {}", voitures.size());
+        log.info("Nombre de voitures récupérées : {}", voitures.size());
         return voitures;
     }
 
@@ -70,14 +85,15 @@ public class VoitureController {
             @ApiResponse(responseCode = "200", description = "Voiture trouvée avec succès"),
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
-    ResponseEntity<VoitureResponseDto> uneVoiture(@Parameter(description = "ID de la voiture à récupérer") @PathVariable("id") Long id) {
-        logger.info("Récupération de la voiture avec ID : {}", id);
+    ResponseEntity<VoitureResponseDto> uneVoiture(
+            @Parameter(description = "ID de la voiture à récupérer", required = true) @PathVariable("id") Long id) {
+        log.info("Récupération de la voiture avec ID : {}", id);
         VoitureResponseDto trouve = voitureService.trouver(id);
         if (trouve != null) {
-            logger.info("Voiture trouvée : {}", trouve);
+            log.info("Voiture trouvée : {}", trouve);
             return ResponseEntity.ok(trouve);
         } else {
-            logger.error("Voiture non trouvée avec ID : {}", id);
+            log.error("Voiture non trouvée avec ID : {}", id);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
@@ -88,10 +104,11 @@ public class VoitureController {
             @ApiResponse(responseCode = "204", description = "Voiture supprimée avec succès"),
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
-    ResponseEntity<Void> supprimer(@Parameter(description = "ID de la voiture à supprimer") @PathVariable("id") Long id) {
-        logger.info("Suppression de la voiture avec ID : {}", id);
+    ResponseEntity<Void> supprimer(
+            @Parameter(description = "ID de la voiture à supprimer", required = true) @PathVariable("id") Long id) {
+        log.info("Suppression de la voiture avec ID : {}", id);
         voitureService.supprimer(id);
-        logger.info("Voiture supprimée avec succès : {}", id);
+        log.info("Voiture supprimée avec succès : {}", id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
@@ -101,10 +118,20 @@ public class VoitureController {
             @ApiResponse(responseCode = "200", description = "Voiture mise à jour avec succès"),
             @ApiResponse(responseCode = "404", description = "Voiture non trouvée")
     })
-    ResponseEntity<VoitureResponseDto> modifierPartiellement(@Parameter(description = "ID de la voiture à modifier") @PathVariable("id") Long id, @RequestBody VoitureRequestDto voitureRequestDto) {
-        logger.info("Modification partielle de la voiture avec ID : {}", id);
+    ResponseEntity<VoitureResponseDto> modifierPartiellement(
+            @Parameter(description = "ID de la voiture à modifier", required = false) @PathVariable("id") Long id,
+            @Parameter(description = "Détails de la voiture à modifier", required = false) @RequestBody VoitureRequestDto voitureRequestDto,
+            @Parameter(description = "Marque de la voiture") @RequestParam(required = false) String marque,
+            @Parameter(description = "Modèle de la voiture") @RequestParam(required = false) String modele,
+            @Parameter(description = "Couleur de la voiture") @RequestParam(required = false) String couleur,
+            @Parameter(description = "Nombre de places dans la voiture") @RequestParam(required = false) Integer nombreDePlaces,
+            @Parameter(description = "Type de carburant de la voiture") @RequestParam(required = false) Carburant carburant,
+            @Parameter(description = "Nombre de portes de la voiture") @RequestParam(required = false) Integer nombreDePortes,
+            @Parameter(description = "Transmission de la voiture") @RequestParam(required = false) String transmission,
+            @Parameter(description = "Climatisation de la voiture") @RequestParam(required = false) Boolean clim) {
+        log.info("Modification partielle de la voiture avec ID : {}", id);
         VoitureResponseDto voitureModifiee = voitureService.modifierPartiellement(id, voitureRequestDto);
-        logger.info("Voiture modifiée avec succès : {}", voitureModifiee);
+        log.info("Voiture modifiée avec succès : {}", voitureModifiee);
         return ResponseEntity.ok(voitureModifiee);
     }
 
@@ -131,11 +158,11 @@ public class VoitureController {
             @Parameter(description = "Statut actif de la voiture") @RequestParam(required = false) Boolean actif,
             @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = false) Boolean retireDuParc
     ) {
-        logger.info("Recherche de voitures avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlaces={}, carburant={}, nombreDePortes={}, transmission={}, clim={}, nombreDeBagages={}, type={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
+        log.info("Recherche de voitures avec les critères : id={}, marque={}, modele={}, couleur={}, nombreDePlaces={}, carburant={}, nombreDePortes={}, transmission={}, clim={}, nombreDeBagages={}, type={}, permis={}, tarifJournalier={}, kilometrage={}, actif={}, retireDuParc={}",
                 id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc);
         List<VoitureResponseDto> voitures = voitureService.rechercher(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim,
                 nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc);
-        logger.info("Nombre de voitures trouvées : {}", voitures.size());
+        log.info("Nombre de voitures trouvées : {}", voitures.size());
         return voitures;
     }
 }

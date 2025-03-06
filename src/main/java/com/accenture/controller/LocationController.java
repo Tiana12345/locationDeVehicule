@@ -1,33 +1,45 @@
 package com.accenture.controller;
 
-import com.accenture.exception.LocationException;
+import com.accenture.model.param.Accessoires;
+import com.accenture.model.param.Etat;
+import com.accenture.model.param.TypeVehiculeEnum;
+import com.accenture.repository.entity.Client;
+import com.accenture.repository.entity.Location;
+import com.accenture.repository.entity.Vehicule;
+import com.accenture.service.ClientService;
 import com.accenture.service.LocationService;
+import com.accenture.service.VehiculeService;
+import com.accenture.service.dto.ClientResponseDto;
 import com.accenture.service.dto.LocationRequestDto;
 import com.accenture.service.dto.LocationResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
+@Slf4j
 
 @RestController
 @RequestMapping("locations")
 @Tag(name = "Locations", description = "Gestion des locations")
 public class LocationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(LocationController.class);
 
-    @Autowired
     private LocationService locationService;
+
+    public LocationController(LocationService locationService, ClientService clientService, ClientController clientController, VehiculeService vehiculeService) {
+        this.locationService = locationService;
+
+    }
 
     @PostMapping
     @Operation(summary = "Ajouter une nouvelle location", description = "Ajoute une nouvelle location à la base de données")
@@ -35,8 +47,20 @@ public class LocationController {
             @ApiResponse(responseCode = "201", description = "Location créée avec succès"),
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
-    public ResponseEntity<Void> ajouter(@RequestBody @Valid LocationRequestDto locationRequestDto) {
-        logger.info("Ajout d'une nouvelle location : {}", locationRequestDto);
+    public ResponseEntity<Void> ajouter(
+            @Parameter(description = "Détails de la location à ajouter", required = true) @RequestBody @Valid LocationRequestDto locationRequestDto,
+            @Parameter(description = "Adresse email du client") @RequestParam(required = false)String mail,
+            @Parameter(description = "ID du véhicule") @RequestParam(required = false)Long id,
+            @Parameter(description = "TypeDeVehicule") @RequestParam(required = false) TypeVehiculeEnum typeVehiculeEnum,
+            @Parameter(description = "Accessoires de la location") @RequestParam(required = false) List<Accessoires> accessoires,
+            @Parameter(description = "Date de début de la location (YYYY/MM/dd) ") @RequestParam(required = false) LocalDate dateDebut,
+            @Parameter(description = "Date de fin de la location (YYYY/MM/dd) ") @RequestParam(required = false) LocalDate dateFin,
+            @Parameter(description = "Kilomètres parcourus") @RequestParam(required = false) Integer kilometresParcourus,
+            @Parameter(description = "Montant total de la location") @RequestParam(required = false) Double montantTotal,
+            @Parameter(description = "État de la location") @RequestParam(required = false) Etat etat) {
+        log.info("Ajout d'une nouvelle location : {}", locationRequestDto);
+
+
         LocationResponseDto locationEnreg = locationService.ajouter(locationRequestDto);
 
         URI location = ServletUriComponentsBuilder
@@ -44,7 +68,7 @@ public class LocationController {
                 .path("/{id}")
                 .buildAndExpand(locationEnreg.id())
                 .toUri();
-        logger.info("Location ajoutée avec succès : {}", locationEnreg);
+        log.info("Location ajoutée avec succès : {}", locationEnreg);
         return ResponseEntity.created(location).build();
     }
 
@@ -59,9 +83,9 @@ public class LocationController {
             @ApiResponse(responseCode = "200", description = "Liste des locations récupérée avec succès")
     })
     public ResponseEntity<List<LocationResponseDto>> trouverToutes() {
-        logger.info("Récupération de toutes les locations");
+        log.info("Récupération de toutes les locations");
         List<LocationResponseDto> locations = locationService.trouverToutes();
-        logger.info("Nombre de locations récupérées : {}", locations.size());
+        log.info("Nombre de locations récupérées : {}", locations.size());
         return ResponseEntity.ok(locations);
     }
 

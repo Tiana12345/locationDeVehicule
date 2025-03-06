@@ -5,58 +5,90 @@ import com.accenture.repository.UtilitaireDao;
 import com.accenture.repository.VeloDao;
 import com.accenture.repository.VoitureDao;
 import com.accenture.repository.entity.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 public class VehiculeServiceImpl implements VehiculeService {
-    private static final Logger logger = LoggerFactory.getLogger(VehiculeServiceImpl.class);
-    @Autowired
+
     VoitureDao voitureDao;
-    @Autowired
     MotoDao motoDao;
-    @Autowired
     VeloDao veloDao;
-    @Autowired
     UtilitaireDao utilitaireDao;
+
+
+
+    public VehiculeServiceImpl(UtilitaireDao utilitaireDao, MotoDao motoDao, VeloDao veloDao, VoitureDao voitureDao) {
+        this.utilitaireDao = utilitaireDao;
+        this.motoDao = motoDao;
+        this.veloDao = veloDao;
+        this.voitureDao = voitureDao;
+    }
+
+    @Override
+    public Vehicule trouverParId(Long id) {
+        log.info("Entrée dans la méthode trouverParId avec ID : {}", id);
+        Vehicule vehicule = null;
+        try {
+            log.debug("Recherche du véhicule avec ID : {} dans voitureDao", id);
+            vehicule = voitureDao.findById(id).orElse(null);
+            if (vehicule == null) {
+                log.debug("Recherche du véhicule avec ID : {} dans motoDao", id);
+                vehicule = motoDao.findById(id).orElse(null);
+            }
+            if (vehicule == null) {
+                log.debug("Recherche du véhicule avec ID : {} dans veloDao", id);
+                vehicule = veloDao.findById(id).orElse(null);
+            }
+            if (vehicule == null) {
+                log.debug("Recherche du véhicule avec ID : {} dans utilitaireDao", id);
+                vehicule = utilitaireDao.findById(id).orElse(null);
+            }
+        } catch (Exception e) {
+            log.error("Une exception est survenue lors de la recherche du véhicule avec ID : {} : {}", id, e.getMessage(), e);
+        }
+        if (vehicule != null) {
+            log.info("Véhicule trouvé avec ID : {}", id);
+        } else {
+            log.warn("Aucun véhicule trouvé avec ID : {}", id);
+        }
+        return vehicule;
+    }
 
     @Override
     public List<Vehicule> trouverToutVehicules() {
-        logger.info("Entrée dans la méthode trouverToutVehicules");
+        log.info("Entrée dans la méthode trouverToutVehicules");
         List<Vehicule> vehicule = new ArrayList<>();
         try {
-            logger.debug("Récupération de toutes les voitures depuis voiturdao");
+            log.debug("Récupération de toutes les voitures depuis voiturdao");
             vehicule.addAll(voitureDao.findAll());
-            logger.debug("Récupération de toutes les motos depuis motoDao");
+            log.debug("Récupération de toutes les motos depuis motoDao");
             vehicule.addAll(motoDao.findAll());
-            logger.debug("Récupération de toutes les velos depuis velodao");
+            log.debug("Récupération de toutes les velos depuis velodao");
             vehicule.addAll(veloDao.findAll());
-            logger.debug("Récupération de toutes les utilitaires depuis utilitaireDao");
+            log.debug("Récupération de toutes les utilitaires depuis utilitaireDao");
             vehicule.addAll(utilitaireDao.findAll());
         } catch (Exception e) {
-            logger.error("Une exception est survenue lors de la recherche de tous les véhicules : {}", e.getMessage(), e);
+            log.error("Une exception est survenue lors de la recherche de tous les véhicules : {}", e.getMessage(), e);
         }
-        logger.info("Sortie de la méthode trouverToutVehicules avec {} véhicules trouvés", vehicule.size());
+        log.info("Sortie de la méthode trouverToutVehicules avec {} véhicules trouvés", vehicule.size());
         return vehicule;
     }
     @Override
     public List<Vehicule> rechercher(Boolean actif, Boolean retireDuParc) {
-        logger.info("Entrée dans la méthode rechercher avec actif={} et retireDuParc={}", actif, retireDuParc);
+        log.info("Entrée dans la méthode rechercher avec actif={} et retireDuParc={}", actif, retireDuParc);
         List<Vehicule> vehicules = new ArrayList<>();
         try {
-            logger.debug("Récupération de toutes les voitures");
+            log.debug("Récupération de toutes les voitures");
             List<Voiture> voitures = voitureDao.findAll();
-            logger.debug("Récupération de toutes les motos");
+            log.debug("Récupération de toutes les motos");
             List<Moto> motos = motoDao.findAll();
-            logger.debug("Récupération de toutes les vélos");
+            log.debug("Récupération de toutes les vélos");
             List<Velo> velos = veloDao.findAll();
-            logger.debug("Récupération de toutes les utilitaires");
+            log.debug("Récupération de toutes les utilitaires");
             List<Utilitaire> utilitaires = utilitaireDao.findAll();
 
             vehicules.addAll(filtrerVehicules(voitures, actif, retireDuParc));
@@ -64,9 +96,9 @@ public class VehiculeServiceImpl implements VehiculeService {
             vehicules.addAll(filtrerVehicules(velos, actif, retireDuParc));
             vehicules.addAll(filtrerVehicules(utilitaires, actif, retireDuParc));
         } catch (Exception e) {
-            logger.error("Une exception est survenue lors de la recherche de tous les véhicules : {}", e.getMessage(), e);
+            log.error("Une exception est survenue lors de la recherche de tous les véhicules : {}", e.getMessage(), e);
         }
-        logger.info("Sortie de la méthode rechercher avec {} véhicules trouvés", vehicules.size());
+        log.info("Sortie de la méthode rechercher avec {} véhicules trouvés", vehicules.size());
         return vehicules;
     }
 
@@ -74,7 +106,7 @@ public class VehiculeServiceImpl implements VehiculeService {
         return vehicules.stream()
                 .filter(vehicule -> (actif == null || vehicule.getActif().equals(actif)) &&
                                     (retireDuParc == null || vehicule.getRetireDuParc().equals(retireDuParc)))
-                .collect(Collectors.toList());
+                .toList();
     }
 
 }

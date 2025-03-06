@@ -1,12 +1,10 @@
 package com.accenture.service.dto;
 
 import com.accenture.model.param.Carburant;
-import com.accenture.model.param.Permis;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
 
 @Schema(description = "Détails de la demande de voiture")
 public record VoitureRequestDto(

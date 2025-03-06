@@ -1,5 +1,6 @@
 package com.accenture.service.dto;
 import java.time.LocalDate;
+import java.util.List;
 
 import com.accenture.model.param.Accessoires;
 import com.accenture.model.param.Etat;
@@ -15,10 +16,10 @@ public record LocationRequestDto(
 
         @Schema(description = "Détails du véhicule")
         @NotNull(message = "Les détails du véhicule sont obligatoires")
-        Long idVehicule,
+        Long vehiculeId,
 
         @Schema(description = "Accessoire de la location")
-        Accessoires accessoires,
+        List<Accessoires> accessoires,
 
         @Schema(description = "Date de début de la location", example = "2025-03-01")
         @NotNull(message = "La date de début est obligatoire")
@@ -32,9 +33,6 @@ public record LocationRequestDto(
 
         @Schema(description = "Montant total de la location", example = "500")
         int montantTotal,
-
-        @Schema(description = "Date de validation de la location", example = "2025-03-05")
-        LocalDate dateValidation,
 
         @Schema(description = "État de la location")
         @NotNull(message = "L'état de la location est obligatoire")

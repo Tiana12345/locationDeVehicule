@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Classe d'implémentation du service de gestion des administrateurs.
@@ -101,23 +100,16 @@ public class AdministrateurServiceImpl implements AdministrateurService {
      */
     @Override
     public List<AdministrateurResponseDto> rechercher(String mail, String prenom, String nom, String fonction) throws UtilisateurException {
+
+
         List<Administrateur> liste = administrateurDao.findAll();
 
-        if (liste == null) {
-            throw new UtilisateurException("La méthode findAll a retourné null !");
-        }
-        if (administrateurDao == null) {
-            throw new UtilisateurException("administrateurDao n'est pas initialisé !");
-        }
-        if (administrateurMapper == null) {
-            throw new UtilisateurException("administrateurMapper n'est pas initialisé !");
-        }
 
         liste = rechercheAdministrateur(mail, prenom, nom, fonction, liste);
 
         return liste.stream()
                 .map(administrateurMapper::toAdministrateurResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -182,22 +174,22 @@ public class AdministrateurServiceImpl implements AdministrateurService {
         if (mail != null) {
             liste = liste.stream()
                     .filter(admin -> admin.getMail().contains(mail))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (prenom != null) {
             liste = liste.stream()
                     .filter(admin -> admin.getPrenom().contains(prenom))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (nom != null) {
             liste = liste.stream()
                     .filter(admin -> admin.getNom().contains(nom))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (fonction != null) {
             liste = liste.stream()
                     .filter(admin -> admin.getFonction().contains(fonction))
-                    .collect(Collectors.toList());
+                    .toList();
         }
         if (liste == null) {
             throw new UtilisateurException("Un critère de recherche est obligatoire !");

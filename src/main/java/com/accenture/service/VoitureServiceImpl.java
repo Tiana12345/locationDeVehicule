@@ -1,6 +1,7 @@
 package com.accenture.service;
 
 import com.accenture.exception.VehiculeException;
+import com.accenture.model.param.Accessoires;
 import com.accenture.model.param.Carburant;
 import com.accenture.model.param.Permis;
 import com.accenture.repository.VoitureDao;
@@ -10,16 +11,10 @@ import com.accenture.service.dto.VoitureResponseDto;
 import com.accenture.service.mapper.VoitureMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-@Slf4j
-
 
 /**
  * @author tatiana.tessier
@@ -27,12 +22,12 @@ import java.util.stream.Collectors;
  * Cette classe fournit des méthodes pour ajouter, trouver, modifier, et supprimer des voitures,
  * ainsi que pour rechercher des voitures en fonction de plusieurs critères.
  */
+@Slf4j
 @Service
 public class VoitureServiceImpl implements VoitureService {
 
     private final VoitureDao voitureDao;
     private final VoitureMapper voitureMapper;
-    private static final Logger logger = LoggerFactory.getLogger(VoitureServiceImpl.class);
 
     /**
      * Constructeur de la classe VoitureServiceImpl.
@@ -69,6 +64,10 @@ public class VoitureServiceImpl implements VoitureService {
         else {
             voiture.setPermis(Permis.D1);
         }
+        voiture.ajouterAccessoire(Accessoires.GPS_VOITURE);
+        voiture.ajouterAccessoire(Accessoires.SIEGE_BEBE_VOITURE);
+        voiture.ajouterAccessoire(Accessoires.COFFRE_TOIT_VOITURE);
+        voiture.ajouterAccessoire(Accessoires.PORTE_VELO_VOITURE);
         Voiture voitureEnreg = voitureDao.save(voiture);
         return voitureMapper.toVoitureResponseDto(voitureEnreg);
     }
@@ -131,9 +130,6 @@ public class VoitureServiceImpl implements VoitureService {
 
         Voiture nouvelle = voitureMapper.toVoiture(voitureRequestDto);
         remplacer(nouvelle, voitureExistante);
-//
-//        voitureRequestDto = voitureMapper.toVoitureRequestDto(voitureExistante);
-//        verifVoiture(voitureRequestDto);
 
         Voiture voitureEnreg = voitureDao.save(voitureExistante);
         return getVoitureResponseDto(voitureEnreg);
@@ -190,9 +186,8 @@ public class VoitureServiceImpl implements VoitureService {
         liste = rechercheVoiture(id, marque, modele, couleur, nombreDePlaces, carburant, nombreDePortes, transmission, clim, nombreDeBagages, type, permis, tarifJournalier, kilometrage, actif, retireDuParc, liste);
 
         return liste.stream()
-                // .sorted(Comparator.comparing(Voiture::getModele))
                 .map(voitureMapper::toVoitureResponseDto)
-                .collect(Collectors.toList());
+                .toList();
     }
 
 
@@ -200,10 +195,20 @@ public class VoitureServiceImpl implements VoitureService {
     private static void verifVoiture(VoitureRequestDto voitureRequestDto) {
         if (voitureRequestDto == null)
             throw new VehiculeException("La voitureRequestDto est null");
+        verifVoitureMarqueModele(voitureRequestDto);
+        verifVoitureCaracteristiques(voitureRequestDto);
+        verifVoitureTransmissionTarif(voitureRequestDto);
+        verifVoitureEtat(voitureRequestDto);
+    }
+
+    private static void verifVoitureMarqueModele(VoitureRequestDto voitureRequestDto) {
         if (voitureRequestDto.marque() == null || voitureRequestDto.marque().isBlank())
             throw new VehiculeException("Vous devez ajouter la marque de la voiture");
         if (voitureRequestDto.modele() == null || voitureRequestDto.modele().isBlank())
             throw new VehiculeException("Vous devez ajouter le modèle de la voiture");
+    }
+
+    private static void verifVoitureCaracteristiques(VoitureRequestDto voitureRequestDto) {
         if (voitureRequestDto.couleur() == null || voitureRequestDto.couleur().isBlank())
             throw new VehiculeException("Vous devez ajouter la couleur de la voiture");
         if (voitureRequestDto.nombreDePlaces() == null || voitureRequestDto.nombreDePlaces() <= 0)
@@ -212,18 +217,24 @@ public class VoitureServiceImpl implements VoitureService {
             throw new VehiculeException("Vous devez ajouter le type de carburant de la voiture");
         if (voitureRequestDto.nombreDePortes() == null || voitureRequestDto.nombreDePortes() <= 0)
             throw new VehiculeException("Vous devez ajouter le nombre de portes de la voiture");
-        if (voitureRequestDto.transmission() == null || voitureRequestDto.transmission().isBlank())
-            throw new VehiculeException("Vous devez ajouter la transmission de la voiture");
         if (voitureRequestDto.clim() == null)
             throw new VehiculeException("Vous devez ajouter l'information concernant la clim");
         if (voitureRequestDto.nombreDeBagages() == null || voitureRequestDto.nombreDeBagages() < 0)
             throw new VehiculeException("Vous devez ajouter le nombre de bagages de la voiture");
         if (voitureRequestDto.type() == null || voitureRequestDto.type().isBlank())
             throw new VehiculeException("Vous devez ajouter le type de la voiture");
+    }
+
+    private static void verifVoitureTransmissionTarif(VoitureRequestDto voitureRequestDto) {
+        if (voitureRequestDto.transmission() == null || voitureRequestDto.transmission().isBlank())
+            throw new VehiculeException("Vous devez ajouter la transmission de la voiture");
         if (voitureRequestDto.tarifJournalier() <= 0)
             throw new VehiculeException("Vous devez ajouter le tarif journalier de la voiture");
         if (voitureRequestDto.kilometrage() < 0)
             throw new VehiculeException("Vous devez ajouter le kilométrage de la voiture");
+    }
+
+    private static void verifVoitureEtat(VoitureRequestDto voitureRequestDto) {
         if (voitureRequestDto.actif() == null)
             throw new VehiculeException("Vous devez indiquer si la voiture est active");
         if (voitureRequestDto.retireDuParc() == null)
@@ -231,149 +242,240 @@ public class VoitureServiceImpl implements VoitureService {
     }
 
     private static void remplacer(Voiture voiture, Voiture voitureExistante) {
-        if (voiture.getMarque() != null && voiture.getMarque().isBlank())
+        remplacerMarqueModele(voiture, voitureExistante);
+        remplacerCaracteristiques(voiture, voitureExistante);
+        remplacerTransmissionTarif(voiture, voitureExistante);
+        remplacerEtat(voiture, voitureExistante);
+    }
+
+    private static void remplacerMarqueModele(Voiture voiture, Voiture voitureExistante) {
+        if (voiture.getMarque() != null && !voiture.getMarque().isBlank())
             voitureExistante.setMarque(voiture.getMarque());
-        if (voiture.getModele() != null && voiture.getModele().isBlank())
+        if (voiture.getModele() != null && !voiture.getModele().isBlank())
             voitureExistante.setModele(voiture.getModele());
-        if (voiture.getCouleur() != null && voiture.getCouleur().isBlank())
+    }
+
+    private static void remplacerCaracteristiques(Voiture voiture, Voiture voitureExistante) {
+        if (voiture.getCouleur() != null && !voiture.getCouleur().isBlank())
             voitureExistante.setCouleur(voiture.getCouleur());
-        if (voiture.getNombreDePlaces() == null || voiture.getNombreDePlaces() <= 0)
+        if (voiture.getNombreDePlaces() != null && voiture.getNombreDePlaces() > 0)
             voitureExistante.setNombreDePlaces(voiture.getNombreDePlaces());
         if (voiture.getCarburant() != null)
             voitureExistante.setCarburant(voiture.getCarburant());
-        if (voiture.getNombreDePortes() == null || voiture.getNombreDePortes() <= 0)
+        if (voiture.getNombreDePortes() != null && voiture.getNombreDePortes() > 0)
             voitureExistante.setNombreDePortes(voiture.getNombreDePortes());
-        if (voiture.getTransmission() != null && voiture.getTransmission().isBlank())
-            voitureExistante.setTransmission(voiture.getTransmission());
         if (voiture.getClim() != null)
             voitureExistante.setClim(voiture.getClim());
-        if (voiture.getNombreDeBagages() == null || voiture.getNombreDeBagages() < 0)
+        if (voiture.getNombreDeBagages() != null && voiture.getNombreDeBagages() >= 0)
             voitureExistante.setNombreDeBagages(voiture.getNombreDeBagages());
-        if (voiture.getType() != null && voiture.getType().isBlank())
+        if (voiture.getType() != null && !voiture.getType().isBlank())
             voitureExistante.setType(voiture.getType());
+    }
+
+    private static void remplacerTransmissionTarif(Voiture voiture, Voiture voitureExistante) {
+        if (voiture.getTransmission() != null && !voiture.getTransmission().isBlank())
+            voitureExistante.setTransmission(voiture.getTransmission());
         if (voiture.getTarifJournalier() > 0)
             voitureExistante.setTarifJournalier(voiture.getTarifJournalier());
         if (voiture.getKilometrage() >= 0)
             voitureExistante.setKilometrage(voiture.getKilometrage());
+    }
+
+    private static void remplacerEtat(Voiture voiture, Voiture voitureExistante) {
         if (voiture.getActif() != null)
             voitureExistante.setActif(voiture.getActif());
         if (voiture.getRetireDuParc() != null)
             voitureExistante.setRetireDuParc(voiture.getRetireDuParc());
     }
 
+
     private static List<Voiture> rechercheVoiture(Long id, String marque, String modele, String couleur, Integer nombreDePlaces, Carburant carburant,
-                                                  Integer nombreDePortes, String transmission, Boolean clim, Integer nombreDeBagages, String type,
-                                                  Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif, Boolean retireDuParc,
-                                                  List<Voiture> liste) throws VehiculeException {
-        logger.debug("Initial list size: {}", liste.size());
-        if (id != null && id != 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getId() == id)
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by ID: {}", liste.size());
-        }
-        if (marque != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getMarque().contains(marque))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by marque: {}", liste.size());
-        }
-        if (modele != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getModele().contains(modele))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by modele: {}", liste.size());
-        }
-        if (couleur != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getCouleur().contains(couleur))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by couleur: {}", liste.size());
-        }
-        if (nombreDePlaces != null && nombreDePlaces > 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getNombreDePlaces().equals(nombreDePlaces))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by nombreDePlaces: {}", liste.size());
-        }
-        if (carburant != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getCarburant().equals(carburant))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by carburant: {}", liste.size());
-        }
-        if (nombreDePortes != null && nombreDePortes > 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getNombreDePortes().equals(nombreDePortes))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by nombreDePortes: {}", liste.size());
-        }
-        if (transmission != null && (transmission.equals("automatique") || transmission.equals("manuelle"))) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getTransmission().contains(transmission))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by transmission: {}", liste.size());
+                                                 Integer nombreDePortes, String transmission, Boolean clim, Integer nombreDeBagages, String type,
+                                                 Permis permis, Long tarifJournalier, Long kilometrage, Boolean actif, Boolean retireDuParc,
+                                                 List<Voiture> liste)
+            throws VehiculeException {
+        log.debug("Initial list size: {}", liste.size());
+        liste = filtrerParId(id, liste);
+        liste = filtrerParMarque(marque, liste);
+        liste = filtrerParModele(modele, liste);
+        liste = filtrerParCouleur(couleur, liste);
+        liste = filtrerParNombreDePlaces(nombreDePlaces, liste);
+        liste = filtrerParCarburant(carburant, liste);
+        liste = filtrerParNombreDePortes(nombreDePortes, liste);
+        liste = filtrerParTransmission(transmission, liste);
+        liste = filtrerParClim(clim, liste);
+        liste = filtrerParNombreDeBagages(nombreDeBagages, liste);
+        liste = filtrerParType(type, liste);
+        liste = filtrerParPermis(permis, liste);
+        liste = filtrerParTarifJournalier(tarifJournalier, liste);
+        liste = filtrerParKilometrage(kilometrage, liste);
+        liste = filtrerParActif(actif, liste);
+        liste = filtrerParRetireDuParc(retireDuParc, liste);
 
-        }
-        if (clim != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getClim().equals(clim))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by clim: {}", liste.size());
-
-        }
-        if (nombreDeBagages != null && nombreDeBagages >= 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getNombreDeBagages().equals(nombreDeBagages))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by nombreDeBagages: {}", liste.size());
-
-        }
-        if (type != null && (type.equals("Citadine") || type.equals("Berline") || type.equals("SUV") || type.equals("Familiales") || type.equals("Voiture électrique") || type.equals("Voiture de luxe"))) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getType().contains(type))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by type: {}", liste.size());
-
-        }
-        if (permis != null ) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getPermis() == permis)
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by permis: {}", liste.size());
-
-        }
-        if (tarifJournalier != null && tarifJournalier > 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getTarifJournalier() == tarifJournalier)
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by tarifjournalier: {}", liste.size());
-
-        }
-        if (kilometrage != null && kilometrage >= 0) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getKilometrage() == kilometrage)
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by kilometrage: {}", liste.size());
-
-        }
-        if (actif != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getActif().equals(actif))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by actif: {}", liste.size());
-
-        }
-        if (retireDuParc != null) {
-            liste = liste.stream()
-                    .filter(voiture -> voiture.getRetireDuParc().equals(retireDuParc))
-                    .collect(Collectors.toList());
-            logger.debug("List size after filtering by RetireDuParc: {}", liste.size());
-
-        }
         if (liste.isEmpty()) {
             throw new VehiculeException("Un critère de recherche est obligatoire !");
         }
         return liste;
     }
+
+    private static List<Voiture> filtrerParId(Long id, List<Voiture> liste) {
+        if (id != null && id != 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getId() == id)
+                    .toList();
+            log.debug("List size after filtering by ID: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParMarque(String marque, List<Voiture> liste) {
+        if (marque != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getMarque().contains(marque))
+                    .toList();
+            log.debug("List size after filtering by marque: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParModele(String modele, List<Voiture> liste) {
+        if (modele != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getModele().contains(modele))
+                    .toList();
+            log.debug("List size after filtering by modele: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParCouleur(String couleur, List<Voiture> liste) {
+        if (couleur != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getCouleur().contains(couleur))
+                    .toList();
+            log.debug("List size after filtering by couleur: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParNombreDePlaces(Integer nombreDePlaces, List<Voiture> liste) {
+        if (nombreDePlaces != null && nombreDePlaces > 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getNombreDePlaces().equals(nombreDePlaces))
+                    .toList();
+            log.debug("List size after filtering by nombreDePlaces: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParCarburant(Carburant carburant, List<Voiture> liste) {
+        if (carburant != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getCarburant().equals(carburant))
+                    .toList();
+            log.debug("List size after filtering by carburant: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParNombreDePortes(Integer nombreDePortes, List<Voiture> liste) {
+        if (nombreDePortes != null && nombreDePortes > 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getNombreDePortes().equals(nombreDePortes))
+                    .toList();
+            log.debug("List size after filtering by nombreDePortes: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParTransmission(String transmission, List<Voiture> liste) {
+        if (transmission != null && (transmission.equals("automatique") || transmission.equals("manuelle"))) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getTransmission().contains(transmission))
+                    .toList();
+            log.debug("List size after filtering by transmission: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParClim(Boolean clim, List<Voiture> liste) {
+        if (clim != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getClim().equals(clim))
+                    .toList();
+            log.debug("List size after filtering by clim: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParNombreDeBagages(Integer nombreDeBagages, List<Voiture> liste) {
+        if (nombreDeBagages != null && nombreDeBagages >= 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getNombreDeBagages().equals(nombreDeBagages))
+                    .toList();
+            log.debug("List size after filtering by nombreDeBagages: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParType(String type, List<Voiture> liste) {
+        if (type != null && (type.equals("Citadine") || type.equals("Berline") || type.equals("SUV") || type.equals("Familiales") || type.equals("Voiture électrique") || type.equals("Voiture de luxe"))) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getType().contains(type))
+                    .toList();
+            log.debug("List size after filtering by type: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParPermis(Permis permis, List<Voiture> liste) {
+        if (permis != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getPermis() == permis)
+                    .toList();
+            log.debug("List size after filtering by permis: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParTarifJournalier(Long tarifJournalier, List<Voiture> liste) {
+        if (tarifJournalier != null && tarifJournalier > 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getTarifJournalier() == tarifJournalier)
+                    .toList();
+            log.debug("List size after filtering by tarifJournalier: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParKilometrage(Long kilometrage, List<Voiture> liste) {
+        if (kilometrage != null && kilometrage >= 0) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getKilometrage() == kilometrage)
+                    .toList();
+            log.debug("List size after filtering by kilometrage: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParActif(Boolean actif, List<Voiture> liste) {
+        if (actif != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getActif().equals(actif))
+                    .toList();
+            log.debug("List size after filtering by actif: {}", liste.size());
+        }
+        return liste;
+    }
+
+    private static List<Voiture> filtrerParRetireDuParc(Boolean retireDuParc, List<Voiture> liste) {
+        if (retireDuParc != null) {
+            liste = liste.stream()
+                    .filter(voiture -> voiture.getRetireDuParc().equals(retireDuParc))
+                    .toList();
+            log.debug("List size after filtering by retireDuParc: {}", liste.size());
+        }
+        return liste;
+    }
+
 }

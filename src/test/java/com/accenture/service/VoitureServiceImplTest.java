@@ -17,12 +17,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class VoitureServiceImplTest {
@@ -33,7 +34,26 @@ class VoitureServiceImplTest {
     @InjectMocks
     VoitureServiceImpl service;
 
-
+    /*
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ /\_/\                                                          /\_/\
+( o.o )      __  __        _    _                 _            ( o.o )
+ > ^ <      |  \/  |  ___ | |_ | |__    ___    __| |  ___       > ^ <
+ /\_/\      | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \      /\_/\
+( o.o )     | |  | ||  __/| |_ | | | || (_) || (_| ||  __/     ( o.o )
+ > ^ <      |_|  |_| ____| \__||_| |_|_\___/  \__,_| \___|      > ^ <
+ /\_/\        __ _  (_)  ___   _   _ | |_  ___  _ __            /\_/\
+( o.o )      / _` | | | / _ \ | | | || __|/ _ \| '__|          ( o.o )
+ > ^ <      | (_| | | || (_) || |_| || |_|  __/| |              > ^ <
+ /\_/\       \__,_|_/ | \___/  \__,_| \__|\___||_|              /\_/\
+( o.o )           |__/                                         ( o.o )
+ > ^ <                                                          > ^ <
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+      */
     @DisplayName("Si ajouter (null) exception levée")
     @Test
     void testAjouterSiNull() {
@@ -51,7 +71,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -71,7 +90,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -91,7 +109,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -111,7 +128,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -131,7 +147,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -151,7 +166,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -171,7 +185,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -191,7 +204,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -211,7 +223,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -231,7 +242,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -251,7 +261,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -271,7 +280,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -291,7 +299,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -311,7 +318,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -331,7 +337,6 @@ class VoitureServiceImplTest {
                 null,
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -351,7 +356,6 @@ class VoitureServiceImplTest {
                 "   \t ",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -372,7 +376,6 @@ class VoitureServiceImplTest {
                 "auto",
                 null,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -392,7 +395,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 null,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -412,7 +414,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 -10,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -421,46 +422,6 @@ class VoitureServiceImplTest {
         assertThrows(VehiculeException.class, () -> service.ajouter(dto));
     }
 
-    @Test
-    void testAjouterSiListePermisNull() {
-        VoitureRequestDto dto = new VoitureRequestDto("Toyota",
-                "Aygo",
-                "Gris",
-                "Voiture de luxe",
-                5,
-                5,
-                "auto",
-                true,
-                3,
-                null,
-                Carburant.ESSENCE,
-                1000,
-                100000,
-                false,
-                false);
-        assertThrows(VehiculeException.class, () -> service.ajouter(dto));
-    }
-
-
-    @Test
-    void testAjouterSiListePermisBlank() {
-        VoitureRequestDto dto = new VoitureRequestDto("Toyota",
-                "Aygo",
-                "Gris",
-                "Voiture de luxe",
-                5,
-                5,
-                "auto",
-                true,
-                3,
-                List.of(),
-                Carburant.ESSENCE,
-                1000,
-                100000,
-                false,
-                false);
-        assertThrows(VehiculeException.class, () -> service.ajouter(dto));
-    }
 
     @Test
     void testAjouterSiCarburantNull() {
@@ -473,7 +434,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 null,
                 1000,
                 100000,
@@ -493,7 +453,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 0,
                 100000,
@@ -513,7 +472,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 -100,
                 100000,
@@ -533,7 +491,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 -10,
@@ -553,7 +510,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -573,7 +529,6 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -591,18 +546,35 @@ class VoitureServiceImplTest {
         Voiture voitureApresEnreg = creerVoiture();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureAvantEnreg);
-        Mockito.when(daoMock.save(voitureAvantEnreg)).thenReturn(voitureApresEnreg);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureApresEnreg)).thenReturn(responseDto);
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureAvantEnreg);
+        when(daoMock.save(voitureAvantEnreg)).thenReturn(voitureApresEnreg);
+        when(mapperMock.toVoitureResponseDto(voitureApresEnreg)).thenReturn(responseDto);
 
         assertSame(responseDto, service.ajouter(requestDto));
-        Mockito.verify(daoMock, Mockito.times(1)).save(voitureAvantEnreg);
+        verify(daoMock, Mockito.times(1)).save(voitureAvantEnreg);
     }
 
+ /*
 
+  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+ ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+  /\_/\       __  __        _    _                 _             /\_/\
+ ( o.o )     |  \/  |  ___ | |_ | |__    ___    __| |  ___      ( o.o )
+  > ^ <      | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \      > ^ <
+  /\_/\      | |  | ||  __/| |_ | | | || (_) || (_| ||  __/      /\_/\
+ ( o.o )     |_|  |_| \___| \__||_| |_| \___/  \__,_| \___|     ( o.o )
+  > ^ <      | |_  _ __  ___   _   _ __   __ ___  _ __           > ^ <
+  /\_/\      | __|| '__|/ _ \ | | | |\ \ / // _ \| '__|          /\_/\
+ ( o.o )     | |_ | |  | (_) || |_| | \ V /|  __/| |            ( o.o )
+  > ^ <       \__||_|   \___/  \__,_|  \_/  \___||_|             > ^ <
+  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+ ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+  */
     @Test
     void testTrouverExistePas() {
-        Mockito.when(daoMock.findById(56L)).thenReturn(Optional.empty());
+        when(daoMock.findById(56L)).thenReturn(Optional.empty());
         EntityNotFoundException ex = assertThrows(EntityNotFoundException.class, () -> service.trouver(56L));
         assertEquals("Erreur, aucune voiture trouvée avec cet id", ex.getMessage());
 
@@ -612,10 +584,10 @@ class VoitureServiceImplTest {
     void testTrouverExiste() {
         Voiture v = creerVoiture();
         Optional<Voiture> optionalVoiture = Optional.of(v);
-        Mockito.when(daoMock.findById(1L)).thenReturn(optionalVoiture);
+        when(daoMock.findById(1L)).thenReturn(optionalVoiture);
 
         VoitureResponseDto dto = creerVoitureResponseDto();
-        Mockito.when(mapperMock.toVoitureResponseDto(v)).thenReturn(dto);
+        when(mapperMock.toVoitureResponseDto(v)).thenReturn(dto);
 
         assertSame(dto, service.trouver(1L));
     }
@@ -627,16 +599,30 @@ class VoitureServiceImplTest {
 
         List<Voiture> voitures = List.of(creerVoiture(), creerVoiture2());
         List<VoitureResponseDto> dtos = List.of(creerVoitureResponseDto(), creerVoiture2ResponseDto());
-        VoitureResponseDto voitureResponseDto = creerVoitureResponseDto();
-        VoitureResponseDto voitureResponseDto2 = creerVoiture2ResponseDto();
 
-        Mockito.when(daoMock.findAll()).thenReturn(voitures);
-        Mockito.when(mapperMock.toVoitureResponseDto(voiture1)).thenReturn(creerVoitureResponseDto());
-        Mockito.when(mapperMock.toVoitureResponseDto(voiture2)).thenReturn(creerVoiture2ResponseDto());
+        when(daoMock.findAll()).thenReturn(voitures);
+        when(mapperMock.toVoitureResponseDto(voiture1)).thenReturn(creerVoitureResponseDto());
+        when(mapperMock.toVoitureResponseDto(voiture2)).thenReturn(creerVoiture2ResponseDto());
 
         assertEquals(dtos, service.trouverToutes());
     }
-
+/*
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ /\_/\      __  __        _    _                 _              /\_/\
+( o.o )    |  \/  |  ___ | |_ | |__    ___    __| |  ___       ( o.o )
+ > ^ <     | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \       > ^ <
+ /\_/\     | |  | ||  __/| |_ | | | || (_) || (_| ||  __/       /\_/\
+( o.o )    |_|  |_| \___| \__||_| __|_\____  ___,_| \___|      ( o.o )
+ > ^ <      _ __ ___    ___    __| |(_) / _|(_)  ___  _ __      > ^ <
+ /\_/\     | '_ ` _ \  / _ \  / _` || || |_ | | / _ \| '__|     /\_/\
+( o.o )    | | | | | || (_) || (_| || ||  _|| ||  __/| |       ( o.o )
+ > ^ <     |_| |_| |_| \___/  \__,_||_||_|  |_| \___||_|        > ^ <
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ */
 
     @Test
     void modifierPartiellementOk() throws VehiculeException, EntityNotFoundException {
@@ -647,20 +633,19 @@ class VoitureServiceImplTest {
         Voiture voitureModifiee = creerVoiture2();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
-        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+        when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
-        //Mockito.when(mapperMock.toVoitureRequestDto(voitureExistante)).thenReturn(requestDto);
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
         assertEquals(responseDto, result);
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(mapperMock).toVoiture(requestDto);
-        Mockito.verify(daoMock).save(voitureExistante);
-        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+        verify(daoMock).findById(1L);
+        verify(mapperMock).toVoiture(requestDto);
+        verify(daoMock).save(voitureExistante);
+        verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
     @Test
@@ -676,7 +661,6 @@ class VoitureServiceImplTest {
                 null,
                 3,
                 null,
-                null,
                 0,
                 0,
                 null,
@@ -688,19 +672,19 @@ class VoitureServiceImplTest {
         Voiture voitureModifiee = creerVoiture2();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
-        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+        when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
         assertEquals(responseDto, result);
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(mapperMock).toVoiture(requestDto);
-        Mockito.verify(daoMock).save(voitureExistante);
-        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+        verify(daoMock).findById(1L);
+        verify(mapperMock).toVoiture(requestDto);
+        verify(daoMock).save(voitureExistante);
+        verify(mapperMock).toVoitureResponseDto(voitureExistante);
 
     }
 
@@ -708,7 +692,7 @@ class VoitureServiceImplTest {
     void modifierPartiellementNok() throws VehiculeException, EntityNotFoundException {
         VoitureRequestDto requestDto = getVoitureRequestDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.empty());
+        when(daoMock.findById(1L)).thenReturn(Optional.empty());
 
         VehiculeException exception = assertThrows(VehiculeException.class, () -> {
             service.modifierPartiellement(1L, requestDto);
@@ -716,10 +700,10 @@ class VoitureServiceImplTest {
 
         assertEquals("Erreur, l'identifiant ne correspond à aucune voiture en base", exception.getMessage());
 
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(daoMock, never()).save(any(Voiture.class));
-        Mockito.verify(mapperMock, never()).toVoiture(any(VoitureRequestDto.class));
-        Mockito.verify(mapperMock, never()).toVoitureResponseDto(any(Voiture.class));
+        verify(daoMock).findById(1L);
+        verify(daoMock, never()).save(any(Voiture.class));
+        verify(mapperMock, never()).toVoiture(any(VoitureRequestDto.class));
+        verify(mapperMock, never()).toVoitureResponseDto(any(Voiture.class));
     }
 
     @Test
@@ -734,7 +718,6 @@ class VoitureServiceImplTest {
                 "Automatique",
                 true,
                 3,
-                List.of(Permis.B),
                 Carburant.ESSENCE,
                 100,
                 1000,
@@ -748,25 +731,24 @@ class VoitureServiceImplTest {
         Voiture voitureModifiee = creerVoiture2();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
-        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+        when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
         assertEquals(responseDto, result);
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(mapperMock).toVoiture(requestDto);
-        Mockito.verify(daoMock).save(voitureExistante);
-        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+        verify(daoMock).findById(1L);
+        verify(mapperMock).toVoiture(requestDto);
+        verify(daoMock).save(voitureExistante);
+        verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
     @Test
     void modifierPartiellementValeursNulles() throws VehiculeException, EntityNotFoundException {
         VoitureRequestDto requestDto = new VoitureRequestDto(
-                null,
                 null,
                 null,
                 null,
@@ -789,19 +771,19 @@ class VoitureServiceImplTest {
         Voiture voitureModifiee = creerVoiture2();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
-        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+        when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
         assertEquals(responseDto, result);
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(mapperMock).toVoiture(requestDto);
-        Mockito.verify(daoMock).save(voitureExistante);
-        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+        verify(daoMock).findById(1L);
+        verify(mapperMock).toVoiture(requestDto);
+        verify(daoMock).save(voitureExistante);
+        verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
     @Test
@@ -812,7 +794,6 @@ class VoitureServiceImplTest {
                 "", "",
                 -1,
                 -1,
-                null,
                 null,
                 null,
                 null,
@@ -829,44 +810,127 @@ class VoitureServiceImplTest {
         Voiture voitureModifiee = creerVoiture2();
         VoitureResponseDto responseDto = creerVoitureResponseDto();
 
-        Mockito.when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
-        Mockito.when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
-        Mockito.when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
-        Mockito.when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
+        when(daoMock.findById(1L)).thenReturn(Optional.of(voitureExistante));
+        when(mapperMock.toVoiture(requestDto)).thenReturn(voitureModifiee);
+        when(daoMock.save(voitureExistante)).thenReturn(voitureExistante);
+        when(mapperMock.toVoitureResponseDto(voitureExistante)).thenReturn(responseDto);
 
         VoitureResponseDto result = service.modifierPartiellement(1L, requestDto);
 
         assertNotNull(result);
         assertEquals(responseDto, result);
-        Mockito.verify(daoMock).findById(1L);
-        Mockito.verify(mapperMock).toVoiture(requestDto);
-        Mockito.verify(daoMock).save(voitureExistante);
-        Mockito.verify(mapperMock).toVoitureResponseDto(voitureExistante);
+        verify(daoMock).findById(1L);
+        verify(mapperMock).toVoiture(requestDto);
+        verify(daoMock).save(voitureExistante);
+        verify(mapperMock).toVoitureResponseDto(voitureExistante);
     }
 
-    @Test
-    void getVoitureResponseDto() {
-    }
-
+ /*
+  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+ ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+  /\_/\    __  __        _    _                 _                       /\_/\
+ ( o.o )  |  \/  |  ___ | |_ | |__    ___    __| |  ___                ( o.o )
+  > ^ <   | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \                > ^ <
+  /\_/\   | |  | ||  __/| |_ | | | || (_) |_ (_| ||  __/                /\_/\
+ ( o.o )  |___ |_| \____ ___||_|___| ____/(_)__,__ ____|  ___  _ __    ( o.o )
+  > ^ <   / __|| | | || '_ \ | '_ \ | '__|| || '_ ` _ \  / _ \| '__|    > ^ <
+  /\_/\   \__ \| |_| || |_) || |_) || |   | || | | | | ||  __/| |       /\_/\
+ ( o.o )  |___/ \__,_|| .__/ | .__/ |_|   |_||_| |_| |_| \___||_|      ( o.o )
+  > ^ <               |_|    |_|                                        > ^ <
+  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+ ( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+  */
     @DisplayName("Test pour supprimer voiture / ok")
     @Test
     void supprimerVoitureOk() {
         long id = 1;
-        Mockito.when(daoMock.existsById(id)).thenReturn(true);
+        when(daoMock.existsById(id)).thenReturn(true);
         service.supprimer(id);
-
+        verify(daoMock).deleteById(id);
     }
 
     @DisplayName("Test pour supprimer  voiture/ Nok_id non trouvé")
     @Test
     void supprimerVoitureNotOkid() {
         long id = 56;
-        Mockito.when(daoMock.existsById(id)).thenReturn(false);
+        when(daoMock.existsById(id)).thenReturn(false);
         assertThrows(EntityNotFoundException.class, () -> service.supprimer(id));
 
     }
 
+    /*
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ /\_/\       __  __        _    _                 _                           /\_/\
+( o.o )     |  \/  |  ___ | |_ | |__    ___    __| |  ___                    ( o.o )
+ > ^ <      | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \                    > ^ <
+ /\_/\      | |  | ||  __/| |_ | | | || (_) || (_| ||  __/                    /\_/\
+( o.o )     |_|  |_| \___| \___|_| |_| \___/  \__,_| \___|                   ( o.o )
+ > ^ <       _ __  ___   ___ | |__    ___  _ __  ___ | |__    ___  _ __       > ^ <
+ /\_/\      | '__|/ _ \ / __|| '_ \  / _ \| '__|/ __|| '_ \  / _ \| '__|      /\_/\
+( o.o )     | |  |  __/| (__ | | | ||  __/| |  | (__ | | | ||  __/| |        ( o.o )
+ > ^ <      |_|   \___| \___||_| |_| \___||_|   \___||_| |_| \___||_|         > ^ <
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
 
+     */
+    @DisplayName("Test rechercher voitures")
+    @Test
+    void testRechercherVoitures() {
+        // Préparer les données de test
+        Voiture voiture1 = creerVoiture();
+        Voiture voiture2 = creerVoiture2();
+        List<Voiture> voitures = Arrays.asList(voiture1, voiture2);
+
+        VoitureResponseDto voitureResponseDto1 = creerVoitureResponseDto();
+        VoitureResponseDto voitureResponseDto2 = creerVoiture2ResponseDto();
+
+        // Simuler les appels de méthodes
+        when(daoMock.findAll()).thenReturn(voitures);
+        when(mapperMock.toVoitureResponseDto(voiture1)).thenReturn(voitureResponseDto1);
+        when(mapperMock.toVoitureResponseDto(voiture2)).thenReturn(voitureResponseDto2);
+
+        // Appeler la méthode à tester
+        List<VoitureResponseDto> result = service.rechercher(null, "Toyota", null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+
+        // Vérifier les résultats
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Toyota", result.get(0).marque());
+        assertEquals("Toyota", result.get(1).marque());
+
+        // Vérifier que les méthodes simulées ont été appelées
+        verify(daoMock).findAll();
+        verify(mapperMock).toVoitureResponseDto(voiture1);
+        verify(mapperMock).toVoitureResponseDto(voiture2);
+    }
+
+
+
+/*
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ /\_/\                                                          /\_/\
+( o.o )      __  __        _    _                 _            ( o.o )
+ > ^ <      |  \/  |  ___ | |_ | |__    ___    __| |  ___       > ^ <
+ /\_/\      | |\/| | / _ \| __|| '_ \  / _ \  / _` | / _ \      /\_/\
+( o.o )     | |  | ||  __/| |_ | | | || (_) || (_| ||  __/     ( o.o )
+ > ^ <      |_|  |_| \___|_\__||_| |___\___/  \__,_| \___|      > ^ <
+ /\_/\       _ __   _ __ (_)__   __ /_/   ___  ___              /\_/\
+( o.o )     | '_ \ | '__|| |\ \ / // _ \ / _ \/ __|            ( o.o )
+ > ^ <      | |_) || |   | | \ V /|  __/|  __/\__ \             > ^ <
+ /\_/\      | .__/ |_|   |_|  \_/  \___| \___||___/             /\_/\
+( o.o )     |_|                                                ( o.o )
+ > ^ <                                                          > ^ <
+ /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\  /\_/\
+( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )( o.o )
+ > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <  > ^ <
+ */
 
     private static Voiture creerVoiture() {
         Voiture v = new Voiture();
@@ -880,7 +944,6 @@ class VoitureServiceImplTest {
         v.setClim(true);
         v.setNombreDeBagages(5);
         v.setType("Voiture de luxe");
-        v.setListePermis(List.of(Permis.B));
         v.setTarifJournalier(1000);
         v.setKilometrage(100000);
         v.setActif(true);
@@ -900,7 +963,6 @@ class VoitureServiceImplTest {
         v.setClim(true);
         v.setNombreDeBagages(5);
         v.setType("Voiture de luxe");
-        v.setListePermis(List.of(Permis.B));
         v.setTarifJournalier(1000);
         v.setKilometrage(100000);
         v.setActif(true);
@@ -920,7 +982,7 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.B),
+                Permis.B,
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -937,7 +999,7 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.B),
+                Permis.D1,
                 Carburant.ESSENCE,
                 1000,
                 100000,
@@ -946,7 +1008,7 @@ class VoitureServiceImplTest {
     }
 
     private static VoitureRequestDto getVoitureRequestDto() {
-        VoitureRequestDto requestDto = new VoitureRequestDto(
+        return new VoitureRequestDto(
                 "Toyota",
                 "Aygo",
                 "Gris",
@@ -956,15 +1018,12 @@ class VoitureServiceImplTest {
                 "auto",
                 true,
                 3,
-                List.of(Permis.A2),
                 Carburant.ESSENCE,
                 1000,
                 100000,
                 false,
                 false);
-        return requestDto;
     }
-
 }
 
 

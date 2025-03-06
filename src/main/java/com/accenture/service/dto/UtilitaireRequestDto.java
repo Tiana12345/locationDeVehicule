@@ -1,12 +1,10 @@
 package com.accenture.service.dto;
 
 import com.accenture.model.param.Carburant;
-import com.accenture.model.param.Permis;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-import java.util.List;
 
 @Schema(description = "Détails de la demande d'utilitaire")
 public record UtilitaireRequestDto(
@@ -39,14 +37,13 @@ public record UtilitaireRequestDto(
         String transmission,
 
         @Schema(description = "Climatisation de l'utilitaire", example = "true")
-        @NotNull
         Boolean clim,
 
         @Schema(description = "Charge maximale de l'utilitaire en kg", example = "1500")
         @NotNull
         Integer chargeMax,
 
-        @Schema(description = "Poids total autorisé en charge (PTAC) de l'utilitaire en kg", example = "3500")
+        @Schema(description = "Poids total autorisé en charge (PTAC) de l'utilitaire en T", example = "3.5")
         @NotNull
         Double poidsPATC,
 

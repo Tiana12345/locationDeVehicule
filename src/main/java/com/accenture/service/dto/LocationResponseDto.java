@@ -8,6 +8,7 @@ import com.accenture.repository.entity.Vehicule;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public record LocationResponseDto(
         @Schema(description = "ID de la location", example = "1")
@@ -20,7 +21,7 @@ public record LocationResponseDto(
         Client client,
 
         @Schema(description = "Accessoire de la location")
-        Accessoires accessoires,
+        List<Accessoires> accessoires,
 
         @Schema(description = "Date de début de la location", example = "2025-03-01")
         LocalDate dateDebut,
