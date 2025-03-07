@@ -41,20 +41,20 @@ public class VoitureController {
     ResponseEntity<Void> ajouter(
             @Parameter(description = "Détails de la voiture à ajouter", required = false) @RequestBody @Valid VoitureRequestDto voitureRequestDto,
 
-            @Parameter(description = "Marque de la voiture") @RequestParam(required = false) String marque,
-            @Parameter(description = "Modèle de la voiture") @RequestParam(required = false) String modele,
-            @Parameter(description = "Couleur de la voiture") @RequestParam(required = false) String couleur,
-            @Parameter(description = "Nombre de places dans la voiture") @RequestParam(required = false) Integer nombreDePlaces,
-            @Parameter(description = "Type de carburant de la voiture") @RequestParam(required = false) Carburant carburant,
-            @Parameter(description = "Nombre de portes de la voiture") @RequestParam(required = false) Integer nombreDePortes,
-            @Parameter(description = "Transmission de la voiture") @RequestParam(required = false) String transmission,
-            @Parameter(description = "Climatisation de la voiture") @RequestParam(required = false) Boolean clim,
-            @Parameter(description = "Nombre de bagages que la voiture peut contenir") @RequestParam(required = false) Integer nombreDeBagages,
-            @Parameter(description = "Type de la voiture") @RequestParam(required = false) String type,
-            @Parameter(description = "Tarif journalier de la voiture") @RequestParam(required = false) Long tarifJournalier,
-            @Parameter(description = "Kilométrage de la voiture") @RequestParam(required = false) Long kilometrage,
-            @Parameter(description = "Statut actif de la voiture") @RequestParam(required = false) Boolean actif,
-            @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = false) Boolean retireDuParc) {
+            @Parameter(description = "Marque de la voiture") @RequestParam(required = true) String marque,
+            @Parameter(description = "Modèle de la voiture") @RequestParam(required = true) String modele,
+            @Parameter(description = "Couleur de la voiture") @RequestParam(required = true) String couleur,
+            @Parameter(description = "Nombre de places dans la voiture") @RequestParam(required = true) Integer nombreDePlaces,
+            @Parameter(description = "Type de carburant de la voiture") @RequestParam(required = true) Carburant carburant,
+            @Parameter(description = "Nombre de portes de la voiture") @RequestParam(required = true) Integer nombreDePortes,
+            @Parameter(description = "Transmission de la voiture") @RequestParam(required = true) String transmission,
+            @Parameter(description = "Climatisation de la voiture") @RequestParam(required = true) Boolean clim,
+            @Parameter(description = "Nombre de bagages que la voiture peut contenir") @RequestParam(required = true) Integer nombreDeBagages,
+            @Parameter(description = "Type de la voiture") @RequestParam(required = true) String type,
+            @Parameter(description = "Tarif journalier de la voiture") @RequestParam(required = true) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de la voiture") @RequestParam(required = true) Long kilometrage,
+            @Parameter(description = "Statut actif de la voiture") @RequestParam(required = true) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de la voiture") @RequestParam(required = true) Boolean retireDuParc) {
         log.info("Ajout d'une nouvelle voiture : {}", voitureRequestDto);
         VoitureResponseDto voitureEnreg = voitureService.ajouter(voitureRequestDto);
 

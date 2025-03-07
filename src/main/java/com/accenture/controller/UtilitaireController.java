@@ -46,22 +46,22 @@ public class UtilitaireController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     public ResponseEntity<UtilitaireResponseDto> ajouter(
-            @Parameter(description = "Détails de l'utilitaire à ajouter", required = true) @RequestBody @Valid UtilitaireRequestDto utilitaireRequestDto,
-            @Parameter(description = "Marque de l'utilitaire") @RequestParam(required = false) String marque,
-            @Parameter(description = "Modèle de l'utilitaire") @RequestParam(required = false) String modele,
-            @Parameter(description = "Couleur de l'utilitaire") @RequestParam(required = false) String couleur,
-            @Parameter(description = "Type de l'utilitaire") @RequestParam(required = false) String type,
-            @Parameter(description = "Nombre de places dans l'utilitaire") @RequestParam(required = false) Integer nombreDePlace,
-            @Parameter(description = "Type de carburant de l'utilitaire") @RequestParam(required = false) Carburant carburant,
-            @Parameter(description = "Transmission de l'utilitaire") @RequestParam(required = false) String transmission,
-            @Parameter(description = "Climatisation de l'utilitaire") @RequestParam(required = false) Boolean clim,
-            @Parameter(description = "Charge maximale de l'utilitaire") @RequestParam(required = false) Integer chargeMax,
-            @Parameter(description = "Poids total autorisé en charge (PTAC) de l'utilitaire") @RequestParam(required = false) Double poidsPATC,
-            @Parameter(description = "Capacité en mètres cubes de l'utilitaire") @RequestParam(required = false) Integer capaciteM3,
-            @Parameter(description = "Tarif journalier de l'utilitaire") @RequestParam(required = false) Long tarifJournalier,
-            @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = false) Long kilometrage,
-            @Parameter(description = "Statut actif de l'utilitaire") @RequestParam(required = false) Boolean actif,
-            @Parameter(description = "Statut de retrait du parc de l'utilitaire") @RequestParam(required = false) Boolean retireDuParc) {
+            @Parameter(description = "Détails de l'utilitaire à ajouter", required = false) @RequestBody @Valid UtilitaireRequestDto utilitaireRequestDto,
+            @Parameter(description = "Marque de l'utilitaire") @RequestParam(required = true) String marque,
+            @Parameter(description = "Modèle de l'utilitaire") @RequestParam(required = true) String modele,
+            @Parameter(description = "Couleur de l'utilitaire") @RequestParam(required = true) String couleur,
+            @Parameter(description = "Type de l'utilitaire") @RequestParam(required = true) String type,
+            @Parameter(description = "Nombre de places dans l'utilitaire") @RequestParam(required = true) Integer nombreDePlace,
+            @Parameter(description = "Type de carburant de l'utilitaire") @RequestParam(required = true) Carburant carburant,
+            @Parameter(description = "Transmission de l'utilitaire") @RequestParam(required = true) String transmission,
+            @Parameter(description = "Climatisation de l'utilitaire") @RequestParam(required = true) Boolean clim,
+            @Parameter(description = "Charge maximale de l'utilitaire") @RequestParam(required = true) Integer chargeMax,
+            @Parameter(description = "Poids total autorisé en charge (PTAC) de l'utilitaire") @RequestParam(required = true) Double poidsPATC,
+            @Parameter(description = "Capacité en mètres cubes de l'utilitaire") @RequestParam(required = true) Integer capaciteM3,
+            @Parameter(description = "Tarif journalier de l'utilitaire") @RequestParam(required = true) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de l'utilitaire") @RequestParam(required = true) Long kilometrage,
+            @Parameter(description = "Statut actif de l'utilitaire") @RequestParam(required = true) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de l'utilitaire") @RequestParam(required = true) Boolean retireDuParc) {
         log.info("Ajout d'un nouvel utilitaire : {}", utilitaireRequestDto);
         UtilitaireResponseDto utilitaireResponseDto = utilitaireService.ajouter(utilitaireRequestDto);
         log.info("Utilitaire ajouté avec succès : {}", utilitaireResponseDto);

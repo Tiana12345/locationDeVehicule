@@ -48,16 +48,16 @@ public class LocationController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     public ResponseEntity<Void> ajouter(
-            @Parameter(description = "Détails de la location à ajouter", required = true) @RequestBody @Valid LocationRequestDto locationRequestDto,
-            @Parameter(description = "Adresse email du client") @RequestParam(required = false)String mail,
-            @Parameter(description = "ID du véhicule") @RequestParam(required = false)Long id,
-            @Parameter(description = "TypeDeVehicule") @RequestParam(required = false) TypeVehiculeEnum typeVehiculeEnum,
-            @Parameter(description = "Accessoires de la location") @RequestParam(required = false) List<Accessoires> accessoires,
-            @Parameter(description = "Date de début de la location (YYYY/MM/dd) ") @RequestParam(required = false) LocalDate dateDebut,
-            @Parameter(description = "Date de fin de la location (YYYY/MM/dd) ") @RequestParam(required = false) LocalDate dateFin,
-            @Parameter(description = "Kilomètres parcourus") @RequestParam(required = false) Integer kilometresParcourus,
-            @Parameter(description = "Montant total de la location") @RequestParam(required = false) Double montantTotal,
-            @Parameter(description = "État de la location") @RequestParam(required = false) Etat etat) {
+            @Parameter(description = "Détails de la location à ajouter", required = false) @RequestBody @Valid LocationRequestDto locationRequestDto,
+            @Parameter(description = "Adresse email du client") @RequestParam(required = true)String mail,
+            @Parameter(description = "ID du véhicule") @RequestParam(required = true)Long id,
+            @Parameter(description = "TypeDeVehicule") @RequestParam(required = true) TypeVehiculeEnum typeVehiculeEnum,
+            @Parameter(description = "Accessoires de la location") @RequestParam(required = true) List<Accessoires> accessoires,
+            @Parameter(description = "Date de début de la location (YYYY/MM/dd) ") @RequestParam(required = true) LocalDate dateDebut,
+            @Parameter(description = "Date de fin de la location (YYYY/MM/dd) ") @RequestParam(required = true) LocalDate dateFin,
+            @Parameter(description = "Kilomètres parcourus") @RequestParam(required = true) Integer kilometresParcourus,
+            @Parameter(description = "Montant total de la location") @RequestParam(required = true) Double montantTotal,
+            @Parameter(description = "État de la location") @RequestParam(required = true) Etat etat) {
         log.info("Ajout d'une nouvelle location : {}", locationRequestDto);
 
 

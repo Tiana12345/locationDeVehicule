@@ -39,15 +39,15 @@ public class ClientController {
     })
     public ResponseEntity<Void> ajouter(
             @Parameter(description = "Détails du client à ajouter", required = false) @RequestBody @Valid ClientRequestDto clientRequestDto,
-            @Parameter(description = "Adresse email du client") @RequestParam(required = false) String mail,
-            @Parameter(description = "Mot de passe du client") @RequestParam(required = false) String password,
-            @Parameter(description = "Nom du client") @RequestParam(required = false) String nom,
-            @Parameter(description = "Prénom du client") @RequestParam(required = false) String prenom,
-            @Parameter(description = "Rue de l'adresse du client") @RequestParam(required = false) String rue,
-            @Parameter(description = "Code postal de l'adresse du client") @RequestParam(required = false) String codePostal,
-            @Parameter(description = "Ville de l'adresse du client") @RequestParam(required = false) String ville,
-            @Parameter(description = "Date de naissance du client") @RequestParam(required = false) String dateNaissance,
-            @Parameter(description = "Liste des permis du client") @RequestParam(required = false) List<Permis> permis) {
+            @Parameter(description = "Adresse email du client") @RequestParam(required = true) String mail,
+            @Parameter(description = "Mot de passe du client") @RequestParam(required = true) String password,
+            @Parameter(description = "Nom du client") @RequestParam(required = true) String nom,
+            @Parameter(description = "Prénom du client") @RequestParam(required = true) String prenom,
+            @Parameter(description = "Rue de l'adresse du client") @RequestParam(required = true) String rue,
+            @Parameter(description = "Code postal de l'adresse du client") @RequestParam(required = true) String codePostal,
+            @Parameter(description = "Ville de l'adresse du client") @RequestParam(required = true) String ville,
+            @Parameter(description = "Date de naissance du client") @RequestParam(required = true) String dateNaissance,
+            @Parameter(description = "Liste des permis du client") @RequestParam(required = true) List<Permis> permis) {
         log.info("Ajout d'un nouveau client : {}", clientRequestDto);
         ClientResponseDto clientEnreg = clientService.ajouter(clientRequestDto);
         URI location = ServletUriComponentsBuilder

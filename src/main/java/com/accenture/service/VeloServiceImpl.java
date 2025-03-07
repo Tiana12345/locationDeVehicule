@@ -201,12 +201,14 @@ public class VeloServiceImpl implements VeloService {
     private static void verifVeloElectrique(VeloRequestDto veloRequestDto) {
         if (veloRequestDto.electrique() == null)
             throw new VehiculeException("Vous devez indiquer si le vélo est électrique");
-        if (veloRequestDto.capaciteBatterie() == null || veloRequestDto.capaciteBatterie() <= 0)
-            throw new VehiculeException("Vous devez ajouter la capacité de la batterie du vélo");
-        if (veloRequestDto.autonomie() == null || veloRequestDto.autonomie() <= 0)
-            throw new VehiculeException("Vous devez ajouter l'autonomie du vélo");
         if (veloRequestDto.freinsADisque() == null)
             throw new VehiculeException("Vous devez indiquer si le vélo a des freins à disque");
+        if (veloRequestDto.electrique() == true) {
+            if (veloRequestDto.capaciteBatterie() == null || veloRequestDto.capaciteBatterie() <= 0)
+                throw new VehiculeException("Vous devez ajouter la capacité de la batterie du vélo");
+            if (veloRequestDto.autonomie() == null || veloRequestDto.autonomie() <= 0)
+                throw new VehiculeException("Vous devez ajouter l'autonomie du vélo");
+        }
     }
 
     private static void verifVeloTarifKilometrage(VeloRequestDto veloRequestDto) {

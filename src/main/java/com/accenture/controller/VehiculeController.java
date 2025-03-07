@@ -48,8 +48,8 @@ public class VehiculeController {
     @Operation(summary = "Trouver vehicules par recherches")
     @GetMapping("/rechercher")
     public ResponseEntity<List<Vehicule>> rechercher(
-            @RequestParam(required = false) Boolean actif,
-            @RequestParam(required = false) Boolean retireDuParc) {
+            @RequestParam(required = true) Boolean actif,
+            @RequestParam(required = true) Boolean retireDuParc) {
         log.info("Entrée dans la méthode rechercher avec actif={} et retireDuParc={}", actif, retireDuParc);
         List<Vehicule> vehicules = vehiculeService.rechercher(actif, retireDuParc);
         log.info("Sortie de la méthode rechercher avec {} véhicules trouvés", vehicules.size());

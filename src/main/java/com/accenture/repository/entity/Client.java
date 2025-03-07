@@ -24,7 +24,6 @@ import java.util.List;
 @Data
 @Entity
 @DiscriminatorValue(value = "ROLE_CLIENT")
-
 public class Client extends Utilisateur {
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -32,11 +31,11 @@ public class Client extends Utilisateur {
     private Adresse adresse;
 
     private LocalDate dateNaissance;
-    //localDate.now
     private LocalDate dateInscription = LocalDate.now();
     @ElementCollection
     private List<Permis> listePermis;
     private Boolean desactive;
 
+    @OneToMany(mappedBy = "client",fetch = FetchType.EAGER)
+    private List<Location> locations;
 }
-

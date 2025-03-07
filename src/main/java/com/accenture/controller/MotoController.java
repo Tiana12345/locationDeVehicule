@@ -46,20 +46,20 @@ public class MotoController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     public ResponseEntity<MotoResponseDto> ajouter(
-            @Parameter(description = "Détails de la moto à ajouter", required = true) @RequestBody @Valid MotoRequestDto motoRequestDto,
-            @Parameter(description = "Marque de la moto") @RequestParam(required = false) String marque,
-            @Parameter(description = "Modèle de la moto") @RequestParam(required = false) String modele,
-            @Parameter(description = "Couleur de la moto") @RequestParam(required = false) String couleur,
-            @Parameter(description = "Type de la moto") @RequestParam(required = false) String type,
-            @Parameter(description = "Nombre de cylindres de la moto") @RequestParam(required = false) Integer nombreCylindres,
-            @Parameter(description = "Poids de la moto") @RequestParam(required = false) Integer poids,
-            @Parameter(description = "Puissance en kW de la moto") @RequestParam(required = false) Integer puissanceEnkW,
-            @Parameter(description = "Hauteur de selle de la moto") @RequestParam(required = false) Integer hauteurSelle,
-            @Parameter(description = "Transmission de la moto") @RequestParam(required = false) String transmission,
-            @Parameter(description = "Tarif journalier de la moto") @RequestParam(required = false) Long tarifJournalier,
-            @Parameter(description = "Kilométrage de la moto") @RequestParam(required = false) Long kilometrage,
-            @Parameter(description = "Statut actif de la moto") @RequestParam(required = false) Boolean actif,
-            @Parameter(description = "Statut de retrait du parc de la moto") @RequestParam(required = false) Boolean retireDuParc) {
+            @Parameter(description = "Détails de la moto à ajouter", required = false) @RequestBody @Valid MotoRequestDto motoRequestDto,
+            @Parameter(description = "Marque de la moto") @RequestParam(required = true) String marque,
+            @Parameter(description = "Modèle de la moto") @RequestParam(required = true) String modele,
+            @Parameter(description = "Couleur de la moto") @RequestParam(required = true) String couleur,
+            @Parameter(description = "Type de la moto") @RequestParam(required = true) String type,
+            @Parameter(description = "Nombre de cylindres de la moto") @RequestParam(required = true) Integer nombreCylindres,
+            @Parameter(description = "Poids de la moto") @RequestParam(required = true) Integer poids,
+            @Parameter(description = "Puissance en kW de la moto") @RequestParam(required = true) Integer puissanceEnkW,
+            @Parameter(description = "Hauteur de selle de la moto") @RequestParam(required = true) Integer hauteurSelle,
+            @Parameter(description = "Transmission de la moto") @RequestParam(required = true) String transmission,
+            @Parameter(description = "Tarif journalier de la moto") @RequestParam(required = true) Long tarifJournalier,
+            @Parameter(description = "Kilométrage de la moto") @RequestParam(required = true) Long kilometrage,
+            @Parameter(description = "Statut actif de la moto") @RequestParam(required = true) Boolean actif,
+            @Parameter(description = "Statut de retrait du parc de la moto") @RequestParam(required = true) Boolean retireDuParc) {
         log.info("Ajout d'une nouvelle moto : {}", motoRequestDto);
         MotoResponseDto motoResponseDto = motoService.ajouter(motoRequestDto);
         log.info("Moto ajoutée avec succès : {}", motoResponseDto);

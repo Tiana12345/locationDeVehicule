@@ -15,8 +15,6 @@ import java.util.List;
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @Table(name = "Vehicules")
-
-
 public abstract class Vehicule {
     @Id
     @GeneratedValue(strategy = GenerationType.TABLE)
@@ -24,6 +22,7 @@ public abstract class Vehicule {
 
     @Enumerated(EnumType.STRING)
     private TypeVehiculeEnum typeVehiculeEnum;
+    @ElementCollection(targetClass = Accessoires.class)
     @Enumerated(EnumType.STRING)
     private List<Accessoires> listeAccessoires;
     private String marque;
@@ -35,6 +34,8 @@ public abstract class Vehicule {
     private Boolean actif;
     private Boolean retireDuParc;
 
+    @OneToMany(mappedBy = "vehicule",fetch = FetchType.EAGER)
+    private List<Location> locations;
 
     public void ajouterAccessoire(Accessoires accessoire) {
         if (accessoire.getType() == this.typeVehiculeEnum) {
@@ -42,3 +43,4 @@ public abstract class Vehicule {
         }
     }
 }
+

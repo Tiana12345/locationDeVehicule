@@ -18,7 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-
 public class Location {
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -44,7 +43,7 @@ public class Location {
 
         private int kilometresParcourus;
         private int montantTotal;
-        private LocalDate dateValidation;
+        private LocalDate dateValidation = LocalDate.now();
         @Enumerated(EnumType.STRING)
         private Etat etat;
 }

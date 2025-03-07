@@ -36,12 +36,12 @@ public class AdministrateurController {
             @ApiResponse(responseCode = "400", description = "Requête invalide")
     })
     public ResponseEntity<Void> ajouter(
-            @Parameter(description = "Détails de l'administrateur à ajouter", required = true) @RequestBody @Valid AdministrateurRequestDto administrateurRequestDto,
-            @Parameter(description = "Adresse email de l'administrateur") @RequestParam(required = false) String mail,
-            @Parameter(description = "Mot de passe de l'administrateur") @RequestParam(required = false) String password,
-            @Parameter(description = "Nom de l'administrateur") @RequestParam(required = false) String nom,
-            @Parameter(description = "Prénom de l'administrateur") @RequestParam(required = false) String prenom,
-            @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = false) String fonction) {
+            @Parameter(description = "Détails de l'administrateur à ajouter", required = false) @RequestBody @Valid AdministrateurRequestDto administrateurRequestDto,
+            @Parameter(description = "Adresse email de l'administrateur") @RequestParam(required = true) String mail,
+            @Parameter(description = "Mot de passe de l'administrateur") @RequestParam(required = true) String password,
+            @Parameter(description = "Nom de l'administrateur") @RequestParam(required = true) String nom,
+            @Parameter(description = "Prénom de l'administrateur") @RequestParam(required = true) String prenom,
+            @Parameter(description = "Fonction de l'administrateur") @RequestParam(required = true) String fonction) {
         log.info("Ajout d'un nouvel administrateur avec l'email : {}", administrateurRequestDto.mail());
         AdministrateurResponseDto adminEnreg = administrateurService.ajouter(administrateurRequestDto);
         URI location = ServletUriComponentsBuilder

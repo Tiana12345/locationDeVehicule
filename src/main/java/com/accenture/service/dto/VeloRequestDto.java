@@ -35,11 +35,9 @@ public record VeloRequestDto(
         Boolean electrique,
 
         @Schema(description = "Capacité de la batterie du vélo en Wh", example = "500")
-        @NotNull
         Integer capaciteBatterie,
 
         @Schema(description = "Autonomie du vélo en km", example = "100")
-        @NotNull
         Integer autonomie,
 
         @Schema(description = "Le vélo a-t-il des freins à disque ?", example = "true")

@@ -7,12 +7,16 @@ import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springdoc.core.models.GroupedOpenApi;
+import org.springdoc.core.properties.SwaggerUiConfigParameters;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class SwaggerConfiguration {
+
+
 
 
     @Bean
@@ -30,30 +34,11 @@ public class SwaggerConfiguration {
                         .addSecuritySchemes("basicAuth",
                                 new SecurityScheme()
                                         .type(SecurityScheme.Type.HTTP)
-                                        .scheme("basic")
-                                        .bearerFormat("Basic")
-                                        .name("basicAuth")
+                                        .scheme("basic")))
 
-                        )
-                )
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"));
-
     }
 
-//                .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
-//                .components(new io.swagger.v3.oas.models.Components()
-//                        .addSecuritySchemes("basicAuth", new SecurityScheme()
-//                                .type(SecurityScheme.Type.HTTP)
-//                                .scheme("basic")));
 
 
-    @Bean
-    public GroupedOpenApi publicApi() {
-        return GroupedOpenApi.builder()
-                .group("public")
-                .pathsToMatch("/**")
-                .addOperationCustomizer((operation, handlerMethod) ->
-                        operation.addSecurityItem(new SecurityRequirement().addList("bearerAuth")))
-                .build();
-    }
 }

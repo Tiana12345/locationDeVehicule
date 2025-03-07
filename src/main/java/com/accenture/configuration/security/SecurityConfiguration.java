@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                         .requestMatchers(HttpMethod.POST, "/velos/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/velos/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/velos/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/utilitaires/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/utilitaires/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/utilitaires/**").permitAll()
                         .requestMatchers(HttpMethod.PATCH, "/utilitaires/**").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/utilitaires/**").permitAll()

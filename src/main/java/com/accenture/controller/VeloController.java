@@ -47,13 +47,13 @@ public class VeloController {
     })
     public ResponseEntity<VeloResponseDto> ajouter(
             @Parameter(description = "Détails du vélo à ajouter", required = false) @RequestBody @Valid VeloRequestDto veloRequestDto,
-            @Parameter(description = "Marque du vélo") @RequestParam(required = false) String marque,
-            @Parameter(description = "Modèle du vélo") @RequestParam(required = false) String modele,
-            @Parameter(description = "Couleur du vélo") @RequestParam(required = false) String couleur,
-            @Parameter(description = "Nombre de vitesses du vélo") @RequestParam(required = false) Integer nombreDeVitesses,
-            @Parameter(description = "Type de frein du vélo") @RequestParam(required = false) String typeDeFrein,
-            @Parameter(description = "Taille du cadre du vélo") @RequestParam(required = false) String tailleDuCadre,
-            @Parameter(description = "Type de suspension du vélo") @RequestParam(required = false) String typeDeSuspension) {
+            @Parameter(description = "Marque du vélo") @RequestParam(required = true) String marque,
+            @Parameter(description = "Modèle du vélo") @RequestParam(required = true) String modele,
+            @Parameter(description = "Couleur du vélo") @RequestParam(required = true) String couleur,
+            @Parameter(description = "Nombre de vitesses du vélo") @RequestParam(required = true) Integer nombreDeVitesses,
+            @Parameter(description = "Type de frein du vélo") @RequestParam(required = true) String typeDeFrein,
+            @Parameter(description = "Taille du cadre du vélo") @RequestParam(required = true) String tailleDuCadre,
+            @Parameter(description = "Type de suspension du vélo") @RequestParam(required = true) String typeDeSuspension) {
         log.info("Ajout d'un nouveau vélo : {}", veloRequestDto);
         VeloResponseDto veloResponseDto = veloService.ajouter(veloRequestDto);
         log.info("Vélo ajouté avec succès : {}", veloResponseDto);
